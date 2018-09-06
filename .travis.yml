@@ -15,7 +15,7 @@ before_script:
 
 
 script:
-  - num run docs:build
+  - npm run docs:build
 
 
 after_script:
