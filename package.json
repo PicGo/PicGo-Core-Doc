@@ -1,0 +1,28 @@
+{
+  "name": "picgo-core-doc",
+  "version": "1.0.0",
+  "description": "Docs for PicGo-Core",
+  "main": "index.js",
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Molunerfinn/PicGo-Core-Doc.git"
+  },
+  "keywords": [
+    "PicGo",
+    "Docs",
+    "Vuepress"
+  ],
+  "author": "Molunerfinn",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Molunerfinn/PicGo-Core-Doc/issues"
+  },
+  "homepage": "https://github.com/Molunerfinn/PicGo-Core-Doc#readme",
+  "devDependencies": {
+    "vuepress": "^0.14.2"
+  }
+}
