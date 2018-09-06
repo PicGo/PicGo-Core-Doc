@@ -27,7 +27,7 @@ PicGo-Core是[PicGo](https://github.com/Molunerfinn/PicGo)2.0版本里将会预�
 2. beforeUpload：可以获取通过转换器的output信息
 3. afterUpload：可以获取最终的output信息
 
-一张图片通过上述的流程便可以实现上传到指定地点并获取URL。
+使用者可以通过CLI输入图片或者通过API调用输入图片，而后PicGo将会按照上述生命周期流程实现图片上传并获取URL。
 
 ::: tip
 插件可以开发不同的Uploader、Transformer，还可以接入3个生命周期钩子实现复杂的上传需求。

@@ -4,6 +4,10 @@
 请确保你的 Node.js 版本 >= 8。
 :::
 
+::: tip
+默认通过路径上传图片，默认上传图床为[SM.MS](https://sm.ms/)。
+:::
+
 ## 全局安装
 
 > 使用CLI部分
@@ -13,7 +17,7 @@
 yarn global add picgo # 或者 npm install picgo -g
 
 # 上传图片
-picgo u /xxx/xxx.jpg
+picgo upload /xxx/xxx.jpg
 ```
 
 ## 现有项目

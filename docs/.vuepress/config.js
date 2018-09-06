@@ -33,6 +33,7 @@ function genSidebarConfig (title) {
       children: [
         '',
         'getting-started',
+        'commands',
       ]
     }
   ]
