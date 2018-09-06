@@ -1,5 +1,6 @@
 module.exports = {
   title: 'PicGo-Core',
+  base: '/PicGo-Core-Doc/',
   locales: {
     '/zh/': {
       lang: 'zh-CN',
