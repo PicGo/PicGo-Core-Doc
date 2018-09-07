@@ -2,6 +2,10 @@
 
 PicGo-Core是[PicGo](https://github.com/Molunerfinn/PicGo)2.0版本里将会预置的底层核心组件。它可以看做是一个简单的上传流程系统。
 
+::: tip 提示
+除个别特意声明外，本文档里的`picgo`与`PicGo-Core`将视为同一个东西。而`PicGo`将视为`picgo`的[electron版](https://github.com/Molunerfinn/PicGo)。
+:::
+
 ## 特性
 
 - 支持CLI调用
@@ -27,8 +31,8 @@ PicGo-Core是[PicGo](https://github.com/Molunerfinn/PicGo)2.0版本里将会预�
 2. beforeUpload：可以获取通过转换器的output信息
 3. afterUpload：可以获取最终的output信息
 
-使用者可以通过CLI输入图片或者通过API调用输入图片，而后PicGo将会按照上述生命周期流程实现图片上传并获取URL。
+使用者可以通过CLI输入图片或者通过API调用输入图片，而后picgo将会按照上述生命周期流程实现图片上传并获取URL。
 
-::: tip
+::: tip 提示
 插件可以开发不同的Uploader、Transformer，还可以接入3个生命周期钩子实现复杂的上传需求。
 :::

@@ -1,6 +1,6 @@
 # CLI命令
 
-PicGo-Core 支持命令行模式直接使用。在你全局安装了`picgo`之后，你可以通过`picgo -h`来查看所有命令：
+picgo 支持命令行模式直接使用。在你全局安装了`picgo`之后，你可以通过`picgo -h`来查看所有命令：
 
 ```bash
 $ picgo -h
@@ -25,12 +25,12 @@ $ picgo -h
     choose|ch [options] [module]  choose modules of picgo
 ```
 
-::: tip
+::: tip 提示
 其中，命令选项如果是用`<>`包围起来的为必须输入项，如果是用`[]`包围起来的则为可选输入项。
 有些命令支持简写，比如`picgo upload`可以写为`picgo u`。
 :::
 
-PicGo-Core 命令行的实现来自于[commander.js](https://github.com/tj/commander.js/)与[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)。下面将介绍各个命令以及如何配置。
+picgo 命令行的实现来自于[commander.js](https://github.com/tj/commander.js/)与[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)。下面将介绍各个命令以及如何配置。
 
 ## choose|ch
 
@@ -49,7 +49,7 @@ $ picgo choose -h
     -h, --help  output usage information
 ```
 
-PicGo-Core内置了如下的内容：
+picgo内置了如下的内容：
 
 - transformer:
   - path
@@ -64,7 +64,7 @@ PicGo-Core内置了如下的内容：
   - weibo -> 微博图床
   - github -> GitHub
 
-::: tip
+::: tip 提示
 通常来说，在命令行模式下你只需要选择`path`作为picgo的`transformer`即可。
 :::
 
@@ -101,11 +101,11 @@ $ picgo set -h
     -h, --help  output usage information
 ```
 
-::: tip
-通常来说，PicGo-Core默认只需要配置Uploader即可。所以你可以直接通过`picgo set uploader`或者`picgo set uploader weibo|tcyun|...`等命令直接进入交互式命令行。
+::: tip 提示
+通常来说，picgo默认只需要配置Uploader即可。所以你可以直接通过`picgo set uploader`或者`picgo set uploader weibo|tcyun|...`等命令直接进入交互式命令行。
 :::
 
-PicGo-Core内置的图床的配置项细节可以参考PicGo的配置[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8)。
+picgo内置的图床的配置项细节可以参考PicGo的配置[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8)。
 
 如果某个uploader或者transformer或者plugin没有可配置项，picgo也会提示配置成功，不需要担心。
 
@@ -116,10 +116,10 @@ $ picgo set transformer path
 
 ## upload|u
 
-> 该命令用于上传图片到图床。通常是上传磁盘上已有的图片，可以同时上传多张。
+> 该命令用于上传图片到图床。通常是上传磁盘上已有的图片，可以同时上传多张。上传多张图片的时候用空格隔开。
 
-::: tip
-上传多张图片的时候用空格隔开
+::: tip 提示
+请确保你上传前使用了`choose`以及`set`命令配置好了需要上传的图床。
 :::
 
 ```bash
@@ -137,7 +137,7 @@ https://i.loli.net/2018/09/06/5b9134651af34.png
 
 > 该命令用于安装npm上的picgo的插件。picgo的插件名都是以`picgo-plugin-`开头的。可以一次性安装多个插件，用空格隔开即可。
 
-::: tip
+::: tip 提示
 PicGo会把插件安装在配置文件所在的目录下。默认配置文件在`~/.picgo/`下，所以插件会安装在`~/.picgo/node_modules/`下。
 :::
 
@@ -164,3 +164,23 @@ picgo uninstall picgo-plugin-xxx
 ```bash
 picgo update picgo-plugin-xxx
 ```
+
+## -v, --version
+
+输入`picgo -v`或者`picgo --version`将输出当前picgo的版本信息。
+
+## -d, --debug
+
+在输入任何有效命令的情况下加入`-d`或者`--debug`会进入`debug`模式。将会输出更加详细的报错信息，指出错误的具体位置。
+
+## -c, --config
+
+在输入任何有效命令的情况下加入`-c <path>`可以指定picgo的配置文件所在处。默认的配置文件是`~/.pigco/config.json`。
+
+::: tip 提示
+picgo将会读取配置文件所在目录下`node_modules`的插件。
+:::
+
+## -s, --silent
+
+在输入任何有效命令的情况下加入`-s`或者`--silent`将会进入静默模式，除了报错信息之外，picgo在命令行里将不会输出任何信息。

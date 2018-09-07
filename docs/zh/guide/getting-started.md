@@ -1,10 +1,10 @@
 # 快速上手
 
-::: warning
+::: warning 注意
 请确保你的 Node.js 版本 >= 8。
 :::
 
-::: tip
+::: tip 提示
 默认通过路径上传图片，默认上传图床为[SM.MS](https://sm.ms/)。
 :::
 

@@ -10,6 +10,10 @@ module.exports = {
   },
   description: 'PicGo的核心组件',
   themeConfig: {
+    repo: 'PicGo/PicGo-Core',
+    docsRepo: 'PicGo/PicGo-Core-Doc',
+    docsDir: 'docs',
+    editLinks: true,
     locales: {
       '/zh/': {
         sidebar: {
@@ -35,6 +39,7 @@ function genSidebarConfig (title) {
         '',
         'getting-started',
         'commands',
+        'api'
       ]
     }
   ]
