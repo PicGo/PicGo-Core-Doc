@@ -39,7 +39,7 @@ function genSidebarConfig (title) {
         '',
         'getting-started',
         'commands',
-        'api'
+        'use-in-node'
       ]
     }
   ]
