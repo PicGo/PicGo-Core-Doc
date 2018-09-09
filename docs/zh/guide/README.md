@@ -16,7 +16,7 @@ PicGo-Core是[PicGo](https://github.com/Molunerfinn/PicGo)2.0版本里将会预�
 
 下图是PicGo-Core的生命周期：
 
-![flow](https://raw.githubusercontent.com/Molunerfinn/test/master/picgo/picgo-core.jpg)
+![flow](https://raw.githubusercontent.com/Molunerfinn/test/master/picgo/picgo-core-fix.jpg)
 
 ### 4个部件
 
