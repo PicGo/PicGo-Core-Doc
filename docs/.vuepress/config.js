@@ -15,6 +15,21 @@ module.exports = {
     docsDir: 'docs',
     editLinks: true,
     locales: {
+      '/': {
+        sidebar: {
+          '/zh/guide/': genSidebarConfig('指南')
+        },
+        nav: [
+          {
+            text: '指南',
+            link: '/zh/guide/'
+          },
+          {
+            text: '插件开发指南',
+            link: '/zh/dev-guide/'
+          }
+        ]
+      },
       '/zh/': {
         sidebar: {
           '/zh/guide/': genSidebarConfig('指南')
@@ -23,6 +38,10 @@ module.exports = {
           {
             text: '指南',
             link: '/zh/guide/'
+          },
+          {
+            text: '插件开发指南',
+            link: '/zh/dev-guide/'
           }
         ]
       }
