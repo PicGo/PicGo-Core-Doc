@@ -42,6 +42,10 @@ module.exports = {
           {
             text: '插件开发指南',
             link: '/zh/dev-guide/'
+          },
+          {
+            text: 'API列表',
+            link: '/zh/api/'
           }
         ]
       }
