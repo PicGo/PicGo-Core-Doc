@@ -355,5 +355,11 @@ module.exports = ctx => {
 你不需要调用`ctx.helper.cmd.program.parse(process.argv)`！否则将会引发错误。picgo会自己调用这个命令。
 :::
 
-## API列表
+## 发布插件
 
+为了让一个插件能够被其它开发者使用，你必须遵循`picgo-plugin-<name>`的命名约定将其发布到npm上。插件遵循命名约定之后就可以：
+
+- 被其他开发者搜索到。
+- 通过`picgo install <name>`或者`picgo add <name>`来安装。
+
+picgo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
