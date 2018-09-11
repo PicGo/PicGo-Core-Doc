@@ -23,9 +23,19 @@ const picgo = new PicGo()
 
 ## setConfig()
 
+## saveConfig()
+
 ## emit()
 
 ## on()
+
+## input
+
+## output
+
+## configPath
+
+## baseDir
 
 ## helper
 
@@ -47,10 +57,10 @@ const picgo = new PicGo()
 
 ## log
 
-### log.info
+### log.info()
 
-### log.warn
+### log.warn()
 
-### log.success
+### log.success()
 
-### log.error
+### log.error()
