@@ -35,21 +35,30 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 如果你要实现一个通过图片url地址，就能上传到现有的图床的功能的话，可以考虑开发一个`Transformer`或者一个`beforeTransformPlugins`。
 
-当然在这过程中你可以获取picgo提供的其他丰富的API。
+当然在这过程中你可以获取picgo提供的其他丰富的[API](/zh/api/)。
 
 ## 概述
 
 上述5个部件都是[LifecyclePlugins](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/LifecyclePlugins.ts)类的实例化。因此都会提供一个`register`方法用于给插件注册。
 
-不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
-
-这几个部分的注册是统一格式的。可以通过picgo的`helper`类获取`transformer`、`uploader`、`beforeTransformPlugins`等具体的实例，并通过`register`注册。
-
 ::: warning 注意
-`register`的第一个参数为name，是唯一标识符；第二个参数才为具体实现。
+`register`的第一个参数为name，是某个部件里的唯一标识符；第二个参数才为插件的具体实现。
 :::
 
-而一个插件本身通过实现一个`register`方法来供picgo的`pluginLoader`来加载。
+不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
+
+而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。
+
+插件的目录结构可以很简单：
+
+```bash
+.
+├── README.md
+├── index.js      # plugin
+└── package.json
+```
+
+一个`index.js`，以及`package.json`里指定`main`字段为`index.js`即可。
 
 也即格式如下：
 
