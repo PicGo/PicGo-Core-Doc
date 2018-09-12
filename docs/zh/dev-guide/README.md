@@ -260,7 +260,7 @@ const config = ctx => {
 
 #### handleConfig方法
 
-handleConfig方法就是picgo将会调用的方法了——在用户输入`picgo set <module> [name]`的命令时将会调用这个方法。同样的picgo将会往这个方法里传入ctx。你需要通过ctx给予的`helper.cmd.inquirer`实例去调用`prompt`方法实现命令行交互。最后再将信息保存。
+handleConfig方法就是picgo将会调用的方法了——在用户输入`picgo set <module> [name]`的命令时将会调用这个方法。同样的picgo将会往这个方法里传入ctx。你需要通过ctx给予的`cmd.inquirer`实例去调用`prompt`方法实现命令行交互。最后再将信息保存。
 
 可以参考[weibo](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/weibo.ts#L144-L150) 的`handleConfig`的实现。
 
@@ -269,7 +269,7 @@ handleConfig方法的实现例子如下：
 ```js
 const handleConfig = async ctx => {
   const prompts = config(ctx)
-  const answer = await ctx.helper.cmd.inquirer.prompt(prompts)
+  const answer = await ctx.cmd.inquirer.prompt(prompts)
   ctx.saveConfig({ // 调用saveConfig保存配置
     'picBed.xxx': answer
   })
@@ -332,14 +332,14 @@ const handle = ctx => {
 
 ### 注册命令
 
-picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.helper.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
+picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
 
 例如：
 
 ```js
 module.exports = ctx => {
   const register = () => {
-    ctx.helper.cmd.program
+    ctx.cmd.program
       .commands('test', 'This is a test commands')
       .action(() => {
         console.log(123)
@@ -352,7 +352,7 @@ module.exports = ctx => {
 ```
 
 ::: warning 注意
-你不需要调用`ctx.helper.cmd.program.parse(process.argv)`！否则将会引发错误。picgo会自己调用这个命令。
+你不需要调用`ctx.cmd.program.parse(process.argv)`！否则将会引发错误。picgo会自己调用这个命令。
 :::
 
 ## 发布插件
