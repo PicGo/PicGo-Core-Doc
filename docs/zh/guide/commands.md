@@ -147,7 +147,7 @@ PicGo会把插件安装在配置文件所在的目录下。默认配置文件在
 ```bash
 picgo install picgo-plugin-xxx
 ```
-来安装插件。你安装了之后，可以通过`picgo ch plugins`来选择开不开启这个插件。
+来安装插件。你安装了之后，可以通过`picgo ch plugins`来选择开启或者禁用这个插件。
 
 ## uninstall|rm
 

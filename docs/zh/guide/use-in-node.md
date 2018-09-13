@@ -6,25 +6,9 @@ sidebarDepth: 3
 
 在现有的Node项目里使用picgo是很方便的。你只需要指定配置文件（或者不指定使用默认的），在配置文件里的配置合法的情况下调用upload上传即可。
 
-## 配置文件
-
-picgo的默认配置文件为`~/.picgo/config.json`。其中`~`为用户目录。不同系统的用户目录不太一样。
-
-linux和macOS均为`~/.picgo/config.json`。
-
-windows则为`C:\Users\你的用户名\.picgo\config.json`。
-
-配置文件需要至少有如下的配置项：
-
-```json
-{
-  "picBed": {
-    "current": "smms" // 代表当前的默认上传图床为SM.MS
-  }
-}
-```
-
 ## 初始化
+
+初始化需要用到配置文件，请查看[配置文件](/zh/guide/config.html)一章。
 
 ### 使用默认配置文件
 

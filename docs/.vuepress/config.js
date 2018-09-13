@@ -65,8 +65,9 @@ function genSidebarConfig (title) {
       children: [
         '',
         'getting-started',
+        'config',
         'commands',
-        'use-in-node'
+        'use-in-node',
       ]
     }
   ]

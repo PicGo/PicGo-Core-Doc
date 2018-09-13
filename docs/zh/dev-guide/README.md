@@ -244,7 +244,7 @@ module.exports = ctx => {
 配置项处理目前只支持`Uploader`、`Transformer`和`Plugin`三个维度。
 :::
 
-上面说了每个插件都应该暴露一个`handle`方法用于picgo调用。如果你的插件想要拥有配置项（通常Uploader都会有配置项），那么你可以再实现两个方法。分别是`config`和`handleConfig`。
+上面说了，每个部件都应该暴露一个`handle`方法，以及每个插件都应该暴露一个`register`方法用于picgo调用。如果你的插件想要拥有配置项（通常Uploader都会有配置项），那么你可以再实现两个方法。分别是`config`和`handleConfig`。
 
 当你实现了配置项方法了之后，可以通过CLI的`set|config`方法来进行设置，比如：
 
@@ -267,6 +267,38 @@ const config = ctx => {
 单独抽离config方法出来，是为了让PicGo（electron）版本能够用UI界面显示配置信息。
 :::
 
+示例：
+
+```js
+const handle = ctx => {
+  return ctx
+}
+
+const transformerConfig = ctx => {
+  return [...]
+}
+
+const pluinConfig = ctx => {
+  return [...]
+}
+
+
+module.exports = ctx => {
+  const register = () => {
+    ctx.helper.transformer.register('test', {
+      handle,
+      config: transformerConfig
+    })
+  }
+
+  return {
+    register,
+    config: pluginConfig
+  }
+}
+
+```
+
 #### handleConfig方法
 
 handleConfig方法就是picgo将会调用的方法了——在用户输入`picgo set <module> [name]`的命令时将会调用这个方法。同样的picgo将会往这个方法里传入ctx。你需要通过ctx给予的`cmd.inquirer`实例去调用`prompt`方法实现命令行交互。最后再将信息保存。
@@ -287,6 +319,7 @@ const handleConfig = async ctx => {
 
 ::: warning 注意
 这里有个约定俗成的规定，你的Uploader的配置项应该存放在picgo配置项的`picBed`下。比如你的Uploader的name为`gitlab`，那么保存的时候应该保存到`picBed.gitlab`下。同样的你的plugin如果有配置项，那么你的plugin配置项应该直接存放在picgo配置项下，并且以你的plugin命名。Transformer的配置项应该放在picgo配置项的`transformer`下。
+关于配置相关的部分你应该查看[配置文件](/zh/guide/config.html)一章。
 :::
 
 所以一个实现了`Uploader`叫`gitlab`，`Transformer`叫`gitlab`，`plugin`叫`picgo-plugin-gitlab`的插件，它写入picgo的配置文件后，picgo的配置文件应该长这样：
@@ -300,7 +333,8 @@ const handleConfig = async ctx => {
     },
     // ...
   },
-  "gitlab": {
+  "plugins": {...}, // 此项为picgo自动生成，不需配置
+  "picgo-plugin-gitlab": {
     // ... plugin配置项
   },
   // ...
