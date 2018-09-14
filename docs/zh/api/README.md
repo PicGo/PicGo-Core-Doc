@@ -59,7 +59,8 @@ picgo.getConfig()
 {
   "picBed": {
     "current": "smms"
-  }
+  },
+  "plugins": {...}
 }
 ```
 

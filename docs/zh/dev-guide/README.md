@@ -39,7 +39,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 ## 概述
 
-上述5个部件都是[LifecyclePlugins](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/LifecyclePlugins.ts)类的实例化。因此都会提供一个`register`方法用于给插件注册。
+上述5个部件都是[LifecyclePlugins](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/LifecyclePlugins.ts)类的实例化,因此都会提供一个`register`方法用于给部件注册。
 
 ::: warning 注意
 `register`的第一个参数为name，是某个部件里的唯一标识符；第二个参数才为插件的具体实现。
@@ -47,7 +47,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
 
-而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。
+而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。插件本身应该是一个npm包，这样才能被picgo正确安装及使用。
 
 插件的目录结构可以很简单：
 
@@ -406,3 +406,19 @@ module.exports = ctx => {
 - 通过`picgo install <name>`或者`picgo add <name>`来安装。
 
 picgo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
+
+### 插件的UI显示
+
+如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
+
+1. 在npm包的根目录里放置一张`logo.png`
+2. 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
+
+示例：
+
+```json
+{
+  "description": "This is a picgo plugin",
+  "homepage": "https://github.com/XXX/XXX#readme"
+}
+```
