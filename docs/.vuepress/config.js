@@ -1,5 +1,12 @@
 module.exports = {
   title: 'PicGo-Core',
+  head: [
+    [
+      'link', {
+        rel: 'icon', href: 'https://user-images.githubusercontent.com/12621342/33876119-85a5148e-df5f-11e7-8843-46224e595d52.png'
+      }
+    ]
+  ],
   base: '/PicGo-Core-Doc/',
   locales: {
     '/zh/': {
