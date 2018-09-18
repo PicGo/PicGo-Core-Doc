@@ -6,6 +6,10 @@ sidebarDepth: 3
 
 在现有的Node项目里使用picgo是很方便的。你只需要指定配置文件（或者不指定使用默认的），在配置文件里的配置合法的情况下调用upload上传即可。
 
+::: warning 注意
+由于需要支持本地插件系统的缘故，picgo仅支持node环境（包括electron的main process），不支持browser环境！
+:::
+
 ## 初始化
 
 初始化需要用到配置文件，请查看[配置文件](/zh/guide/config.html)一章。
@@ -23,6 +27,7 @@ const picgo = new PicGo() // <- 将使用默认的配置文件
 const PicGo = require('picgo')
 const picgo = new PicGo('/xxx/xxx.json') // <- 在实例化的时候传入配置文件的路径
 ```
+
 
 ## 上传
 
@@ -157,3 +162,15 @@ picgo.upload(['/xxx/xxx.jpg'])
 ```
 
 当然如果你想实现更加复杂的操作，比如增加自有插件配置、设置插件名字或者想把你的插件开放给更多人使用，欢迎查阅[插件开发](/zh/dev-guide/)相关章节。
+
+## Webpack打包注意事项
+
+如果你想把picgo集成到一个通过`webpack`打包的node项目里（比如electron的项目），由于picgo加载插件的时候用到了动态的`require`，打包的时候可能会遇到`Can't find module "."`的错误。这是因为`webpack`对于动态加载模块并不能很好地处理。而对于picgo而言，它动态加载的插件并不需要webpack打包进去，因为picgo是在运行时加载插件而不是构建时加载插件。所以需要用一些方法来绕过webpack的打包：
+
+```js
+const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require
+const PicGo = requireFunc('picgo')
+const picgo = new PicGo()
+```
+
+更多细节可以查看相关[issue](https://github.com/webpack/webpack/issues/4175)。
