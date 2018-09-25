@@ -19,12 +19,34 @@ const picgo = new PicGo()
 
 接下去介绍picgo的详细API。
 
-## upload(\<input\>)
+## upload([input])
 
 - 说明：picgo的上传函数
-- input: Array\<any\>
+- input: Array\<any\> || `undefined`
 
-upload接收的是一个数组。picgo默认的两种transformer，支持path数组以及base64图片信息数组。参考[Transformer](http://localhost:8080/PicGo-Core-Doc/zh/dev-guide/#transformer)章节。
+upload接收两种情况：
+
+- 空数组或者`undefined`
+
+当为空数组或者`undefined`的时候，picgo将会上传剪贴板里的第一张图片（由于跨平台限制只能为 **`png`** 格式）。若剪贴板里不存在图片将会报错。
+
+::: tip 提示
+Linux平台需要安装`xclip`
+:::
+
+示例：
+
+```js
+picgo.upload()
+
+// or
+
+picgo.upload([])
+```
+
+- 非空数组
+
+当为非空数组的时候，对应于picgo默认的两种transformer，支持path数组以及base64图片信息数组。参考[Transformer](http://localhost:8080/PicGo-Core-Doc/zh/dev-guide/#transformer)章节。
 
 示例：
 
@@ -129,7 +151,7 @@ picgo.emit('xxx', { message: 'xxx' })
 - event: string
 - callback: function
 
-通过`on`可以监听`emit`派发的事件。
+通过`on`可以监听`emit`派发的事件。picgo自带的事件可以参考[事件监听](/zh/guide/use-in-node.html#事件监听)一章。
 
 ```js
 picgo.emit('xxx', message => {

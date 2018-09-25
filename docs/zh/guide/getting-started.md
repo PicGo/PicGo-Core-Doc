@@ -5,7 +5,7 @@
 :::
 
 ::: tip 提示
-默认通过路径上传图片，默认上传图床为[SM.MS](https://sm.ms/)。
+默认上传图床为[SM.MS](https://sm.ms/)。
 :::
 
 ## 全局安装
@@ -16,9 +16,14 @@
 # 安装
 yarn global add picgo # 或者 npm install picgo -g
 
-# 上传图片
+# 上传具体路径图片
 picgo upload /xxx/xxx.jpg
+
+# 上传剪贴板里的第一张图片（上传时会将格式转成png）
+picgo upload
 ```
+
+> 上传剪贴板里的图片的实现来自于[vs-picgo](https://github.com/Spades-S/vs-picgo)，感谢[Spades-S](https://github.com/Spades-S)！
 
 ## 现有项目
 
@@ -32,8 +37,11 @@ yarn add picgo -D # 或者 npm intall picgo -D
 const PicGo = require('picgo')
 const picgo = new PicGo() // 将使用默认的配置文件：~/.picgo/config.json
 
-// 上传图片
+// 上传具体路径下的图片
 picgo.upload(['/xxx/xxx.jpg'])
+
+// 上传剪贴板里的第一张图片（上传时会将格式转为png）
+picgo.upload()
 ```
 运行js：
 

@@ -21,7 +21,7 @@ $ picgo -h
     uninstall|rm <plugins...>     uninstall picgo plugin
     update <plugins...>           update picgo plugin
     set|config <module> [name]    configure config of picgo modules
-    upload|u <input...>           upload, go go go
+    upload|u [input...]           upload, go go go
     choose|ch [options] [module]  choose modules of picgo
 ```
 
@@ -116,7 +116,7 @@ $ picgo set transformer path
 
 ## upload|u
 
-> 该命令用于上传图片到图床。通常是上传磁盘上已有的图片，可以同时上传多张。上传多张图片的时候用空格隔开。
+> 该命令用于上传图片到图床。通常是上传磁盘上已有的图片，可以同时上传多张。上传多张图片的时候用空格隔开。也可以上传剪贴板里的第一张图片。
 
 ::: tip 提示
 请确保你上传前使用了`choose`以及`set`命令配置好了需要上传的图床。
@@ -131,6 +131,18 @@ $ picgo u ./Test-测试.jpg ./test-qiniu.png
 [PicGo SUCCESS]:
 https://i.loli.net/2018/09/06/5b9134645b9df.jpg
 https://i.loli.net/2018/09/06/5b9134651af34.png
+```
+
+如果不显式指定上传的文件，picgo将会上传剪贴板里的第一张图片（由于跨平台限制，上传时将会转为png格式）。通常这在截图后上传非常有用。
+
+```bash
+$ picgo u
+[PicGo INFO]: Before transform
+[PicGo INFO]: Transforming...
+[PicGo INFO]: Before upload
+[PicGo INFO]: Uploading...
+[PicGo SUCCESS]:
+https://i.loli.net/2018/09/06/5b9134645b9df.jpg
 ```
 
 ## install|add

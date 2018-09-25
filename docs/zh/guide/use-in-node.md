@@ -124,7 +124,7 @@ picgo暴露了一个`helper`对象，这个对象里拥有三个与上述生命�
 > 该插件会在`beforeTransform`事件触发后调用
 
 ```js
-picgo.helper.beforeTransformPlugins.register({
+picgo.helper.beforeTransformPlugins.register('name', {
   handle: function (ctx) {
     console.log(ctx.input)
   }
@@ -138,7 +138,7 @@ picgo.upload(['/xxx/xxx.jpg'])
 > 该插件会在`beforeUpload`事件触发后调用
 
 ```js
-picgo.helper.beforeUploadPlugins.register({
+picgo.helper.beforeUploadPlugins.register('name', {
   handle: function (ctx) {
     console.log(ctx.output)
   }
@@ -152,7 +152,7 @@ picgo.upload(['/xxx/xxx.jpg'])
 > 该插件会在`afterUpload`事件触发后，`finished`事件触发前调用
 
 ```js
-picgo.helper.afterUploadPlugins.register({
+picgo.helper.afterUploadPlugins.register('name', {
   handle: function (ctx) {
     console.log(ctx.output)
   }
