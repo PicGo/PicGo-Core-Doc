@@ -422,3 +422,36 @@ picgo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/Pic
   "homepage": "https://github.com/XXX/XXX#readme"
 }
 ```
+
+1. 如果你有`Uploader`或者`Transformer`，你需要将它们在插件的主入口文件中指明出来，以便PicGo能定位到它们：
+
+```js
+
+const register = () => {
+  ctx.helper.uploader.register('temp', {
+    handle (ctx) {
+      // ...
+    },
+    config (ctx) {
+      // ...
+    }
+  })
+
+  ctx.helper.transformer.register('temp', {
+    handle (ctx) {
+      // ...
+    },
+    config (ctx) {
+      // ...
+    }
+  })
+}
+
+module.exports = {
+  return {
+    register,
+    uploader: 'temp', // <- 指明你的Uploader的name
+    transformer: 'temp' // <- 指明你的Transformer的name
+  }
+}
+```
