@@ -411,8 +411,8 @@ picgo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/Pic
 
 如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
 
-1. 在npm包的根目录里放置一张`logo.png`
-2. 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
+- 在npm包的根目录里放置一张`logo.png`
+- 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
 
 示例：
 
@@ -423,10 +423,11 @@ picgo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/Pic
 }
 ```
 
-1. 如果你有`Uploader`或者`Transformer`，你需要将它们在插件的主入口文件中指明出来，以便PicGo能定位到它们：
+- 如果你有`Uploader`或者`Transformer`，你需要将它们在插件的主入口文件中指明出来，以便PicGo能定位到它们：
+
+示例：
 
 ```js
-
 const register = () => {
   ctx.helper.uploader.register('temp', {
     handle (ctx) {
