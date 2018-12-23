@@ -29,7 +29,7 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
 作为picgo最主要的配置项，picBed里包括了当前上传图床，以及所有上传图床的配置。
 
 ::: warning 插件开发者注意
-如果一个Uploader的名字为`xxx`，那么它的配置信息应当放置在`picBed.xxx`里。这个将有助于PicGo的electron版本进行配置。
+如果一个Uploader的名字为`xxx`，那么它的配置信息会放置在`picBed.xxx`里。这个将有助于PicGo的electron版本进行配置。
 :::
 
 ### picBed.uploader
@@ -177,18 +177,14 @@ Imgur的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn
 这个配置项主要用于存放第三方插件里的Transformer的相关配置。
 
 ::: warning 插件开发者注意
-如果一个Transformer的名字为`xxx`，那么它的配置信息应当放置在`transformer.xxx`里。这将有助于PicGo的electron版本进行配置。
+如果一个Transformer的名字为`xxx`，那么它的配置信息会放置在`transformer.xxx`里。这将有助于PicGo的electron版本进行配置。
 :::
 
 默认值：`{}`
 
 ## picgo-plugin-*
 
-如果你为picgo开发了一个插件，如果这个插件本身需要一些配置项，那么你应该把这个插件对应的配置直接放置在配置文件下的同名配置里：
-
-::: warning 插件开发者注意
-如果一个插件的名字为`picgo-plugin-xxx`，那么它的配置信息应当放置在`picgo-plugin-xxx`里。这将有助于PicGo的electron版本进行配置。
-:::
+如果你为picgo开发了一个插件，如果这个插件本身需要一些配置项，那么这个插件对应的配置应该直接放置在配置文件下的同名配置里：
 
 示例：
 

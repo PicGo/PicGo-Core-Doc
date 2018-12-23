@@ -244,7 +244,7 @@ module.exports = ctx => {
 配置项处理目前只支持`Uploader`、`Transformer`和`Plugin`三个维度。
 :::
 
-上面说了，每个部件都应该暴露一个`handle`方法，以及每个插件都应该暴露一个`register`方法用于picgo调用。如果你的插件想要拥有配置项（通常Uploader都会有配置项），那么你可以再实现两个方法。分别是`config`和`handleConfig`。
+上面说了，每个部件都应该暴露一个`handle`方法，以及每个插件都应该暴露一个`register`方法用于picgo调用。如果你的插件想要拥有配置项（通常Uploader都会有配置项），那么你可以再实现一个方法——`config`。
 
 当你实现了配置项方法了之后，可以通过CLI的`set|config`方法来进行设置，比如：
 
@@ -299,26 +299,8 @@ module.exports = ctx => {
 
 ```
 
-#### handleConfig方法
-
-handleConfig方法就是picgo将会调用的方法了——在用户输入`picgo set <module> [name]`的命令时将会调用这个方法。同样的picgo将会往这个方法里传入ctx。你需要通过ctx给予的`cmd.inquirer`实例去调用`prompt`方法实现命令行交互。最后再将信息保存。
-
-可以参考[weibo](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/weibo.ts#L144-L150) 的`handleConfig`的实现。
-
-handleConfig方法的实现例子如下：
-
-```js
-const handleConfig = async ctx => {
-  const prompts = config(ctx)
-  const answer = await ctx.cmd.inquirer.prompt(prompts)
-  ctx.saveConfig({ // 调用saveConfig保存配置
-    'picBed.xxx': answer
-  })
-}
-```
-
 ::: warning 注意
-这里有个约定俗成的规定，你的Uploader的配置项应该存放在picgo配置项的`picBed`下。比如你的Uploader的name为`gitlab`，那么保存的时候应该保存到`picBed.gitlab`下。同样的你的plugin如果有配置项，那么你的plugin配置项应该直接存放在picgo配置项下，并且以你的plugin命名。Transformer的配置项应该放在picgo配置项的`transformer`下。
+这里有个约定俗成的规定，你的`Uploader`的配置项会存放在picgo配置项的`picBed`下。比如你的Uploader的name为`gitlab`，那么保存的时候会保存到`picBed.gitlab`下。你的`plugin`本身如果有配置项，那么你的plugin配置项会直接存放在picgo配置项下，并且以你的`plugin`命名。`Transformer`的配置项会放在picgo配置项的`transformer`下。
 关于配置相关的部分你应该查看[配置文件](/zh/guide/config.html)一章。
 :::
 
@@ -348,7 +330,7 @@ const handleConfig = async ctx => {
 ```
 
 ::: tip 提示
-你最好只在你需要配置的部分（比如Uploader是几乎必须的）加入`config`以及`handleConfig`而不是滥用这个方式，否则它将会提高用户使用的门槛和步骤。
+你最好只在你需要配置的部分（比如Uploader是几乎必须的）加入`config`而不是滥用这个方式，否则它将会提高用户使用的门槛和步骤。
 :::
 
 ### 消息通知
@@ -405,9 +387,9 @@ module.exports = ctx => {
 - 被其他开发者搜索到。
 - 通过`picgo install <name>`或者`picgo add <name>`来安装。
 
-picgo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
+PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
 
-### 插件的UI显示
+### GUI插件
 
 如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
 

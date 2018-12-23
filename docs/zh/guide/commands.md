@@ -22,7 +22,7 @@ $ picgo -h
     update <plugins...>           update picgo plugin
     set|config <module> [name]    configure config of picgo modules
     upload|u [input...]           upload, go go go
-    choose|ch [options] [module]  choose modules of picgo
+    use [module]  use modules of picgo
 ```
 
 ::: tip 提示
@@ -32,21 +32,16 @@ $ picgo -h
 
 picgo 命令行的实现来自于[commander.js](https://github.com/tj/commander.js/)与[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)。下面将介绍各个命令以及如何配置。
 
-## choose|ch
+## use
 
 > 该命令用于选择picgo模块。模块主要有三种：1. transformer 2. uploader 3. plugins
 
 ```bash
-$ picgo choose -h
+$ picgo use -h
 
-  Usage: choose|ch [options] [module]
+  Usage: use [module]
 
-  choose modules of picgo
-
-  Options:
-
-    -l, --list  Display config
-    -h, --help  output usage information
+  use modules of picgo
 ```
 
 picgo内置了如下的内容：
@@ -68,11 +63,11 @@ picgo内置了如下的内容：
 通常来说，在命令行模式下你只需要选择`path`作为picgo的`transformer`即可。
 :::
 
-具体使用可以通过`picgo choose` 或者 `picgo choose uploader|transformer|plugins`来选择你需要的模块内容，这将会进入一个交互式命令行：
+具体使用可以通过`picgo use` 或者 `picgo use uploader|transformer|plugins`来选择你需要的模块内容，这将会进入一个交互式命令行：
 
 ```bash
-$ picgo choose
-? Choose an uploader (Use arrow keys)
+$ picgo use
+? Use an uploader (Use arrow keys)
   smms
 ❯ tcyun
   weibo
@@ -119,7 +114,7 @@ $ picgo set transformer path
 > 该命令用于上传图片到图床。通常是上传磁盘上已有的图片，可以同时上传多张。上传多张图片的时候用空格隔开。也可以上传剪贴板里的第一张图片。
 
 ::: tip 提示
-请确保你上传前使用了`choose`以及`set`命令配置好了需要上传的图床。
+请确保你上传前使用了`use`以及`set`命令配置好了需要上传的图床。
 :::
 
 ```bash
