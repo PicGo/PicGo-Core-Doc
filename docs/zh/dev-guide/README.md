@@ -359,16 +359,25 @@ const handle = ctx => {
 
 picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
 
+::: warning 注意
+你需要将注册的命令通过`ctx.cmd.register`来注册。用法与`Uploader`等的`register`方法一致。这个目的主要是保证命令只在合适的时候被调用，否则容易出现内存泄露。
+:::
+
 例如：
 
 ```js
 module.exports = ctx => {
   const register = () => {
-    ctx.cmd.program
-      .commands('test', 'This is a test commands')
-      .action(() => {
-        console.log(123)
-      })
+    // 通过register注册
+    ctx.cmd.register('test-cmd', {
+      handle (ctx) {
+       ctx.cmd.program
+         .commands('test', 'This is a test commands')
+         .action(() => {
+           console.log(123)
+         })
+      }
+    })
   }
   return {
     register
