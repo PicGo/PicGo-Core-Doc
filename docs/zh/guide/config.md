@@ -72,7 +72,8 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
   "bucket": "",
   "url": "",
   "area": "",
-  "options": ""
+  "options": "",
+  "path": ""
 }
 ```
 
