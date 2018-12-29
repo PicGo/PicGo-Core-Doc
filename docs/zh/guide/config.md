@@ -20,7 +20,7 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
   "picBed": {
     "uploader": "smms" // 代表当前的默认上传图床为SM.MS
   },
-  "plugins": {} // 为插件预留
+  "picgoPlugins": {} // 为插件预留
 }
 ```
 
@@ -160,7 +160,7 @@ Imgur的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn
 }
 ```
 
-## plugins
+## picgoPlugins
 
 这个配置项将会将所有插件名放置进去。主要用于判断插件是否被启用或者禁用。 **picgo自动生成，不需要配置！**
 
