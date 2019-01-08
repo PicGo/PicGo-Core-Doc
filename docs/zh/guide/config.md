@@ -71,7 +71,7 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
   "secretKey": "",
   "bucket": "",
   "url": "",
-  "area": "",
+  "area": "z0" | "z1" | "z2" | "na0" | "as0",
   "options": "",
   "path": ""
 }
