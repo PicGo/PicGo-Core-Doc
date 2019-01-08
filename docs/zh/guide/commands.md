@@ -22,7 +22,7 @@ $ picgo -h
     update <plugins...>           update picgo plugin
     set|config <module> [name]    configure config of picgo modules
     upload|u [input...]           upload, go go go
-    use [module]  use modules of picgo
+    use [module]                  use modules of picgo
 ```
 
 ::: tip 提示
@@ -142,17 +142,16 @@ https://i.loli.net/2018/09/06/5b9134645b9df.jpg
 
 ## install|add
 
-> 该命令用于安装npm上的picgo的插件。picgo的插件名都是以`picgo-plugin-`开头的。可以一次性安装多个插件，用空格隔开即可。
+> 该命令用于安装npm上的picgo的插件。picgo的插件名都是以`picgo-plugin-`开头的。在安装、卸载或者更新的时候，你只需要输入`name`值而不需要输入`picgo-plugin-`的前缀。可以一次性安装多个插件，用空格隔开即可。
 
 ::: tip 提示
 PicGo会把插件安装在配置文件所在的目录下。默认配置文件在`~/.picgo/`下，所以插件会安装在`~/.picgo/node_modules/`下。
 :::
 
-你可以通过npm的官方网站查找目前所有的picgo的[插件](https://www.npmjs.com/search?q=picgo-plugin-)。
-然后再通过：
+你可以通过npm的官方网站查找目前所有的picgo的[插件](https://www.npmjs.com/search?q=picgo-plugin-)。picgo的插件命名规则为`picgo-plugin-[name]`。然后再通过：
 
 ```bash
-picgo install picgo-plugin-xxx
+picgo install [name]
 ```
 来安装插件。你安装了之后，可以通过`picgo ch plugins`来选择开启或者禁用这个插件。
 
@@ -161,7 +160,7 @@ picgo install picgo-plugin-xxx
 > 该命令用于删除你所安装的picgo插件。如果不存在将会报错。
 
 ```bash
-picgo uninstall picgo-plugin-xxx
+picgo uninstall [name]
 ```
 
 ## update
@@ -169,7 +168,7 @@ picgo uninstall picgo-plugin-xxx
 > 该命令用于更新已经安装的picgo插件。如果不存在将会报错。
 
 ```bash
-picgo update picgo-plugin-xxx
+picgo update [name]
 ```
 
 ## -v, --version

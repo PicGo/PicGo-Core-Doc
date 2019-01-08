@@ -46,7 +46,7 @@ picgo.upload([])
 
 - 非空数组
 
-当为非空数组的时候，对应于picgo默认的两种transformer，支持path数组以及base64图片信息数组。参考[Transformer](http://localhost:8080/PicGo-Core-Doc/zh/dev-guide/#transformer)章节。
+当为非空数组的时候，对应于picgo默认的两种transformer，支持path数组以及base64图片信息数组。参考[Transformer](/zh/dev-guide/#transformer)章节。
 
 示例：
 
@@ -230,6 +230,24 @@ picgo.helper.transformer.register('test', {
 ### helper.afterUploadPlugins
 
 同上，不过不拥有配置项功能。
+
+## Request.request
+
+Request.request是picgo内部暴露的一个[Request-Promise-Native](https://github.com/request/request-promise-native)对象，拥有一个可以使用[request](https://github.com/request/request)库里的所有方法，并且返回的是原生的Promise。
+
+::: tip 小贴士
+值得注意的是，使用这个对象来发送请求的话，能自动读取用户配置给picgo的 `proxy` 值。比较适合用于书写Uploder的核心部分。
+:::
+
+示例：
+
+```js
+picgo.Request.request({
+  method: 'post',
+  uri: 'xxxx',
+  body: fs.readFileSync('yyy')
+})
+```
 
 ## cmd
 

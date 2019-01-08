@@ -89,11 +89,15 @@ module.exports = ctx => {
 
 默认的Uploader可支持的output格式如下：
 
+::: tip 提示
+其中buffer和base64值二选一即可，如果传入的是path数组，PicGo **默认输出是buffer值** 。
+:::
 
 ```js
 [
   {
-    base64Image: 'xxxx', // 图片的base64值
+    buffer: 'xxx', // 图片的buffer值，buffer和base64值二选一即可
+    base64Image: 'xxxx', // 图片的base64值，buffer和base64值二选一即可
     fileName: 'xxxx', // 图片的文件名
     width: 'xxxx', // 图片宽度
     height: 'xxxx', // 图片高度
@@ -357,7 +361,7 @@ const handle = ctx => {
 
 ### 注册命令
 
-picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
+picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands.html)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
 
 ::: warning 注意
 你需要将注册的命令通过`ctx.cmd.register`来注册。用法与`Uploader`等的`register`方法一致。这个目的主要是保证命令只在合适的时候被调用，否则容易出现内存泄露。
