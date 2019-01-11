@@ -17,12 +17,13 @@ $ picgo -h
 
   Commands:
 
-    install|add <plugins...>      install picgo plugin
-    uninstall|rm <plugins...>     uninstall picgo plugin
-    update <plugins...>           update picgo plugin
-    set|config <module> [name]    configure config of picgo modules
-    upload|u [input...]           upload, go go go
-    use [module]                  use modules of picgo
+    install|add <plugins...>             install picgo plugin
+    uninstall|rm <plugins...>            uninstall picgo plugin
+    update <plugins...>                  update picgo plugin
+    set|config <module> [name]           configure config of picgo modules
+    upload|u [input...]                  upload, go go go
+    use [module]                         use modules of picgo
+    init [options] <template> [project]  create picgo plugin's development templates
 ```
 
 ::: tip 提示
@@ -170,6 +171,33 @@ picgo uninstall [name]
 ```bash
 picgo update [name]
 ```
+
+## init
+
+> 该命令用于下载和生成picgo的插件开发模板
+
+```bash
+$ picgo init -h
+Usage: init [options] <template> [project]
+
+Options:
+
+  --clone     use git clone
+  --offline   use cached template
+  -h, --help  output usage information
+
+Examples:
+
+  # create a new project with an official template
+  $ picgo init plugin my-project
+
+  # create a new project straight from a github template
+  $ picgo init username/repo my-project
+```
+
+类似于`vue-cli`的`init`命令，picgo也提供了官方的插件模板叫做[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，不过你在`init`的时候，模板名只需要写`plugin`，内部会自动判断如果非`username/repo`形式的话，自动加上`PicGo/picgo-template-`的前缀。
+
+这个命令用于方便用户快速开发一个picgo插件。关于插件开发，可以查看[插件开发](/zh/dev-guide/)一章。
 
 ## -v, --version
 

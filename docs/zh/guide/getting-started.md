@@ -8,6 +8,14 @@
 默认上传图床为[SM.MS](https://sm.ms/)。
 :::
 
+## 临时尝鲜
+
+> 如果你的npm>=5.2，可以使用npx尝试一下picgo，这条命令会临时安装picgo，并在使用结束后删除它。
+
+```bash
+npx picgo upload ./xxxx.jpg
+```
+
 ## 全局安装
 
 > 使用CLI部分
