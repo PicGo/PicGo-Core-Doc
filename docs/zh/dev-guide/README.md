@@ -4,6 +4,8 @@ sidebar: auto
 
 # 插件开发指南
 
+## 简介
+
 picgo是个上传的流程系统。因此插件其实就是针对这个流程系统的某个部件或者某些部件的开发。
 
 再附一下流程图:
@@ -47,7 +49,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
 
-而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。插件本身应该是一个npm包，这样才能被picgo正确安装及使用。
+而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。插件本身应该是一个npm包，这样才能被picgo正确安装及使用。 **也可以使用picgo提供的官方的[插件模板](#使用插件模板)，下文会介绍。**
 
 插件的目录结构可以很简单：
 
@@ -72,7 +74,8 @@ module.exports = ctx => {
     ctx.helper.transformer.register('test', { handle }) // 这里的transformer可以替换成uploader等你想开发的部部件的名字。
   }
   return {
-    register
+    register,
+    transformer: 'test'
   }
 }
 ```
@@ -128,7 +131,8 @@ module.exports = ctx => {
     ctx.helper.transformer.register('test', { handle })
   }
   return {
-    register
+    register,
+    transformer: 'test' // 请将transformer的名字注册在这里
   }
 }
 ```
@@ -141,6 +145,7 @@ Uploader里可以实现自己的上传逻辑。你可以通过`Transformer`传�
 
 ::: warning 注意
 上传成功后你必须往`ctx.output`里的每一项加入一个`imgUrl`的属性，里面写入图片上传成功后的URL，以便PicGo（electron版本）获取图片地址并显示在相册中。
+**另外注册的Uploader的名字不能和现有的Uploader重复**，现有的Uploader可以在[配置列表](/zh/guide/config.html)看到。
 :::
 
 例如：
@@ -160,7 +165,8 @@ module.exports = ctx => {
     ctx.helper.uploader.register('test', { handle })
   }
   return {
-    register
+    register,
+    uploader: 'test'  // 请将uploader的名字注册在这里
   }
 }
 ```
@@ -207,7 +213,7 @@ module.exports = ctx => {
 你要实现的功能可能`Transformer`还不够，还需要`Uploader`来实现。或者你需要做的是接管整个上传流程，开发完整的5个部件。没有关系，你可以在自己的插件里注册多个部件的组合。
 
 ::: warning 注意
-同一个插件有且只能拥有一个相同的部分。比如你不能一个插件里书写两个Uploader。
+同一个插件有且只能拥有一个相同的部分。比如你不能一个插件里书写两个Uploader。如果你的插件包括了`Uploader`或`Transformer`，请在最后将他们的名字声明出来，如下例。
 :::
 
 例如：
@@ -237,7 +243,9 @@ module.exports = ctx => {
     ctx.helper.beforeUploadPlugins.register('test', beforeUploadPlugins)
   }
   return {
-    register
+    register,
+    uploader: 'test', // 声明注册的uploader的名字
+    transformer: 'test' // 声明注册的transformer的名字
   }
 }
 ```
@@ -297,7 +305,8 @@ module.exports = ctx => {
 
   return {
     register,
-    config: pluginConfig
+    config: pluginConfig,
+    transformer: 'test'
   }
 }
 
@@ -393,28 +402,71 @@ module.exports = ctx => {
 你不需要调用`ctx.cmd.program.parse(process.argv)`！否则将会引发错误。picgo会自己调用这个命令。
 :::
 
+### 使用插件模板
+
+为了方便开发者快速开发picgo的插件，PicGo官方提供了插件模板：[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，它的使用和[vue-cli](https://cli.vuejs.org/)的`init`很类似。要使用官方的plugin模板你只需要：
+
+```bash
+picgo init plugin <your-project-name>
+```
+
+如果你已经创建过一次模板，下次可以使用离线模式：
+
+```bash
+picgo init plugin <your-project-name> --offline
+```
+
+如果你想要使用自己的模板，可以使用`user/repo`来下载指定的GitHub仓库的模板：
+
+```bash
+picgo init user/repo <your-project-name>
+```
+
+然后根据提示创建项目即可。官方插件模板里提供了`TypeScript`和`JavaScript`两种模板，开发者可以二选一。推荐使用`TypeScript`模板来得到更好的语法提示。
+
+### 开发插件模板
+
+如果你觉得官方的插件模板不够好用，你也可以开发自己的插件模板。不过注意点如下：
+
+1. 你的仓库里必须要有一个`index.js`用于插件模板的配置。
+2. 你的仓库里必须要有一个`template`文件夹用于存放模板文件。
+3. picgo的template渲染引擎是[ejs](https://ejs.co/)，简单高效。
+
+`index.js`文件里支持的导出内容有：
+
+1. prompts，用于插件初始化的时候提供命令行选项供用户选择。必须提供一个合法的[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)的问题 **数组**。【几乎是必选】
+2. filters，用于根据用户回答prompts提供的答案来筛选文件。是一个 **对象**。【可选】
+3. complete，用于在模板渲染完执行的操作，是一个 **函数**。picgo会传入{ answers， options, files, ctx }。其中answers为用户回答的prompts的结果，options有当前执行的插件名、目的路径、是否离线等等（可以参考这个声明文件：[options](https://github.com/PicGo/PicGo-Core/blob/dev/src/utils/interfaces.ts#L52-L61))，files为生成的模板文件名的数组，ctx为picgo本身。【可选】
+4. completeMessage，用于在渲染结束后输出自定义文本。【可选】
+
+以上皆可参考vue-cli2的模板语法，以及[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)本身。有疑问可以在官方模板仓库里的[issues](https://github.com/PicGo/picgo-template-plugin/issues)里指出。
+
 ## 发布插件
 
-为了让一个插件能够被其它开发者使用，你必须遵循`picgo-plugin-<name>`的命名约定将其发布到npm上。插件遵循命名约定之后就可以：
+为了让一个插件能够被其它人使用，你必须遵循`picgo-plugin-<name>`的命名约定将其发布到npm上。插件遵循命名约定之后就可以：
 
-- 被其他开发者搜索到。
+- 被其他用户搜索到。
 - 通过`picgo install <name>`或者`picgo add <name>`来安装。
 
 PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
 
 ### GUI插件
 
+![](https://user-images.githubusercontent.com/12621342/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
+
 如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
 
 - 在npm包的根目录里放置一张`logo.png`
 - 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
+- 在`package.json`里添加`gui`字段用于告诉用于你的插件可以用于PicGo软件界面显示和使用。
 
 示例：
 
 ```json
 {
   "description": "This is a picgo plugin",
-  "homepage": "https://github.com/XXX/XXX#readme"
+  "homepage": "https://github.com/XXX/XXX#readme",
+  "gui": true
 }
 ```
 
