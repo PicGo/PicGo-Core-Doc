@@ -197,7 +197,7 @@ Examples:
 
 类似于`vue-cli`的`init`命令，picgo也提供了官方的插件模板叫做[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，不过你在`init`的时候，模板名只需要写`plugin`，内部会自动判断如果非`username/repo`形式的话，自动加上`PicGo/picgo-template-`的前缀。
 
-这个命令用于方便用户快速开发一个picgo插件。关于插件开发，可以查看[插件开发](/zh/dev-guide/)一章。
+这个命令用于方便用户快速开发一个picgo插件。关于插件开发，可以查看[插件开发](/zh/dev-guide/cli.html)一章。
 
 ## -v, --version
 

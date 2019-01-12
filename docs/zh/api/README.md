@@ -46,7 +46,7 @@ picgo.upload([])
 
 - 非空数组
 
-当为非空数组的时候，对应于picgo默认的两种transformer，支持path数组以及base64图片信息数组。参考[Transformer](/zh/dev-guide/#transformer)章节。
+当为非空数组的时候，对应于picgo默认的两种transformer，支持path数组以及base64图片信息数组。参考[Transformer](/zh/dev-guide/cli.html#transformer)章节。
 
 示例：
 
@@ -136,7 +136,7 @@ picgo.saveConfig({
 通过`emit`可以派发事件，再通过`on`方法监听。
 
 ::: tip 提示
-一个特殊的事件名是`notification`，picgo以及一些插件将会使用这个事件名，详情可以查看[消息通知](/zh/dev-guide/#消息通知)章节。
+一个特殊的事件名是`notification`，picgo以及一些插件将会使用这个事件名，详情可以查看[消息通知](/zh/dev-guide/cli.html#消息通知)章节。
 :::
 
 示例：
@@ -189,7 +189,7 @@ picgo的config文件所在的文件夹路径。
 
 ## helper
 
-helper是picgo的主要插件的集中管理者，包含5个部件，拥有相同的api，不过所在生命周期不同，详情可见[生命周期流程](/zh/dev-guide/#插件开发指南)。因此只介绍`helper.transformer`即可。
+helper是picgo的主要插件的集中管理者，包含5个部件，拥有相同的api，不过所在生命周期不同，详情可见[生命周期流程](/zh/dev-guide/cli.html)。因此只介绍`helper.transformer`即可。
 
 ### helper.transformer
 
@@ -198,9 +198,9 @@ helper是picgo的主要插件的集中管理者，包含5个部件，拥有相�
 - name: string
 - plugin: object
 
-如果你只是要开发一个简单的插件，而不是发布一个npm包的话（发布picgo的npm插件包请查看[插件开发指南](/zh/dev-guide/)），那么只需要调用`helper[module].register`方法即可。
+如果你只是要开发一个简单的插件，而不是发布一个npm包的话（发布picgo的npm插件包请查看[插件开发指南](/zh/dev-guide/cli.html)），那么只需要调用`helper[module].register`方法即可。
 
-第一个参数代表插件的名字（相同的部件只能拥有唯一的name，不过不同的部件可以拥有相同的name），第二个参数应当是一个对象，至少包括一个`handle`方法供picgo调用。如果你还想要拥有[配置项](/zh/dev-guide/#配置项的处理)功能，可以考虑再加入`config`方法供picgo调用。
+第一个参数代表插件的名字（相同的部件只能拥有唯一的name，不过不同的部件可以拥有相同的name），第二个参数应当是一个对象，至少包括一个`handle`方法供picgo调用。如果你还想要拥有[配置项](/zh/dev-guide/cli.html#配置项的处理)功能，可以考虑再加入`config`方法供picgo调用。
 
 示例：
 
@@ -269,7 +269,7 @@ picgo.cmd.program
 
 ### cmd.inquirer
 
-用于提供CLI命令行交互。实际上是一个[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)的实例，用法和`inquirer.js`一致。参考[配置项的处理](/zh/dev-guide/#配置项的处理)一章。通常PicGo内部会将其和插件的[config](/zh/dev-guide/#handleconfig方法)方法一起使用。
+用于提供CLI命令行交互。实际上是一个[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)的实例，用法和`inquirer.js`一致。参考[配置项的处理](/zh/dev-guide/#配置项的处理)一章。通常PicGo内部会将其和插件的[config](/zh/dev-guide/#config方法)方法一起使用。
 
 示例：
 
@@ -284,7 +284,7 @@ const handleConfig = async ctx => {
 ```
 
 :::tip 提示
-你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的[config](/zh/dev-guide/#handleconfig方法)方法来实现命令行交互，并且PicGo会自动存储`config`相关配置项的结果。
+你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的[config](/zh/dev-guide/#config方法)方法来实现命令行交互，并且PicGo会自动存储`config`相关配置项的结果。
 :::
 
 ## log

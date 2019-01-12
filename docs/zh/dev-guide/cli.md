@@ -2,7 +2,7 @@
 sidebar: auto
 ---
 
-# 插件开发指南
+# 插件开发
 
 ## 简介
 
@@ -368,7 +368,7 @@ const handle = ctx => {
 
 一个notification **必须要有`title`和`body`字段** 。至于`text`字段，如果存在，它将会被复制到用户的剪贴板里。这个特性在某些时候很有用。例如你需要用户在收到通知后，打开某个网站查看错误信息的话，text字段可以放入这个网址，那么用户收到通知后直接粘贴到网址栏即可访问。
 
-### 注册命令
+### 注册CLI命令
 
 picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands.html)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
 
@@ -441,65 +441,8 @@ picgo init user/repo <your-project-name>
 
 以上皆可参考vue-cli2的模板语法，以及[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)本身。有疑问可以在官方模板仓库里的[issues](https://github.com/PicGo/picgo-template-plugin/issues)里指出。
 
-## 发布插件
+### 开发GUI插件
 
-为了让一个插件能够被其它人使用，你必须遵循`picgo-plugin-<name>`的命名约定将其发布到npm上。插件遵循命名约定之后就可以：
+所谓的GUI插件就是指运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。
 
-- 被其他用户搜索到。
-- 通过`picgo install <name>`或者`picgo add <name>`来安装。
-
-PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
-
-### GUI插件
-
-![](https://user-images.githubusercontent.com/12621342/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
-
-如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
-
-- 在npm包的根目录里放置一张`logo.png`
-- 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
-- 在`package.json`里添加`gui`字段用于告诉用于你的插件可以用于PicGo软件界面显示和使用。
-
-示例：
-
-```json
-{
-  "description": "This is a picgo plugin",
-  "homepage": "https://github.com/XXX/XXX#readme",
-  "gui": true
-}
-```
-
-- 如果你有`Uploader`或者`Transformer`，你需要将它们在插件的主入口文件中指明出来，以便PicGo能定位到它们：
-
-示例：
-
-```js
-const register = () => {
-  ctx.helper.uploader.register('temp', {
-    handle (ctx) {
-      // ...
-    },
-    config (ctx) {
-      // ...
-    }
-  })
-
-  ctx.helper.transformer.register('temp', {
-    handle (ctx) {
-      // ...
-    },
-    config (ctx) {
-      // ...
-    }
-  })
-}
-
-module.exports = {
-  return {
-    register,
-    uploader: 'temp', // <- 指明你的Uploader的name
-    transformer: 'temp' // <- 指明你的Transformer的name
-  }
-}
-```
+理论上来说CLI部分的插件除了`注册CLI命令`的部分在GUI里用不到之外，其他的部分 **都可以正常在GUI里使用**。不过electron版本的PicGo为`PicGo-Core`的插件提供了额外的`guiApi`和一系列GUI事件，可以让你的插件在electron版本的PicGo里更加强大。详细可以查看[GUI插件开发一章](/zh/dev-guide/gui.html)。

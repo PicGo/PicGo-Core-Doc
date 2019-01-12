@@ -24,7 +24,8 @@ module.exports = {
     locales: {
       '/': {
         sidebar: {
-          '/zh/guide/': genSidebarConfig('指南')
+          '/zh/guide/': getGuideSidebar('指南'),
+          '/zh/dev-guide/': getDevSidebar('插件开发指南')
         },
         nav: [
           {
@@ -33,7 +34,21 @@ module.exports = {
           },
           {
             text: '插件开发指南',
-            link: '/zh/dev-guide/'
+            link: '/zh/dev-guide/',
+            items: [
+              {
+                text: '插件开发',
+                link: '/zh/dev-guide/cli.html'
+              },
+              {
+                text: 'GUI插件开发',
+                link: '/zh/dev-guide/gui.html'
+              },
+              {
+                text: '插件发布',
+                link: '/zh/dev-guide/deploy.html'
+              },
+            ]
           },
           {
             text: 'API列表',
@@ -43,7 +58,8 @@ module.exports = {
       },
       '/zh/': {
         sidebar: {
-          '/zh/guide/': genSidebarConfig('指南')
+          '/zh/guide/': getGuideSidebar('指南'),
+          '/zh/dev-guide/': getDevSidebar('插件开发指南')
         },
         nav: [
           {
@@ -52,7 +68,21 @@ module.exports = {
           },
           {
             text: '插件开发指南',
-            link: '/zh/dev-guide/'
+            link: '/zh/dev-guide/',
+            items: [
+              {
+                text: '插件开发',
+                link: '/zh/dev-guide/cli.html'
+              },
+              {
+                text: 'GUI插件开发',
+                link: '/zh/dev-guide/gui.html'
+              },
+              {
+                text: '插件发布',
+                link: '/zh/dev-guide/deploy.html'
+              },
+            ]
           },
           {
             text: 'API列表',
@@ -64,7 +94,7 @@ module.exports = {
   }
 }
 
-function genSidebarConfig (title) {
+function getGuideSidebar (title) {
   return [
     {
       title,
@@ -75,6 +105,20 @@ function genSidebarConfig (title) {
         'config',
         'commands',
         'use-in-node',
+      ]
+    }
+  ]
+}
+
+function getDevSidebar (title) {
+  return [
+    {
+      title,
+      collapsable: false,
+      children: [
+        'cli',
+        'gui',
+        'deploy'
       ]
     }
   ]
