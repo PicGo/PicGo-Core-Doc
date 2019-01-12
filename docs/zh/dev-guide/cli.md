@@ -49,7 +49,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
 
-而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。插件本身应该是一个npm包，这样才能被picgo正确安装及使用。 **也可以使用picgo提供的官方的[插件模板](#使用插件模板)，下文会介绍。**
+而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。插件本身应该是一个npm包，这样才能被picgo正确安装及使用。 
 
 插件的目录结构可以很简单：
 
@@ -79,6 +79,8 @@ module.exports = ctx => {
   }
 }
 ```
+
+**也可以使用picgo提供的官方的[插件模板](#使用插件模板)，下文会介绍。**
 
 ### Transformer
 
