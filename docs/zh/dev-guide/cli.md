@@ -1,5 +1,5 @@
 ---
-sidebar: auto
+sidebarDepth: 2
 ---
 
 # 插件开发
@@ -14,7 +14,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 其中可以供开发的部件总共有5个：
 
-两个处理器：
+两个模块：
 
 1. Transformer
 2. Uploader
@@ -144,9 +144,11 @@ module.exports = ctx => {
 Uploader里可以实现自己的上传逻辑。你可以通过`Transformer`传来的`ctx.output`获取你想要的图片的基本信息。然后实现一些比较有趣的功能，比如你想上传到自己的FTP服务器都可以实现。
 
 ::: warning 注意
-上传成功后你必须往`ctx.output`里的每一项加入一个`imgUrl`的属性，里面写入图片上传成功后的URL，以便PicGo（electron版本）获取图片地址并显示在相册中。
+上传成功后你必须往`ctx.output`里的每一项加入一个`imgUrl`的属性，里面写入图片上传成功后的URL，以便PicGo（electron版本）获取图片地址并显示在相册中。如果你上传的是一个非图片文件，请提供一个`url`属性以及一个`imgUrl`属性，其中`imgUrl`可以是文件类型的缩略图的URL。而`url`将会决定用户拿到剪贴板的地址是什么。如果没有`url`将会取`imgUrl`的值。
 **另外注册的Uploader的名字不能和现有的Uploader重复**，现有的Uploader可以在[配置列表](/zh/guide/config.html)看到。
 :::
+
+推荐可以使用[ctx.Request.request](/zh/api/#request-request)来发送请求，它能自动读取PicGo配置里的`proxy`值。
 
 例如：
 
@@ -156,6 +158,7 @@ const handle = ctx => {
   // do something for uploading
   for (let i in output) {
     output[i].imgUrl = 'https://xxxxx.jpg'
+    output[i].url = 'https://xxxxxx.jpg'
   }
   return ctx
 }
@@ -169,6 +172,25 @@ module.exports = ctx => {
     uploader: 'test'  // 请将uploader的名字注册在这里
   }
 }
+```
+
+通过Uploader上传结束后，输出的结果为：
+
+```js
+[
+  {
+    fileName: 'xxxx', // 图片的文件名
+    width: 'xxxx', // 图片宽度
+    height: 'xxxx', // 图片高度
+    extname: '.xxx' // 图片格式的扩展名 比如.jpg | .png
+    url: 'https://xxxxxx.jpg', // 文件的地址，如果文件是图片，那么跟imgUrl一致
+    imgUrl: 'https://xxxxx.jpg', // 图片的地址，如果文件不是图片，那么这个地址可以是文件类型的缩略图地址
+  },
+  {
+    ...
+  },
+  ...
+]
 ```
 
 ### beforeTransformPlugins

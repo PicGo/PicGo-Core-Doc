@@ -45,7 +45,7 @@ module.exports = {
                 link: '/zh/dev-guide/gui.html'
               },
               {
-                text: '插件发布',
+                text: '插件测试与发布',
                 link: '/zh/dev-guide/deploy.html'
               },
             ]
@@ -79,7 +79,7 @@ module.exports = {
                 link: '/zh/dev-guide/gui.html'
               },
               {
-                text: '插件发布',
+                text: '插件测试与发布',
                 link: '/zh/dev-guide/deploy.html'
               },
             ]

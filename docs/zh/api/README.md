@@ -21,7 +21,8 @@ const picgo = new PicGo()
 
 ## upload([input])
 
-- 说明：picgo的上传函数
+picgo的上传函数。
+
 - input: Array\<any\> || `undefined`
 
 upload接收两种情况：
@@ -56,7 +57,8 @@ picgo.upload(['/xxx/xxx.jpg', '/yyy/yyy.png'])
 
 ## getConfig([name])
 
-- 说明：获取picgo的config信息
+获取picgo的config信息。
+
 - name: string
 
 默认的配置长这样：
@@ -96,7 +98,8 @@ picgo.getConfig('picBed.current') // 支持多级查找
 
 ## setConfig(config)
 
-- 说明：配置picgo的config但不写入配置文件，用于上下文临时使用。
+配置picgo的config但不写入配置文件，用于上下文临时使用。
+
 - config: object
 
 需要传入一个合法的对象去配置picgo的config信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身，却可以在流程过程中实现后续部件读取的配置。
@@ -111,7 +114,8 @@ picgo.setConfig({
 
 ## saveConfig(config)
 
-- 说明：配置picgo的config并写入配置文件，用于持久化保存配置。
+配置picgo的config并写入配置文件，用于持久化保存配置。
+
 - config: object
 
 需要传入一个合法的对象去配置picgo的config信息。**这个方法会写入配置文件**，并影响之后每次picgo读取的配置文件。
@@ -129,7 +133,8 @@ picgo.saveConfig({
 
 ## emit(event, [message])
 
-- 说明：事件派发。继承于EventEmmitter。
+事件派发。继承于EventEmmitter。
+
 - event: string
 - message: any
 
@@ -147,7 +152,8 @@ picgo.emit('xxx', { message: 'xxx' })
 
 ## on(event, [callback])
 
-- 说明：事件监听。继承于EventEmmitter。
+事件监听。继承于EventEmmitter。
+
 - event: string
 - callback: function
 
@@ -165,15 +171,23 @@ picgo.emit('xxx', message => {
 
 picgo的输入。是一个数组。
 
+```js
+console.log(picgo.input)
+```
+
 ## output
 
 - type: Array\<any\>
 
-picgo的输出。是一个数组。通常上传成功之后要给这个数组里每一项加入`imgUrl`项。可以参考picgo默认的[smms](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/smms.ts#L25-L37) Uploader。
+picgo的输出。是一个数组。通常上传成功之后要给这个数组里每一项加入`imgUrl`以及`url`项。可以参考picgo默认的[smms](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/smms.ts#L25-L37) Uploader。
 
 ::: warning 注意
 input通过Transformer之后就会进入output数组中，而不是经过Uploader才会变成output。
 :::
+
+```js
+console.log(picgo.output)
+```
 
 ## configPath
 
@@ -181,11 +195,19 @@ input通过Transformer之后就会进入output数组中，而不是经过Uploade
 
 picgo的config所在路径。
 
+```js
+console.log(picgo.configPath)
+```
+
 ## baseDir
 
 - type: string
 
 picgo的config文件所在的文件夹路径。
+
+```js
+console.log(picgo.baseDir)
+```
 
 ## helper
 
@@ -255,7 +277,7 @@ picgo.Request.request({
 
 ### cmd.program
 
-用于注册CLI命令。实际上是一个[commander.js](https://github.com/tj/commander.js/)的实例，用法和`commander.js`几乎一致。 **不过请不要手动调用picgo.cmd.program.parse(process.argv)否则会导致出错** 。参考[注册命令](/zh/dev-guide/#注册命令)一章。
+用于注册CLI命令。实际上是一个[commander.js](https://github.com/tj/commander.js/)的实例，用法和`commander.js`几乎一致。 **不过请不要手动调用picgo.cmd.program.parse(process.argv)否则会导致出错** 。参考[注册命令](/zh/dev-guide/cli.html#注册cli命令)一章。
 
 示例：
 
@@ -269,7 +291,7 @@ picgo.cmd.program
 
 ### cmd.inquirer
 
-用于提供CLI命令行交互。实际上是一个[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)的实例，用法和`inquirer.js`一致。参考[配置项的处理](/zh/dev-guide/#配置项的处理)一章。通常PicGo内部会将其和插件的[config](/zh/dev-guide/#config方法)方法一起使用。
+用于提供CLI命令行交互。实际上是一个[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)的实例，用法和`inquirer.js`一致。参考[配置项的处理](/zh/dev-guide/cli.html#配置项的处理)一章。通常PicGo内部会将其和插件的[config](/zh/dev-guide/cli.html#config方法)方法一起使用。
 
 示例：
 
@@ -284,7 +306,7 @@ const handleConfig = async ctx => {
 ```
 
 :::tip 提示
-你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的[config](/zh/dev-guide/#config方法)方法来实现命令行交互，并且PicGo会自动存储`config`相关配置项的结果。
+你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的[config](/zh/dev-guide/cli.html#config方法)方法来实现命令行交互，并且PicGo会自动存储`config`相关配置项的结果。
 :::
 
 ## log
@@ -334,3 +356,65 @@ picgo.log.success('Hello world')
 ```js
 picgo.log.error('Hello world')
 ```
+
+## guiApi
+
+**guiApi仅在electron版本的PicGo里提供，详细信息可以参考[GUI插件开发一章](/zh/dev-guide/gui.html)。**
+
+### guiApi.showInputBox([option])
+
+调用之后打开一个输入弹窗，可以用于接受用户输入。
+
+- option: Object || `undefined`
+- return: 返回一个Promise对象，resolve的值是用户输入的结果。
+
+其中option是可选值，可以传入一个`{title, placeholder}`的对象，用于弹窗的标题和输入框的`placeholder`显示。
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '打开InputBox',
+      async handle (ctx, guiApi) {
+        const value = await guiApi.showInputBox({
+          title: '打开对话框',
+          placeholder: '请输入文件地址'
+        })
+        console.log(value)
+      }
+    }
+  ]
+}
+```
+
+### showFileExplorer([option])
+
+调用之后打开一个文件浏览器，可以得到用户选择的文件（夹）路径。
+
+- option: Object || `undefined`
+- return: 返回一个Promise对象，resolve的值是用户选择的文件路径数组。
+
+其中option是可选值，可以传入一个合法的electron的dialog的[options对象](https://electronjs.org/docs/api/dialog#dialogshowopendialogbrowserwindow-options-callback)，用于指定是否可多选，用于选择文件还是文件夹等等。
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '打开文件浏览器',
+      async handle (ctx, guiApi) {
+        const files = await guiApi.showFileExplorer({
+          properties: ['openFile', 'multiSelections']
+        })
+        console.log(files)
+      }
+    }
+  ]
+}
+```
+
+### upload([file])
+
+调用之后使用PicGo底层来上传，可以实现自动更新相册图片、上传成功后自动将URL写入剪贴板。
+
+- file: Array || `undefined`
+- return: 返回一个Promise对象，resolve的值是PicGo上传成功后的output值，是一个数组。

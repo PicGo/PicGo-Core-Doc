@@ -1,3 +1,69 @@
+---
+sidebarDepth: 2
+---
+
+# 插件测试与发布
+
+## 插件测试
+
+### 普通插件
+
+首先确保你全局安装了`picgo`：
+
+```bash
+yarn global add picgo
+
+# or
+
+npm install picgo -g
+```
+
+**然后运行一下`picgo -h`看看是否安装成功。（这步是必须的，因为第一次安装需要先运行一下，然后picgo会创建默认的配置文件和生成package.json等初始化操作）**
+
+然后将你所写的插件的文件夹放到picgo[默认的配置文件](/zh/guide/config.html#%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)所在的目录里。**注意插件文件夹名字必须以`picgo-plugin-`作为前缀，否则安装的时候picgo将不会读取。**
+
+然后在picgo默认配置文件所在的目录下，输入：
+
+```bash
+npm install ./picgo-plugin-<your-plugin-name>
+```
+
+这样就能将你的插件安装到picgo所在的配置文件夹内，picgo在运行的时候也能读取了。之后可以根据你的开发需要，修改你的插件内容，并运行picgo相应的命令查看效果和测试。
+
+### GUI插件
+
+如果你想要开发一个GUI插件，那么你首先要去下载一下[PicGo](https://github.com/Molunerfinn/PicGo/releases)并安装。安装完毕后请打开软件，第一次运行将初始化配置。
+
+electron版的PicGo配置文件的路径在不同的系统里是不同的：
+
+- Windows: `%APPDATA%\picgo\data.json`
+- Linux: `$XDG_CONFIG_HOME/picgo/data.json` or `~/.config/picgo/data.json`
+- macOS: `~/Library/Application\ Support/picgo/data.json`
+
+举例，在windows里你可以在：
+
+`C:\Users\你的用户名\AppData\Roaming\picgo\data.json`找到它。
+
+在linux里你可以在：
+
+`~/.config/picgo/data.json`里找到它。
+
+macOS同理。
+
+将你的插件文件夹复制到`data.json`所在文件夹里。
+
+然后在PicGo默认配置文件所在的目录下，输入：
+
+```bash
+npm install ./picgo-plugin-<your-plugin-name>
+```
+
+这样就能将你的插件安装到PicGo所在的配置文件夹内，PicGo在运行的时候也能读取了。
+
+::: warning 注意
+GUI插件的任何修改都需要 **重启** PicGo才能生效，重启不代表关闭主窗口再重新打开，而是 **完全退出** 整个PicGo的进程，然后再打开PicGo才能看到效果。主要原因是底层依赖了Node.js的`require`来加载插件，所以有运行时的缓存。
+:::
+
 ## 插件发布
 
 为了让一个插件能够被其它人使用，你必须遵循`picgo-plugin-<name>`的命名约定将其发布到npm上。插件遵循命名约定之后就可以：
@@ -5,17 +71,25 @@
 - 被其他用户搜索到。
 - 通过`picgo install <name>`或者`picgo add <name>`来安装。
 
+比如你发布了一个叫做`picgo-plugin-wow`的插件，那么用户可以通过`picgo install wow`来安装。
+
 PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/PicGo)找到。
 
 ### GUI插件
 
-![](https://user-images.githubusercontent.com/12621342/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
+如果你的插件不是专门针对GUI进行优化的（比如添加了guiMenu等），那么在electron版本的PicGo上安装的时候会有如下提示信息：
+
+![](https://i.loli.net/2019/01/12/5c39ce32045a7.png)
+
+并且如果未对GUI进行优化的插件，会在右上角显示一个`CLI`的标志：
+
+![](https://i.loli.net/2019/01/12/5c39ce678a412.png)
 
 如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
 
-- 在npm包的根目录里放置一张`logo.png`
+- 在npm包的根目录里放置一张`logo.png`，否则将会显示`PicGo`的默认LOGO。
 - 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
-- 在`package.json`里添加`gui`字段用于告诉用于你的插件可以用于PicGo软件界面显示和使用。
+- 在`package.json`里添加`"gui": true`字段用于告诉用户你的插件已经针对PicGo软件进行了优化。
 
 示例：
 
