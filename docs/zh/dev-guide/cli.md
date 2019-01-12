@@ -44,7 +44,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 上述5个部件都是[LifecyclePlugins](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/LifecyclePlugins.ts)类的实例化,因此都会提供一个`register`方法用于给部件注册。
 
 ::: warning 注意
-`register`的第一个参数为name，是某个部件里的唯一标识符；第二个参数才为插件的具体实现。
+`register`的第一个参数为id，是某个部件里的唯一标识符；第二个参数才为插件的具体实现。
 :::
 
 不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
