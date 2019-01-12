@@ -288,7 +288,7 @@ const handle = ctx => {
 module.exports = ctx => {
   const register = () => {
     ctx.helper.uploader.register('test', { 
-      handle
+      handle,
       name: '微博图床Plus'
     })
   }
