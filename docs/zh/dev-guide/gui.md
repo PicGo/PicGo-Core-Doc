@@ -272,3 +272,30 @@ module.exports = ctx => {
   }
 }
 ```
+
+## 其他
+
+### Uploader的名字
+
+如果你写了一个`Uploader`的插件，PicGo将会自动将其显示到图床列表里。你可以自定义一下这个图床要显示的名字，通过`name`选项来实现。如果你不提供这个`name`选项，那么PicGo将会显示Uploader注册的时候的`id`值。
+
+![](https://i.loli.net/2019/01/12/5c39e91a73099.png)
+
+```js
+const handle = ctx => {
+  // ...
+}
+module.exports = ctx => {
+  const register = () => {
+    ctx.helper.uploader.register('test', { 
+      handle
+      name: '微博图床Plus'
+    })
+  }
+  return {
+    register,
+    uploader: 'test'  // Uploader的id
+  }
+}
+```
+如果你的`Uploader`提供了`config`配置，那么在PicGo上也会相应显示出来。
