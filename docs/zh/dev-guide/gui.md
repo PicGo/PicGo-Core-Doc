@@ -129,6 +129,7 @@ guiApi目前提供了如下的api：
 - `guiApi.showInputBox` 用于打开一个输入框
 - `guiApi.showFileExplorer` 用于打开文件浏览器
 - `guiApi.upload` 用于调用PicGo内部的上传方法上传
+- `guiApi.showNotificaiton` 用于调用系统级别的通知 (v2.0.1)
 
 后续会逐渐增加。
 
@@ -215,6 +216,35 @@ const guiMenu = ctx => {
           properties: ['openFile', 'multiSelections'
         })
         guiApi.upload(files)
+      }
+    }
+  ]
+}
+```
+
+### showNotificaiton(option)
+
+> v2.0.1开始支持
+
+调用之后弹出系统通知窗口。
+
+- option: Object || `undefined`
+- return: undefined(无返回值)
+
+其中option是必选值，需要提供`{title, body}`用于通知窗口的显示。
+
+![](https://i.loli.net/2019/01/15/5c3db88042a0f.png)
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '显示通知',
+      async handle (ctx, guiApi) {
+        guiApi.showNotificaiton({
+          title: '提示',
+          body: '本提示来自插件'
+        })
       }
     }
   ]
