@@ -89,7 +89,7 @@ PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/Pic
 
 - 在npm包的根目录里放置一张`logo.png`，否则将会显示`PicGo`的默认LOGO。
 - 在`package.json`里增加`description`字段用于介绍你的插件以及`homepage`字段用于指向你的插件的主页地址。
-- 在`package.json`里添加`"gui": true`字段用于告诉用户你的插件已经针对PicGo软件进行了优化。
+- 在`package.json`的keywords里添加`"picgo-gui-plugin"`字段用于告诉用户你的插件已经针对PicGo软件进行了优化。
 
 示例：
 
@@ -97,7 +97,9 @@ PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/Pic
 {
   "description": "This is a picgo plugin",
   "homepage": "https://github.com/XXX/XXX#readme",
-  "gui": true
+  "keywords": [
+    "picgo-gui-plugin"
+  ]
 }
 ```
 
