@@ -136,3 +136,9 @@ module.exports = {
   }
 }
 ```
+
+### 提交Awesome-PicGo
+
+为了让你的插件可以被更多人知道，在你发布完插件之后，可以向[Awesome-PicGo](https://github.com/PicGo/Awesome-PicGo)项目提交一份PR，把你的优秀项目添加到Awesome-list里！
+
+注意添加之前看看[CONTRIBUTING](https://github.com/PicGo/Awesome-PicGo/blob/master/CONTRIBUTING.md)是否符合添加要求
