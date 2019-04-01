@@ -96,6 +96,17 @@ picgo.on('finished', ctx => {
 })
 ```
 
+### failed
+
+- 参数：error
+- 说明：如果上传失败或者生命周期里发生错误将会被捕获，并触发 `failed` 事件，可以通过该事件捕获错误信息。 (v1.2.10 之前无法获取错误信息，但是可以监听该事件)
+
+```js
+picgo.on('failed', error => {
+  console.log(error) // 错误信息
+})
+```
+
 ### notification
 
 - 参数：notice
