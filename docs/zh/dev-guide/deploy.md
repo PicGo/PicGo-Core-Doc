@@ -50,18 +50,18 @@ electron版的PicGo配置文件的路径在不同的系统里是不同的：
 
 macOS同理。
 
-将你的插件文件夹复制到`data.json`所在文件夹里。
+此时你的插件目录比如在 `/usr/home/picgo-plugin-<your-plugin-name>`里，
 
-然后在PicGo默认配置文件所在的目录下，输入：
+在PicGo默认配置文件所在的目录下，输入：
 
 ```bash
-npm install ./picgo-plugin-<your-plugin-name>
+npm install /usr/home/picgo-plugin-<your-plugin-name>
 ```
 
 这样就能将你的插件安装到PicGo所在的配置文件夹内，PicGo在运行的时候也能读取了。
 
 ::: warning 注意
-GUI插件的任何修改都需要 **重启** PicGo才能生效，重启不代表关闭主窗口再重新打开，而是 **完全退出** 整个PicGo的进程，然后再打开PicGo才能看到效果。主要原因是底层依赖了Node.js的`require`来加载插件，所以有运行时的缓存。
+GUI插件的任何修改都需要 **重启** PicGo才能生效，重启不代表关闭主窗口再重新打开，而是 **完全退出** 整个PicGo的进程，然后再打开PicGo才能看到效果。主要原因是底层依赖了Node.js的`require`来加载插件，所以有运行时的缓存。PicGo在 `2.0.2` 版本开始，可以通过右键菜单栏图标或者Mini窗口找到「重启应用」的按钮来快速重启应用。
 :::
 
 ## 插件发布
