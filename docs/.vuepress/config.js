@@ -1,5 +1,6 @@
 module.exports = {
   title: 'PicGo-Core',
+  markdown: { lineNumbers: true },
   head: [
     [
       'link', {
