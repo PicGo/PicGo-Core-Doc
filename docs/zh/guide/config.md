@@ -45,23 +45,23 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
 
 ### picBed.weibo
 
-微博图床的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#微博图床)进行配置。
+微博图床的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#微博图床)进行配置。
 
 默认值如下：
 
 ```json
 {
-  "chooseCookie": true | false,
-  "username": "",
-  "password": "",
-  "quality": "thumbnail" | "mw690" | "large",
-  "cookie": ""
+  "chooseCookie": true | false, // 使用cookie模式？
+  "username": "", // 若不用cookie模式必须提供用户名和密码
+  "password": "", // 若不用cookie模式必须提供用户名和密码
+  "quality": "thumbnail" | "mw690" | "large", // 图片质量，默认large
+  "cookie": "" // 使用cookie模式必须提供cookie值
 }
 ```
 
 ### picBed.qiniu
 
-七牛图床的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#七牛图床)进行配置。
+七牛图床的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#七牛图床)进行配置。
 
 默认值如下：
 
@@ -69,34 +69,34 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
 {
   "accessKey": "",
   "secretKey": "",
-  "bucket": "",
-  "url": "",
-  "area": "z0" | "z1" | "z2" | "na0" | "as0",
-  "options": "",
-  "path": ""
+  "bucket": "", // 存储空间名
+  "url": "", // 自定义域名
+  "area": "z0" | "z1" | "z2" | "na0" | "as0", // 存储区域编号
+  "options": "", // 网址后缀，比如?imgslim
+  "path": "" // 自定义存储路径，比如img/
 }
 ```
 
 ### picBed.upyun
 
-又拍云的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#又拍云)进行配置。
+又拍云的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#又拍云)进行配置。
 
 默认值如下：
 
 ```json
 {
-  "bucket": "",
-  "operator": "",
-  "password": "",
-  "options": "",
-  "path": "",
-  "url": ""
+  "bucket": "", // 存储空间名，及你的服务名
+  "operator": "", // 操作员
+  "password": "", // 密码
+  "options": "", // 针对图片的一些后缀处理参数
+  "path": "", // 自定义存储路径，比如img/
+  "url": "" // 加速域名，注意要加http://或者https://
 }
 ```
 
 ### picBed.tcyun
 
-腾讯云COS的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#腾讯云cos)进行配置。
+腾讯云COS的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#腾讯云cos)进行配置。
 
 默认值如下：
 
@@ -104,35 +104,34 @@ windows则为`C:\Users\你的用户名\.picgo\config.json`。
 {
   "secretId": "",
   "secretKey": "",
-  "bucket": "",
+  "bucket": "", // 存储桶名，v4和v5版本不一样
   "appId": "",
-  "area": "",
-  "path": "",
-  "customUrl": "",
-  "version": "v5" | "v4"
+  "area": "", // 存储区域，例如ap-beijing-1
+  "path": "", // 自定义存储路径，比如img/
+  "customUrl": "", // 自定义域名，注意要加http://或者https://
+  "version": "v5" | "v4" // COS版本，v4或者v5
 }
 ```
 
 ### picBed.github
 
-GitHub图床的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#github图床)进行配置。
+GitHub图床的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#github图床)进行配置。
 
 默认值如下：
 
 ```json
 {
-  "repo": "",
-  "token": "",
-  "path": "",
-  "customUrl": "",
-  "branch": "",
-  "username": ""
+  "repo": "", // 仓库名，格式是username/reponame
+  "token": "", // github token
+  "path": "", // 自定义存储路径，比如img/
+  "customUrl": "", // 自定义域名，注意要加http://或者https://
+  "branch": "" // 分支名，默认是master
 }
 ```
 
 ### picBed.aliyun
 
-阿里云OSS的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#阿里云oss)进行配置。
+阿里云OSS的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#阿里云oss)进行配置。
 
 默认值如下：
 
@@ -140,23 +139,23 @@ GitHub图床的相关配置。可以查看PicGo的[wiki](https://github.com/Molu
 {
   "accessKeyId": "",
   "accessKeySecret": "",
-  "bucket": "",
-  "area": "",
-  "path": "",
-  "customUrl": ""
+  "bucket": "", // 存储空间名
+  "area": "", // 存储区域代号
+  "path": "", // 自定义存储路径
+  "customUrl": "" // 自定义域名，注意要加http://或者https://
 }
 ```
 
 ### picBed.imgur
 
-Imgur的相关配置。可以查看PicGo的[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8#imgur)进行配置。
+Imgur的相关配置。可以查看PicGo的[wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#imgur图床)进行配置。
 
 默认值如下：
 
 ```json
 {
-  "clientId": "",
-  "proxy": ""
+  "clientId": "", // imgur的clientId
+  "proxy": "" // 代理地址，仅支持http代理
 }
 ```
 
