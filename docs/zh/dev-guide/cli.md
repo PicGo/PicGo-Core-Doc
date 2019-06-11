@@ -426,6 +426,10 @@ module.exports = ctx => {
 你不需要调用`ctx.cmd.program.parse(process.argv)`！否则将会引发错误。picgo会自己调用这个命令。
 :::
 
+### 日志系统 <Badge text="1.3.7+"/>
+
+如果你想记录下你的插件的行为，方便日后追查错误，可以查看[日志系统](/zh/guide/use-in-node.html#日志系统/)一章。
+
 ### 使用插件模板
 
 为了方便开发者快速开发picgo的插件，PicGo官方提供了插件模板：[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，它的使用和[vue-cli](https://cli.vuejs.org/)的`init`很类似。要使用官方的plugin模板你只需要：

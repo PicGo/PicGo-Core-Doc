@@ -79,11 +79,11 @@ PicGo的官方插件，你可以在PicGo的[GitHub主页](https://github.com/Pic
 
 如果你的插件不是专门针对GUI进行优化的（比如添加了guiMenu等），那么在electron版本的PicGo上安装的时候会有如下提示信息：
 
-![](https://i.loli.net/2019/01/12/5c39ce32045a7.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39ce32045a7.png)
 
 并且如果未对GUI进行优化的插件，会在右上角显示一个`CLI`的标志：
 
-![](https://i.loli.net/2019/01/12/5c39ce678a412.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39ce678a412.png)
 
 如果你想要你的插件在[PicGo](https://github.com/Molunerfinn/PicGo)软件上显示出图标、简介等信息，请遵循以下要求：
 

@@ -7,7 +7,7 @@ sidebarDepth: 3
 
 GUI插件指的是运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。它支持绝大多数在普通插件里能实现的[功能](/zh/dev-guide/cli.html)，还增加了额外的`guiApi`和其他的GUI特有的事件，让你的插件在PicGo里更加强大。
 
-![](https://user-images.githubusercontent.com/12621342/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
 
 PicGo在2.0版本之后支持的插件系统其实就是以PicGo-Core为底层核心实现的。在PicGo上传图片的过程中，你书写的插件（包括Uploader、Transformer等等）都会进入PicGo-Core的上传流程中，所以如果你写了一个CLI版本的插件，基本都能无缝运行在PicGo里。
 
@@ -27,7 +27,7 @@ PicGo在2.0版本之后支持的插件系统其实就是以PicGo-Core为底层�
 
 guiMenu是PicGo提给给插件的自主控制权的主入口。它的作用是在PicGo的插件页面给予每个插件自主的菜单项，如下图：
 
-![](https://i.loli.net/2019/01/12/5c39a2f60a32a.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39a2f60a32a.png)
 
 guiMenu是一个function，PicGo会传入`ctx`（picgo本身）方便开发者使用picgo自带的一些方法，最后应该返回一个 **数组**。
 
@@ -122,6 +122,10 @@ module.exports = ctx => {
 
 ## guiApi
 
+::: warning 注意
+本章节的api版本是跟随PicGo的[Electron版本](https://github.com/Molunerfinn/PicGo)，而不是PicGo-Core的版本，请务必注意
+:::
+
 上文介绍了每个菜单项都应该对应一个`handle`方法，用于执行点击菜单后的操作。其中传入的第一个参数为`ctx`，第二个参数为`guiApi`。
 
 guiApi目前提供了如下的api：
@@ -129,7 +133,8 @@ guiApi目前提供了如下的api：
 - `guiApi.showInputBox` 用于打开一个输入框
 - `guiApi.showFileExplorer` 用于打开文件浏览器
 - `guiApi.upload` 用于调用PicGo内部的上传方法上传
-- `guiApi.showNotification` 用于调用系统级别的通知 (v2.0.1)
+- `guiApi.showNotification` 用于调用系统级别的通知 <Badge text="2.0.1+"/>
+- `guiApi.showMessageBox` 用于调用系统级别的对话框 <Badge text="2.1.0+"/>
 
 后续会逐渐增加。
 
@@ -142,7 +147,7 @@ guiApi目前提供了如下的api：
 
 其中option是可选值，可以传入一个`{title, placeholder}`的对象，用于弹窗的标题和输入框的`placeholder`显示。
 
-![](https://i.loli.net/2019/01/12/5c39aa4dab0b4.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39aa4dab0b4.png)
 
 示例：
 
@@ -172,7 +177,7 @@ const guiMenu = ctx => {
 
 其中option是可选值，可以传入一个合法的electron的dialog的[options对象](https://electronjs.org/docs/api/dialog#dialogshowopendialogbrowserwindow-options-callback)，用于指定是否可多选，用于选择文件还是文件夹等等。
 
-![](https://i.loli.net/2019/01/12/5c39aea61e80d.gif)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39aea61e80d.gif)
 
 示例：
 
@@ -222,9 +227,7 @@ const guiMenu = ctx => {
 }
 ```
 
-### showNotification(option)
-
-> v2.0.1开始支持
+### showNotification(option) <Badge text="2.0.1+" />
 
 调用之后弹出系统通知窗口。
 
@@ -233,7 +236,9 @@ const guiMenu = ctx => {
 
 其中option是必选值，需要提供`{title, body}`用于通知窗口的显示。
 
-![](https://i.loli.net/2019/01/15/5c3db88042a0f.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c3db88042a0f.png)
+
+示例：
 
 ```js
 const guiMenu = ctx => {
@@ -251,6 +256,45 @@ const guiMenu = ctx => {
 }
 ```
 
+### showMessageBox([option]) <Badge text="2.1.0+" />
+
+调用之后弹出系统的对话框窗口。
+
+- option: Object || `{title: '', message: '', type: 'info', buttons: ['Yes', 'No']}`
+- return: Object -> `{result, checkboxChecked}`
+
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo/20190611110904.png)
+
+其中，option的完整参数可以参考Electron的[dialog.showMessageBox](https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options-callback)。返回的值里，`result`为你指定的buttons的index值。比如上图如果我点了`是(Y)`,那么我会收到如下返回值：
+
+```js
+{
+  result: 0,
+  checkboxChecked: false // 如果你在options里指定了checkboxLabel则会出现一个checkbox，如果不提供，默认返回false
+}
+```
+
+示例：
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '显示MessageBox',
+      async handle (ctx, guiApi) {
+        const result = await guiApi.showMessageBox({
+          title: '这是title',
+          message: '这是message',
+          type: 'info',
+          buttons: ['Yes', 'No']
+        })
+        console.log(result) // { result: 0, checkboxChecked: false }
+      }
+    }
+  ]
+}
+```
+
 ## 事件
 
 PicGo在一些情况下会触发一些事件，这些事件可以被插件监听从而实现一些额外的功能。你可以在你的插件的`register`里监听这些事件。
@@ -259,7 +303,7 @@ PicGo在一些情况下会触发一些事件，这些事件可以被插件监听
 
 当用户在相册里点击删除，并且确定的时候，将会触发`remove`事件：
 
-![](https://i.loli.net/2019/01/12/5c39b3c8746cf.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39b3c8746cf.png)
 
 `remove`事件会发送删除的图片列表（哪怕只有一张也是以数组格式传递），格式大概如下：
 
@@ -309,7 +353,7 @@ module.exports = ctx => {
 
 如果你写了一个`Uploader`的插件，PicGo将会自动将其显示到图床列表里。你可以自定义一下这个图床要显示的名字，通过`name`选项来实现。如果你不提供这个`name`选项，那么PicGo将会显示Uploader注册的时候的`id`值。
 
-![](https://i.loli.net/2019/01/12/5c39e91a73099.png)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39e91a73099.png)
 
 ```js
 const handle = ctx => {

@@ -174,6 +174,23 @@ picgo.upload(['/xxx/xxx.jpg'])
 
 当然如果你想实现更加复杂的操作，比如增加自有插件配置、设置插件名字或者想把你的插件开放给更多人使用，欢迎查阅[插件开发](/zh/dev-guide/cli.html)相关章节。
 
+## 日志系统 <Badge text="1.3.7+" />
+
+picgo的[logger](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/Logger.ts#L38-L56)模块自带持久化日志写入功能。你可以使用 `picgo.log.xxx` 来生成持久化日志。其中 `xxx` 需要用`success`、`warn`、`info`、`error`来代替，分别表示4种不同类型的日志前缀。
+
+调用`logger`模块的方法会在picgo的配置文件所在目录下生成一个叫做`picgo.log`的文件，该文件就是持久化日志文件。同时你也会在控制台看到同样的日志输出。
+
+示例：
+
+```
+2019-04-18 13:52:58 [PicGo INFO] Before transform
+2019-04-18 13:52:58 [PicGo INFO] Transforming...
+2019-04-18 13:52:58 [PicGo INFO] Before upload
+2019-04-18 13:52:58 [PicGo INFO] Uploading...
+2019-04-18 13:53:01 [PicGo SUCCESS] 
+https://xxxx.png
+```
+
 ## Webpack打包注意事项
 
 如果你想把picgo集成到一个通过`webpack`打包的node项目里（比如electron的项目），由于picgo加载插件的时候用到了动态的`require`，打包的时候可能会遇到`Can't find module "."`的错误。这是因为`webpack`对于动态加载模块并不能很好地处理。而对于picgo而言，它动态加载的插件并不需要webpack打包进去，因为picgo是在运行时加载插件而不是构建时加载插件。所以需要用一些方法来绕过webpack的打包：
