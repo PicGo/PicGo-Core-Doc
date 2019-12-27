@@ -120,6 +120,35 @@ module.exports = ctx => {
 }
 ```
 
+## 默认菜单项
+
+根据[插件开发-配置项处理](/zh/dev-guide/cli.html#配置项的处理)一章的描述，如果你的插件提供了 `Plugin` 或 `Uploader` 或 `Transformer` 维度的配置，会在插件的右键菜单生成对应默认的配置菜单：
+
+![defautl-config](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/default-config.png)
+
+点击之后，PicGo会根据提供的配置项，转换生成可视化的配置表单：
+
+![setting-context-menu](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/setting-context-menu.png)
+
+如果觉得菜单项都是英文不好理解（默认取的是 `name` 值），你可以通过配置每个菜单项的 `alias` 字段，来让表单显示成 `alias` 的文字。
+
+例子：
+
+```js
+const conf = [
+  {
+    alias: '仓库名',
+    name: 'repo',
+    type: 'input',
+    default: userConfig.repo || '',
+    required: true
+  },
+  // ...
+]
+```
+
+当用户点击确定之后，PicGo会根据配置项维度的不同，自动根据规则写入配置文件。
+
 ## guiApi
 
 ::: warning 注意
@@ -294,6 +323,57 @@ const guiMenu = ctx => {
   ]
 }
 ```
+
+## 快捷键系统 <Badge text="2.2.0+" />
+
+从PicGo的2.2.0版本开始，插件支持注册全局快捷键了，可以注册快捷键来让实现一些便捷功能。
+
+要注册插件需要暴露一个 `commands` function，并返回一个 **快捷键数组**。每个 `commandItem` 有如下几个属性：
+
+- key: string - 预设的快捷键
+- name: string - 快捷键的唯一标识（用于和其他快捷键区分）
+- label: string - 快捷键对用户展示的作用名称
+- handle: async (ctx, guiApi) => {} - 快捷键的处理函数
+
+代码示例：
+
+```js
+const commands = (ctx) => {
+  const config = ctx.getConfig('xxx')
+  return [{
+    label: '快捷截图',
+    name: 'quickCapture',
+    key: 'Ctrl+Shift+0',
+    async handle (ctx, guiApi) {
+      // ...在这里实现你的快捷键要做的操作
+    }
+  }]
+}
+```
+
+当安装了插件之后，可以在「PicGo设置-快捷键设置」打开快捷键设置界面，就可以看到注册的快捷键。
+
+![shortkey-setting-screenshot](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/shortKey-setting-screenshot.png)
+
+PicGo会根据插件的名字以及快捷键Item的name值，给快捷键分配不同的配置作用域，从而生成配置文件，生成的配置文件的key名的规则为 `${pluginName}:${commandItem.name}`（开发者无需关注）：
+
+```json
+"shortKey": {
+  "picgo:upload": {
+    "enable": false,
+    "key": "Ctrl+Shift+U",
+    "name": "upload",
+    "label": "快捷上传"
+  },
+  "picgo-plugin-test:test": {
+    "enable": true,
+    "name": "test",
+    "label": "快捷截图",
+    "key": "Ctrl+Shift+0"
+  }
+}
+```
+
 
 ## 事件
 

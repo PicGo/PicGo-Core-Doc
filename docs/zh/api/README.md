@@ -131,6 +131,36 @@ picgo.saveConfig({
 })
 ```
 
+## unsetConfig(key, propName) <Badge text="1.4.0+" />
+
+删除picgo的config中的某个配置但不写入配置文件，用于上下文临时使用。
+
+- key: string
+- propName: string
+
+需要传入一个合法的对象去配置picgo的config信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身，却可以在流程过程中实现后续部件读取的配置。
+
+示例：
+
+```js
+picgo.unsetConfig('picgoPlugin', 'picgo-plugin-xxx')
+```
+
+## removeConfig(key, propName) <Badge text="1.4.0+" />
+
+删除picgo的config中的某个配置并写入配置文件，用于持久化保存配置。
+
+- key: string
+- propName: string
+
+需要传入一个合法的对象去配置picgo的config信息。 **这个方法会写入配置文件** ，并影响之后每次picgo读取的配置文件。
+
+示例：
+
+```js
+picgo.removeConfig('picgoPlugin', 'picgo-plugin-xxx')
+```
+
 ## emit(event, [message])
 
 事件派发。继承于EventEmmitter。
@@ -355,6 +385,46 @@ picgo.log.success('Hello world')
 
 ```js
 picgo.log.error('Hello world')
+```
+
+## PluginHandler <Badge text="1.4.0+" />
+
+提供了安装、更新、卸载picgo插件的底层接口。同时还暴露了对应的成功、失败事件用于开发者处理。
+
+### pluginHandler.install([...pluginName])
+
+用于安装插件，接收一个数组作为参数。其中 `pluginName` 不包括 `picgo-plugin-` 的前缀。比如一个叫做 `plugin-plugin-xxx` 的插件， `pluginName` 为 `xxx`。
+
+```js
+picgo.pluginHandler.install(['xxx'])
+picgo.on('installSuccess', (res) => {
+  console.log(res) // ['picgo-plugin-xxx']
+})
+picgo.on('installFailed', err => {})
+```
+
+### pluginHandler.uninstall([...pluginName])
+
+用于安装插件，接收一个数组作为参数。其中 `pluginName` 不包括 `picgo-plugin-` 的前缀。比如一个叫做 `plugin-plugin-xxx` 的插件， `pluginName` 为 `xxx`。
+
+```js
+picgo.pluginHandler.uninstall(['xxx'])
+picgo.on('uninstallSuccess', (res) => {
+  console.log(res) // ['picgo-plugin-xxx']
+})
+picgo.on('uninstallFailed', err => {})
+```
+
+### pluginHandler.update([...pluginName])
+
+用于安装插件，接收一个数组作为参数。其中 `pluginName` 不包括 `picgo-plugin-` 的前缀。比如一个叫做 `plugin-plugin-xxx` 的插件， `pluginName` 为 `xxx`。
+
+```js
+picgo.pluginHandler.update(['xxx'])
+picgo.on('updateSuccess', (res) => {
+  console.log(res) // ['picgo-plugin-xxx']
+})
+picgo.on('updateFailed', err => {})
 ```
 
 ## guiApi
