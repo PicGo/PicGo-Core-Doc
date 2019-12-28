@@ -351,6 +351,20 @@ const commands = (ctx) => {
 }
 ```
 
+跟guiMenu相同，commands应该在插件的`module.exports`里暴露出去。例如：
+
+```js
+// ...
+const commands = ctx => {}
+module.exports = ctx => {
+  const register = () => {}
+  return {
+    register,
+    commands // <- 在这里注册
+  }
+}
+```
+
 当安装了插件之后，可以在「PicGo设置-快捷键设置」打开快捷键设置界面，就可以看到注册的快捷键。
 
 ![shortkey-setting-screenshot](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/shortKey-setting-screenshot.png)
@@ -373,6 +387,8 @@ PicGo会根据插件的名字以及快捷键Item的name值，给快捷键分配�
   }
 }
 ```
+
+可以参考插件[picgo-plugin-quick-capture](https://github.com/PicGo/picgo-plugin-quick-capture)的写法。
 
 
 ## 事件
