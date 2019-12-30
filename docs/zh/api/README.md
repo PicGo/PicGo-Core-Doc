@@ -525,4 +525,95 @@ const guiMenu = ctx => {
 调用之后使用PicGo底层来上传，可以实现自动更新相册图片、上传成功后自动将URL写入剪贴板。
 
 - file: Array || `undefined`
-- return: 返回一个Promise对象，resolve的值是PicGo上传成功后的output值，是一个数组。
+- return: 返回一个Promise对象，resolve的值是PicGo上传成功后的output值，是一个数组。所以推荐用`async await`获取。
+
+::: tip 提示
+实际上如果通过上面的`showInputBox`获得输入项，或者`showFileExplorer`选中文件，再通过`upload`上传的话，也可以很好的达到上传的目的。
+推荐还是书写Uploader或者Transformer等插件，来实现接管PicGo的上传流程。
+:::
+
+示例：
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '独立上传',
+      async handle (ctx, guiApi) {
+        const files = await guiApi.showFileExplorer({
+          properties: ['openFile', 'multiSelections'
+        })
+        guiApi.upload(files)
+      }
+    }
+  ]
+}
+```
+
+### showNotification(option) <Badge text="2.0.1+" />
+
+调用之后弹出系统通知窗口。
+
+- option: Object || `undefined`
+- return: undefined(无返回值)
+
+其中option是必选值，需要提供`{title, body}`用于通知窗口的显示。
+
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c3db88042a0f.png)
+
+示例：
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '显示通知',
+      async handle (ctx, guiApi) {
+        guiApi.showNotification({
+          title: '提示',
+          body: '本提示来自插件'
+        })
+      }
+    }
+  ]
+}
+```
+
+### showMessageBox([option]) <Badge text="2.1.0+" />
+
+调用之后弹出系统的对话框窗口。
+
+- option: Object || `{title: '', message: '', type: 'info', buttons: ['Yes', 'No']}`
+- return: Object -> `{result, checkboxChecked}`
+
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo/20190611110904.png)
+
+其中，option的完整参数可以参考Electron的[dialog.showMessageBox](https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options-callback)。返回的值里，`result`为你指定的buttons的index值。比如上图如果我点了`是(Y)`,那么我会收到如下返回值：
+
+```js
+{
+  result: 0,
+  checkboxChecked: false // 如果你在options里指定了checkboxLabel则会出现一个checkbox，如果不提供，默认返回false
+}
+```
+
+示例：
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '显示MessageBox',
+      async handle (ctx, guiApi) {
+        const result = await guiApi.showMessageBox({
+          title: '这是title',
+          message: '这是message',
+          type: 'info',
+          buttons: ['Yes', 'No']
+        })
+        console.log(result) // { result: 0, checkboxChecked: false }
+      }
+    }
+  ]
+}
+```
