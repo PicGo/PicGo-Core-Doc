@@ -98,11 +98,15 @@ picgo.getConfig('picBed.current') // 支持多级查找
 
 ## setConfig(config)
 
-配置picgo的config但不写入配置文件，用于上下文临时使用。
+配置picgo的config但不写入配置文件，用于上下文使用。
 
 - config: object
 
 需要传入一个合法的对象去配置picgo的config信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身，却可以在流程过程中实现后续部件读取的配置。
+
+::: warning 注意
+如果是GUI插件，setConfig虽然不会写入配置文件，但是会一直保存在config上下文中，如果插件有重置的需求，请在合适的地方调用 `unsetConfig`（见下文) 来重置config。
+:::
 
 示例：
 
@@ -133,17 +137,34 @@ picgo.saveConfig({
 
 ## unsetConfig(key, propName) <Badge text="1.4.0+" />
 
-删除picgo的config中的某个配置但不写入配置文件，用于上下文临时使用。
+删除picgo的config中的某个配置但不写入配置文件，用于上下文使用。
 
 - key: string
 - propName: string
 
-需要传入一个合法的对象去配置picgo的config信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身，却可以在流程过程中实现后续部件读取的配置。
+传入需要删除的字段来删除picgo的config信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身。
 
 示例：
 
+原始的config：
+```json
+{
+  "picgoPlugin": {
+    "picgo-plugin-xxx": { ... }
+  }
+}
+```
+
 ```js
 picgo.unsetConfig('picgoPlugin', 'picgo-plugin-xxx')
+```
+
+unsetConfig后的config:
+
+```json
+{
+  "picgoPlugin": {}
+}
 ```
 
 ## removeConfig(key, propName) <Badge text="1.4.0+" />
@@ -153,12 +174,29 @@ picgo.unsetConfig('picgoPlugin', 'picgo-plugin-xxx')
 - key: string
 - propName: string
 
-需要传入一个合法的对象去配置picgo的config信息。 **这个方法会写入配置文件** ，并影响之后每次picgo读取的配置文件。
+传入需要删除的字段来删除picgo的config信息。 **这个方法会写入配置文件** ，并影响之后每次picgo读取的配置文件。
 
 示例：
 
+原始的config file：
+```json
+{
+  "picgoPlugin": {
+    "picgo-plugin-xxx": { ... }
+  }
+}
+```
+
 ```js
-picgo.removeConfig('picgoPlugin', 'picgo-plugin-xxx')
+picgo.removesetConfig('picgoPlugin', 'picgo-plugin-xxx')
+```
+
+removesetConfig后的config file:
+
+```json
+{
+  "picgoPlugin": {}
+}
 ```
 
 ## emit(event, [message])
