@@ -18,7 +18,10 @@ windows 则为`C:\Users\你的用户名、.picgo\config.json`。
 ```json
 {
   "picBed": {
-    "uploader": "smms" // 代表当前的默认上传图床为 SM.MS
+    "uploader": "smms", // 代表当前的默认上传图床为 SM.MS,
+    "smms": {
+      "token": "" // 从https://sm.ms/home/apitoken获取的token
+    }
   },
   "picgoPlugins": {} // 为插件预留
 }
