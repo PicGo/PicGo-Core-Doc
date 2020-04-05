@@ -10,11 +10,9 @@ module.exports = {
   ],
   base: '/PicGo-Core-Doc/',
   locales: {
-    '/zh/': {
-      lang: 'zh-CN',
-      title: 'PicGo-Core',
-      description: 'PicGo核心组件'
-    }
+    '/': {
+      lang: '简体中文',
+    },
   },
   description: 'PicGo的核心组件',
   themeConfig: {
