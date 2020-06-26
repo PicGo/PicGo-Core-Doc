@@ -11,7 +11,7 @@ picgo 的默认配置文件为`~/.picgo/config.json`。其中`~`为用户目录�
 
 linux 和 macOS 均为`~/.picgo/config.json`。
 
-windows 则为`C:\Users\你的用户名、.picgo\config.json`。
+windows 则为`C:\Users\你的用户名\.picgo\config.json`。
 
 配置文件需要至少有如下的配置项：
 
@@ -58,7 +58,7 @@ picgo use uploader
 
 作用与`picBed.uploader`一致，主要是为了兼容 PicGo 的 electron 版本而留下的配置。未来有可能抛弃。
 
-### picBed.smms <Badge text="1.4.7+" /> 
+### picBed.smms <Badge text="1.4.7+" />
 
 SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken) 获取 `token`。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#smms) 进行配置。
 
