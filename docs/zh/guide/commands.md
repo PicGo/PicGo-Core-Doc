@@ -209,7 +209,7 @@ Examples:
 
 ## -c, --config
 
-在输入任何有效命令的情况下加入`-c <path>`可以指定picgo的配置文件所在处。默认的配置文件是`~/.pigco/config.json`。
+在输入任何有效命令的情况下加入`-c <path>`可以指定picgo的配置文件所在处。默认的配置文件是`~/.picgo/config.json`。
 
 ::: tip 提示
 picgo将会读取配置文件所在目录下`node_modules`的插件。
