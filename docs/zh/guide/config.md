@@ -147,7 +147,7 @@ GitHub 图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.githu
   "token": "", // github token
   "path": "", // 自定义存储路径，比如 img/
   "customUrl": "", // 自定义域名，注意要加 http://或者 https://
-  "branch": "" // 分支名，默认是 master
+  "branch": "" // 分支名，默认是 main
 }
 ```
 
