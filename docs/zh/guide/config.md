@@ -11,7 +11,7 @@ picgo 的默认配置文件为`~/.picgo/config.json`。其中`~`为用户目录�
 
 linux 和 macOS 均为`~/.picgo/config.json`。
 
-windows 则为`C:\Users\你的用户名、.picgo\config.json`。
+windows 则为`C:\Users\你的用户名\.picgo\config.json`。
 
 ### 自动生成
 
