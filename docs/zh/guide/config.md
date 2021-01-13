@@ -182,6 +182,18 @@ Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/Pi
 }
 ```
 
+### picBed.proxy
+
+自定义代理配置，picgo 内部使用 `request` 进行图片上传等网络请求，`picBed.proxy` 将会被用作 [request 的 proxy 配置](https://github.com/request/request#proxies)，目前只支持 HTTP 代理。 默认为空表示不设置代理。
+
+示例：
+
+```json
+{
+  "proxy": "http://127.0.0.1:1081",
+}
+```
+
 ## picgoPlugins
 
 这个配置项将会将所有插件名放置进去。主要用于判断插件是否被启用或者禁用。 **picgo 自动生成，不需要配置！**
