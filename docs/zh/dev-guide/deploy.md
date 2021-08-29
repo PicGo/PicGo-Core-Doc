@@ -34,6 +34,12 @@ npm install ./picgo-plugin-<your-plugin-name>
 
 如果你想要开发一个GUI插件，那么你首先要去下载一下[PicGo](https://github.com/Molunerfinn/PicGo/releases)并安装。安装完毕后请打开软件，第一次运行将初始化配置。
 
+**如果你使用 PicGo 2.3.0+ 版本，可以直接使用插件导入功能，选择你所开发的picgo插件目录即可：**
+
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test/sspai/202108282004729.png)
+
+否则参考如下：
+
 electron版的PicGo配置文件的路径在不同的系统里是不同的：
 
 - Windows: `%APPDATA%\picgo\data.json`

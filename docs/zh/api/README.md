@@ -24,6 +24,7 @@ const picgo = new PicGo()
 picgo 的上传函数。
 
 - input: Array\<any\> || `undefined`
+- return: Promise<[IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178) | Error> <Badge text="1.4.21+" />
 
 upload 接收两种情况：
 
@@ -53,6 +54,15 @@ picgo.upload([])
 
 ```js
 picgo.upload(['/xxx/xxx.jpg', '/yyy/yyy.png'])
+```
+
+从 `v1.4.21+` 开始，支持调用后获取结果：
+
+```js
+const main = async () => {
+  const res = await picgo.upload(['/xxx/xxx.jpg', '/yyy/yyy.png'])
+  console.log(res) // [https://xxx.com/xxxxx.jpg, https://xxx.com/yyyyy.jpg]
+}
 ```
 
 ## getConfig([name])
@@ -279,6 +289,26 @@ picgo 的 config 文件所在的文件夹路径。
 console.log(picgo.baseDir)
 ```
 
+## VERSION
+
+- type: string
+
+获取当前 picgo 的版本。
+
+```js
+console.log(picgo.VERSION) // x.x.x
+```
+
+## GUI_VERSION
+
+- type: string || undefined
+
+如果当前环境为 PicGo GUI，可以获取当前 PicGo GUI 的版本，否则是undefined。
+
+```js
+console.log(picgo.GUI_VERSION) // x.x.x
+```
+
 ## helper
 
 helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有相同的 api，不过所在生命周期不同，详情可见 [生命周期流程](/zh/dev-guide/cli.html)。因此只介绍`helper.transformer`即可。
@@ -325,6 +355,8 @@ picgo.helper.transformer.register('test', {
 
 ## Request.request
 
+**v1.5.0开始这个属性将被废弃，请直接使用 [`ctx.request`](#request)。**
+
 Request.request 是 picgo 内部暴露的一个 [Request-Promise-Native](https://github.com/request/request-promise-native) 对象，拥有一个可以使用 [request](https://github.com/request/request) 库里的所有方法，并且返回的是原生的 Promise。
 
 ::: tip 小贴士
@@ -335,6 +367,20 @@ Request.request 是 picgo 内部暴露的一个 [Request-Promise-Native](https:/
 
 ```js
 picgo.Request.request({
+  method: 'post',
+  uri: 'xxxx',
+  body: fs.readFileSync('yyy')
+})
+```
+
+## request <Badge text="1.4.16+" />
+
+从 `v1.4.16` 开始，默认的请求方法从 `ctx.Request.request` 换成了 `ctx.request`。目前的底层实现是 [Request-Promise-Native](https://github.com/request/request-promise-native) ，从 `v1.5.0` 开始，将会换成 [got](https://github.com/sindresorhus/got)。
+
+示例：
+
+```js
+picgo.request({
   method: 'post',
   uri: 'xxxx',
   body: fs.readFileSync('yyy')
@@ -429,45 +475,149 @@ picgo.log.error('Hello world')
 
 ## PluginHandler <Badge text="1.4.0+" />
 
-提供了安装、更新、卸载 picgo 插件的底层接口。同时还暴露了对应的成功、失败事件用于开发者处理。
+提供了安装、更新、卸载 picgo 插件的底层接口。同时还暴露了对应的成功、失败事件用于开发者处理。 **它依赖于系统 npm 命令。**
 
 ### pluginHandler.install([...pluginName])
 
-用于安装插件，接收一个数组作为参数。其中 `pluginName` 不包括 `picgo-plugin-` 的前缀。比如一个叫做 `plugin-plugin-xxx` 的插件， `pluginName` 为 `xxx`。
+- return: Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)> <Badge text="1.4.19+" />
+
+用于安装插件，接收一个数组作为参数。其中 `pluginName`：
+
+1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
+2. 也可以是简化名 `xxx`。
+3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
+4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
 
 ```js
-picgo.pluginHandler.install(['xxx'])
+const res = picgo.pluginHandler.install(['xxx'])
 picgo.on('installSuccess', (res) => {
   console.log(res) // ['picgo-plugin-xxx']
 })
 picgo.on('installFailed', err => {})
+
+// v1.4.19 开始会直接返回调用结果。示例：
+res.then((result) => {
+  if (result.success) {
+    console.log(result.body) // ['picgo-plugin-xxx']
+  } else {
+    console.log(result.body) // error message
+  }
+})
 ```
+
 
 ### pluginHandler.uninstall([...pluginName])
 
-用于安装插件，接收一个数组作为参数。其中 `pluginName` 不包括 `picgo-plugin-` 的前缀。比如一个叫做 `plugin-plugin-xxx` 的插件， `pluginName` 为 `xxx`。
+- return: Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)> <Badge text="1.4.19+" />
+
+用于卸载插件，接收一个数组作为参数。其中 `pluginName`：
+
+1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
+2. 也可以是简化名 `xxx`。
+3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
+4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
 
 ```js
-picgo.pluginHandler.uninstall(['xxx'])
+const res = picgo.pluginHandler.uninstall(['xxx'])
 picgo.on('uninstallSuccess', (res) => {
   console.log(res) // ['picgo-plugin-xxx']
 })
 picgo.on('uninstallFailed', err => {})
+
+// v1.4.19 开始会直接返回调用结果。示例：
+res.then((result) => {
+  if (result.success) {
+    console.log(result.body) // ['picgo-plugin-xxx']
+  } else {
+    console.log(result.body) // error message
+  }
+})
 ```
 
 ### pluginHandler.update([...pluginName])
 
-用于安装插件，接收一个数组作为参数。其中 `pluginName` 不包括 `picgo-plugin-` 的前缀。比如一个叫做 `plugin-plugin-xxx` 的插件， `pluginName` 为 `xxx`。
+- return: Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)> <Badge text="1.4.19+" />
+
+用于更新插件，接收一个数组作为参数。其中 `pluginName`：
+
+1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
+2. 也可以是简化名 `xxx`。
+3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
+4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
 
 ```js
-picgo.pluginHandler.update(['xxx'])
+const res = picgo.pluginHandler.update(['xxx'])
 picgo.on('updateSuccess', (res) => {
   console.log(res) // ['picgo-plugin-xxx']
 })
 picgo.on('updateFailed', err => {})
+
+// v1.4.19 开始会直接返回调用结果。示例：
+res.then((result) => {
+  if (result.success) {
+    console.log(result.body) // ['picgo-plugin-xxx']
+  } else {
+    console.log(result.body) // error message
+  }
+})
 ```
 
-## guiApi
+## PluginLoader <Badge text="1.4.17+" />
+
+提供了动态加载、卸载 picgo 插件的方法。比较适合用于在 Node 项目中使用 picgo 时动态引入插件。
+
+### pluginLoader.registerPlugin(pluginName, plugin)
+
+- pluginName: string
+- plugin: [IPicGoPlugin](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L352)
+
+用于注册并加载插件。
+
+示例：
+
+```js
+const pluginXXX = require('picgo-plugin-xxx')
+
+// 注意pluginName要唯一
+picgo.pluginLoader.registerPlugin('xxx', pluginXXX)
+```
+
+### pluginLoader.unregisterPlugin(pluginName)
+
+用于卸载插件。
+
+示例：
+
+```js
+// 注意pluginName要唯一
+picgo.pluginLoader.unregisterPlugin('xxx')
+```
+
+### pluginLoader.getPlugin(pluginName)
+
+- return: plugin -> [IPicGoPlugin](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L352)
+
+用于获取某个插件。
+
+示例：
+
+```js
+const plugin = picgo.pluginLoader.getPlugin('xxx')
+```
+
+### pluginLoader.hasPlugin(pluginName)
+
+用于确认是否存在某个插件。
+
+- return: boolean
+
+示例：
+
+```js
+const res = picgo.pluginLoader.hasPlugin('xxx') // true or false
+```
+
+## guiApi <Badge text="GUI VERSION 2.0.0+" />
 
 **guiApi 仅在 electron 版本的 PicGo 里提供，详细信息可以参考 [GUI 插件开发一章](/zh/dev-guide/gui.html)。**
 
@@ -497,7 +647,7 @@ const guiMenu = ctx => {
 }
 ```
 
-### showFileExplorer([option])
+### guiApi.showFileExplorer([option])
 
 调用之后打开一个文件浏览器，可以得到用户选择的文件（夹）路径。
 
@@ -522,7 +672,7 @@ const guiMenu = ctx => {
 }
 ```
 
-### upload([file])
+### guiApi.upload([file])
 
 调用之后使用 PicGo 底层来上传，可以实现自动更新相册图片、上传成功后自动将 URL 写入剪贴板。
 
@@ -552,7 +702,7 @@ const guiMenu = ctx => {
 }
 ```
 
-### showNotification(option) <Badge text="2.0.1+" />
+### guiApi.showNotification(option) <Badge text="2.0.1+" />
 
 调用之后弹出系统通知窗口。
 
@@ -581,7 +731,7 @@ const guiMenu = ctx => {
 }
 ```
 
-### showMessageBox([option]) <Badge text="2.1.0+" />
+### guiApi.showMessageBox([option]) <Badge text="2.1.0+" />
 
 调用之后弹出系统的对话框窗口。
 
@@ -619,3 +769,72 @@ const guiMenu = ctx => {
   ]
 }
 ```
+
+### guiApi.galleryDB <Badge text="GUI VERSION 2.3.0+" />
+
+从 PicGo GUI 2.3.0 开始，相册数据使用 `galleryDB` 操作，不再使用 config 里的 `uploaded` 字段。
+
+galleryDB的使用可以参考 [PicGo/store](https://github.com/PicGo/store#get-getfilter-ifilter) 提供的api，以此为准。下文不一定更新及时。
+
+#### galleryDB.get(filter?)
+
+- filter: undefined || Object -> [IFilter](https://github.com/PicGo/store/blob/dev/src/types/index.ts)
+- return: Promise<[IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)>
+
+获取相册列表。可以提供filter字段用于过滤，如果不提供则默认获取全部列表。示例：
+
+```js
+const guiMenu = ctx => {
+  return [
+    {
+      label: '获取相册数据',
+      async handle (ctx, guiApi) {
+        const result = await guiApi.galleryDB.get({
+          orderBy: 'asc', // 升序
+          limit: 10, // 取10个
+          offset: 5 // 从index 5之后开始取（slice(5))
+        })
+        console.log(result) // [{...}, {...}, {...}, ...]
+      }
+    }
+  ]
+}
+```
+
+#### galleryDB.insert(value)
+
+- value: Object -> [IImgInfo](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
+- return: Promise<[IResult](https://github.com/PicGo/store/blob/dev/src/types/index.ts)>
+
+往相册中插入数据。注意插入的数据一定要是符合要求的 output 中的格式（参考 [transformer 一章](../dev-guide/cli.md#transformer)，否则无法展示在相册中。
+
+#### galleryDB.insertMany([...value])
+
+- input: Array -> [IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
+- return: Promise<[IResult[]](https://github.com/PicGo/store/blob/dev/src/types/index.ts)>
+
+往相册中批量插入数据。注意插入的数据一定要是符合要求的 output 数组格式（参考 [transformer 一章](../dev-guide/cli.md#transformer)，否则无法展示在相册中。
+
+#### galleryDB.updateById(id, value)
+
+- id: string 相册中某张图片的id
+- value: [IImgInfo](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
+- return: Promise\<boolean\>
+
+根据相册数据中的id更新某张图片的信息。返回boolean。如果更新成功返回true，反之返回false。
+
+#### galleryDB.getById(id)
+
+- id: string 相册中某张图片的id
+- return: Promise<[IImgInfo](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)>
+
+根据id获取某张图片的信息。
+
+#### galleryDB.removeById(id)
+
+- id: string 相册中某张图片的id
+- return: void
+
+根据id删除某张图片的信息。无返回值。
+
+**注意，删除图片是敏感操作，GUI版本会提示用户是否允许删除。**

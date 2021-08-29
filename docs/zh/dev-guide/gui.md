@@ -164,6 +164,7 @@ guiApi目前提供了如下的api：
 - `guiApi.upload` 用于调用PicGo内部的上传方法上传
 - `guiApi.showNotification` 用于调用系统级别的通知 <Badge text="2.0.1+"/>
 - `guiApi.showMessageBox` 用于调用系统级别的对话框 <Badge text="2.1.0+"/>
+- `guiApi.galleryDB` 用于操作相册数据 <Badge text="2.3.0+"/>
 
 后续会逐渐增加。
 
@@ -324,6 +325,11 @@ const guiMenu = ctx => {
 }
 ```
 
+### galleryDB <Badge text="2.3.0+" />
+
+2.3.0版本开始，提供了专门的相册数据操作api。包括了获取、更新、删除、插入等操作。详细说明可以参考 [api-guiApi-galleryDB](../api/README.md#guiapi-gallerydb)。
+
+
 ## 快捷键系统 <Badge text="2.2.0+" />
 
 从PicGo的2.2.0版本开始，插件支持注册全局快捷键了，可以注册快捷键来让实现一些便捷功能。
@@ -428,13 +434,15 @@ PicGo在一些情况下会触发一些事件，这些事件可以被插件监听
 
 你可以从中获取`type`值（上传的图床类型），文件名、URL、后缀等等信息。
 
+**从 GUI VERSION 2.3.0 开始，你可以在第二个参数拿到 guiApi。**
+
 示例：
 
 ```js
 module.exports = ctx => {
   const register = () => {
-    ctx.on('remove', files => {
-      console.log(files)
+    ctx.on('remove', (files, guiApi) => {
+      console.log(files, guiApi)
     })
   }
   return {

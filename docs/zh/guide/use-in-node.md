@@ -32,7 +32,13 @@ const picgo = new PicGo('/xxx/xxx.json') // <- 在实例化的时候传入配置
 ## 上传
 
 ```js
-picgo.upload(['/xxx/xxx.jpg']) // <- 请确保upload函数里的参数为一个数组，哪怕只有一张图片
+const main = async () => {
+  const res = await picgo.upload(['/xxx/xxx.jpg']) // <- 请确保upload函数里的参数为一个数组，哪怕只有一张图片
+
+  // 从 1.4.21 开始可以获取上传后的output
+  console.log(res) // ['https:/xxx.com/xxx.jpg']
+}
+
 ```
 
 ## 事件监听
@@ -190,6 +196,70 @@ picgo的[logger](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/Logger.ts#
 2019-04-18 13:53:01 [PicGo SUCCESS] 
 https://xxxx.png
 ```
+
+## 加载第三方插件 <Badge text="1.4.19+" />
+
+picgo从1.4.19开始，对外暴露 pluginHandler 和 pluginLoader 用于加载第三方插件。
+
+- pluginHandler：用于调用 npm 安装、更新、卸载插件。
+- pluginLoader：用于动态加载、获取、卸载插件。
+
+二者都能引入插件。不同点在于：
+
+1. pluginHandler调用npm安装或者卸载插件，是一个持久化操作，下次启动picgo之后，picgo将会自动加载已经安装的插件。
+2. pluginLoader用于动态加载插件，适用于需要在运行时动态加载不同插件的情况。
+
+### pluginHandler
+
+- install([...pluginName]): Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)>
+- update([...pluginName]): Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)>
+- uninstall([...pluginName]): Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)>
+
+对外暴露三个接口，分别对应 `npm install` 、`npm update` 、`npm uninstall` 。
+
+
+三个接口都是接收一个数组作为参数。其中 `pluginName`：
+
+1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
+2. 也可以是简化名 `xxx`。
+3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
+4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
+
+返回的结果会告知调用结果。示例：
+
+```js
+const main = async () => {
+  const res = await picgo.pluginHandler.install(['xxx'])
+  if (res.success) {
+    console.log(res.body) // ['picgo-plugin-xxx']
+  } else {
+    console.log(res.body) // error message
+  }
+}
+```
+
+详细参考 [api-pluginHandler](../api/README.md#pluginhandler)。
+
+### pluginLoader
+
+- registerPlugin(pluginName, plugin) 动态加载插件
+- unregisterPlugin(pluginName) 动态卸载插件
+- getPlugin(pluginName) 获取插件
+- hasPlugin(pluginName) 检查是否有某插件
+
+示例：
+
+```js
+const pluginXXX = require('picgo-plugin-xxx')
+console.log(picgo.pluginLoader.hasPlugin('xxx')) // false
+
+// 注意pluginName要唯一
+picgo.pluginLoader.registerPlugin('xxx', pluginXXX)
+
+console.log(picgo.pluginLoader.hasPlugin('xxx')) // true
+```
+
+详细参考 [api-pluginLoader](../api/README.md#pluginloader)。
 
 ## Webpack打包注意事项
 
