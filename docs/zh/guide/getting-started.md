@@ -38,7 +38,7 @@ picgo upload
 > 使用API部分
 
 ```bash
-yarn add picgo -D # 或者 npm intall picgo -D
+yarn add picgo -D # 或者 npm install picgo -D
 ```
 创建一个js文件（例如picgo.js）：
 ```js
