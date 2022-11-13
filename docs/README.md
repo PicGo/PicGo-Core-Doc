@@ -10,5 +10,5 @@ features:
   details: 丰富的API可以支持你的Node程序无缝接入PicGo的上传流程，简化上传的步骤。
 - title: 支持插件系统
   details: 整个生命周期都可以插件化，给予插件极大的自由度，可以实现很多意想不到的功能。
-footer: MIT Licensed | Copyright © 2018 Molunerfinn
+footer: MIT Licensed | Copyright © 2018 - Now Molunerfinn
 ---
