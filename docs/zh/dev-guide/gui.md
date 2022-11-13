@@ -27,7 +27,7 @@ PicGo在2.0版本之后支持的插件系统其实就是以PicGo-Core为底层�
 
 guiMenu是PicGo提给给插件的自主控制权的主入口。它的作用是在PicGo的插件页面给予每个插件自主的菜单项，如下图：
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39a2f60a32a.png)
+![](https://pic.molunerfinn.com/picgo/docs/202211131506889.png)
 
 guiMenu是一个function，PicGo会传入`ctx`（picgo本身）方便开发者使用picgo自带的一些方法，最后应该返回一个 **数组**。
 
@@ -207,7 +207,7 @@ const guiMenu = ctx => {
 
 其中option是可选值，可以传入一个合法的electron的dialog的[options对象](https://electronjs.org/docs/api/dialog#dialogshowopendialogbrowserwindow-options-callback)，用于指定是否可多选，用于选择文件还是文件夹等等。
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39aea61e80d.gif)
+![](https://pic.molunerfinn.com/picgo/docs/file-expoler.gif)
 
 示例：
 
