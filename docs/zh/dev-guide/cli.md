@@ -284,7 +284,7 @@ module.exports = ctx => {
 
 当你实现了配置项方法了之后，可以通过CLI的`set|config`方法来进行设置，比如：
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test/picgo/picgo-settings-cli.gif)
+![](https://pic.molunerfinn.com/picgo/docs/picgo-settings-cli.gif)
 
 #### config方法
 

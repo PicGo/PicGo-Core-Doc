@@ -7,7 +7,7 @@ sidebarDepth: 3
 
 GUI插件指的是运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。它支持绝大多数在普通插件里能实现的[功能](/zh/dev-guide/cli.html)，还增加了额外的`guiApi`和其他的GUI特有的事件，让你的插件在PicGo里更加强大。
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
+![](https://pic.molunerfinn.com/picgo/docs/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
 
 PicGo在2.0版本之后支持的插件系统其实就是以PicGo-Core为底层核心实现的。在PicGo上传图片的过程中，你书写的插件（包括Uploader、Transformer等等）都会进入PicGo-Core的上传流程中，所以如果你写了一个CLI版本的插件，基本都能无缝运行在PicGo里。
 
@@ -124,11 +124,11 @@ module.exports = ctx => {
 
 根据[插件开发-配置项处理](/zh/dev-guide/cli.html#配置项的处理)一章的描述，如果你的插件提供了 `Plugin` 或 `Uploader` 或 `Transformer` 维度的配置，会在插件的右键菜单生成对应默认的配置菜单：
 
-![defautl-config](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/default-config.png)
+![defautl-config](https://pic.molunerfinn.com/picgo/docs/default-config.png)
 
 点击之后，PicGo会根据提供的配置项，转换生成可视化的配置表单：
 
-![setting-context-menu](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/setting-context-menu.png)
+![setting-context-menu](https://pic.molunerfinn.com/picgo/docs/setting-context-menu.png)
 
 如果觉得菜单项都是英文不好理解（默认取的是 `name` 值），你可以通过配置每个菜单项的 `alias` 字段，来让表单显示成 `alias` 的文字。
 
@@ -177,7 +177,7 @@ guiApi目前提供了如下的api：
 
 其中option是可选值，可以传入一个`{title, placeholder}`的对象，用于弹窗的标题和输入框的`placeholder`显示。
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39aa4dab0b4.png)
+![](https://pic.molunerfinn.com/picgo/docs/5c39aa4dab0b4.png)
 
 示例：
 
@@ -266,7 +266,7 @@ const guiMenu = ctx => {
 
 其中option是必选值，需要提供`{title, body}`用于通知窗口的显示。
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c3db88042a0f.png)
+![](https://pic.molunerfinn.com/picgo/docs/5c3db88042a0f.png)
 
 示例：
 
@@ -293,7 +293,7 @@ const guiMenu = ctx => {
 - option: Object || `{title: '', message: '', type: 'info', buttons: ['Yes', 'No']}`
 - return: Object -> `{result, checkboxChecked}`
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo/20190611110904.png)
+![](https://pic.molunerfinn.com/picgo/docs/20190611110904.png)
 
 其中，option的完整参数可以参考Electron的[dialog.showMessageBox](https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options-callback)。返回的值里，`result`为你指定的buttons的index值。比如上图如果我点了`是(Y)`,那么我会收到如下返回值：
 
@@ -385,7 +385,7 @@ module.exports = ctx => {
 
 当安装了插件之后，可以在「PicGo设置-快捷键设置」打开快捷键设置界面，就可以看到注册的快捷键。
 
-![shortkey-setting-screenshot](https://cdn.jsdelivr.net/gh/Molunerfinn/test/PicGo/shortKey-setting-screenshot.png)
+![shortkey-setting-screenshot](https://pic.molunerfinn.com/picgo/docs/shortKey-setting-screenshot.png)
 
 PicGo会根据插件的名字以及快捷键Item的name值，给快捷键分配不同的配置作用域，从而生成配置文件，生成的配置文件的key名的规则为 `${pluginName}:${commandItem.name}`（开发者无需关注）：
 
@@ -417,7 +417,7 @@ PicGo在一些情况下会触发一些事件，这些事件可以被插件监听
 
 当用户在相册里点击删除，并且确定的时候，将会触发`remove`事件：
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39b3c8746cf.png)
+![](https://pic.molunerfinn.com/picgo/docs/5c39b3c8746cf.png)
 
 `remove`事件会发送删除的图片列表（哪怕只有一张也是以数组格式传递），格式大概如下：
 
@@ -469,7 +469,7 @@ module.exports = ctx => {
 
 如果你写了一个`Uploader`的插件，PicGo将会自动将其显示到图床列表里。你可以自定义一下这个图床要显示的名字，通过`name`选项来实现。如果你不提供这个`name`选项，那么PicGo将会显示Uploader注册的时候的`id`值。
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c39e91a73099.png)
+![](https://pic.molunerfinn.com/picgo/docs/5c39e91a73099.png)
 
 ```js
 const handle = ctx => {

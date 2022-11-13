@@ -896,7 +896,7 @@ const guiMenu = ctx => {
 
 其中 option 是必选值，需要提供`{title, body}`用于通知窗口的显示。
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo-doc/5c3db88042a0f.png)
+![](https://pic.molunerfinn.com/picgo/docs/5c3db88042a0f.png)
 
 示例：
 
@@ -923,7 +923,7 @@ const guiMenu = ctx => {
 - option: Object || `{title: '', message: '', type: 'info', buttons: ['Yes', 'No']}`
 - return: Object -> `{result, checkboxChecked}`
 
-![](https://cdn.jsdelivr.net/gh/Molunerfinn/test@master/picgo/20190611110904.png)
+![](https://pic.molunerfinn.com/picgo/docs/20190611110904.png)
 
 其中，option 的完整参数可以参考 Electron 的 [dialog.showMessageBox](https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options-callback)。返回的值里，`result`为你指定的 buttons 的 index 值。比如上图如果我点了`是 (Y)`, 那么我会收到如下返回值：
 
