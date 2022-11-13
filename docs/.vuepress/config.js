@@ -4,7 +4,7 @@ module.exports = {
   head: [
     [
       'link', {
-        rel: 'icon', href: 'https://raw.githubusercontent.com/Molunerfinn/test/master/picgo/New%20LOGO-150.png'
+        rel: 'icon', href: 'https://pic.molunerfinn.com/picgo/docs/logo-150.png'
       }
     ]
   ],

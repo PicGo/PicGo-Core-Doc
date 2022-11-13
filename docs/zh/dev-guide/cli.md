@@ -10,7 +10,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 再附一下流程图:
 
-![flow](https://raw.githubusercontent.com/Molunerfinn/test/master/picgo/picgo-core-fix.jpg)
+![flow](https://pic.molunerfinn.com/picgo/docs/core-lifecycle.png)
 
 其中可以供开发的部件总共有5个：
 
@@ -150,7 +150,7 @@ Uploader里可以实现自己的上传逻辑。你可以通过`Transformer`传�
 **另外注册的Uploader的id不能和现有的Uploader重复**，现有的Uploader可以在[配置列表](/zh/guide/config.html)看到。
 :::
 
-推荐可以使用[ctx.Request.request](/zh/api/#request-request)来发送请求，它能自动读取PicGo配置里的`proxy`值。
+推荐可以使用[ctx.request](/zh/api/#request)来发送请求，它能自动读取PicGo配置里的`proxy`值。
 
 例如：
 
@@ -284,7 +284,7 @@ module.exports = ctx => {
 
 当你实现了配置项方法了之后，可以通过CLI的`set|config`方法来进行设置，比如：
 
-![](https://raw.githubusercontent.com/Molunerfinn/test/master/picgo/picgo-settings-cli.gif)
+![](https://cdn.jsdelivr.net/gh/Molunerfinn/test/picgo/picgo-settings-cli.gif)
 
 #### config方法
 
@@ -352,7 +352,7 @@ module.exports = ctx => {
     },
     // ...
   },
-  "plugins": {...}, // 此项为picgo自动生成，不需配置
+  "picgoPlugins": {...}, // 此项为picgo自动生成，不需配置
   "picgo-plugin-gitlab": {
     // ... plugin配置项
   },
@@ -429,6 +429,55 @@ module.exports = ctx => {
 ### 日志系统 <Badge text="1.3.7+"/>
 
 如果你想记录下你的插件的行为，方便日后追查错误，可以查看[日志系统](/zh/guide/use-in-node.html#日志系统/)一章。
+
+### i18n 国际化 <Badge text="1.5.0+"/>
+
+从 `v1.5.0` 开始，picgo 支持国际化。如果你的插件配置需要配置国际化文案，可以参考本节。
+
+picgo 默认提供三种内置语言：
+
+- `zh-CN` (默认)
+- `zh-TW`
+- `en`
+
+如果你的插件需要支持这几种语言的文案，可以使用 `ctx.i18n` 提供的[方法](/zh/api/#i18n)：
+
+- 向已有的语言中添加语言包：`addLocale`: (language: string, locales: ILocale) => boolean
+- 翻译文本：`translate`: (key: T, args?: {}) => string
+
+实际使用可以参考 [picgo-plugin-pic-migrater](https://github.com/PicGo/picgo-plugin-pic-migrater/blob/dev/src/i18n/index.ts)，以下是一个简单的例子：
+
+```js
+const localesZH = {
+  PIC_MIGRATER_CHOOSE_FILE: '选择文件',
+  PIC_MIGRATER_CHOOSE_FOLDER: '选择文件夹',
+}
+
+const localesEN = {
+  PIC_MIGRATER_CHOOSE_FILE: 'Choose File',
+  PIC_MIGRATER_CHOOSE_FOLDER: 'Choose Folder',
+}
+
+module.exports = (ctx) => {
+  const register = () => {
+    // 向 zh-CN 和 en 中添加语言包
+    ctx.i18n.addLocale('zh-CN', localesZH)
+    ctx.i18n.addLocale('en', localesEN)
+  }
+
+  const config = (ctx) => {
+    const text = ctx.i18n.translate('PIC_MIGRATER_CHOOSE_FILE')
+    console.log(text) // 选择文件
+  }
+
+  return {
+    register,
+    config,
+  }
+}
+```
+
+如果还想添加新的语言、设置当前语言，可以参考 [picgo-i18n](/zh/api/#i18n) 的文档。
 
 ### 使用插件模板
 

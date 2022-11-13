@@ -17,13 +17,15 @@ $ picgo -h
 
   Commands:
 
-    install|add <plugins...>             install picgo plugin
+    install|add [options] <plugins...>   install picgo plugin
     uninstall|rm <plugins...>            uninstall picgo plugin
-    update <plugins...>                  update picgo plugin
+    update [options] <plugins...>        update picgo plugin
     set|config <module> [name]           configure config of picgo modules
     upload|u [input...]                  upload, go go go
     use [module]                         use modules of picgo
     init [options] <template> [project]  create picgo plugin's development templates
+    i18n [lang]                          change picgo language
+    help [command]                       display help for command
 ```
 
 ::: tip 提示
@@ -57,7 +59,6 @@ picgo内置了如下的内容：
   - aliyun -> 阿里云OSS
   - qiniu -> 七牛云
   - imgur -> Imgur
-  - weibo -> 微博图床
   - github -> GitHub
 
 ::: tip 提示
@@ -198,6 +199,20 @@ Examples:
 类似于`vue-cli`的`init`命令，picgo也提供了官方的插件模板叫做[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，不过你在`init`的时候，模板名只需要写`plugin`，内部会自动判断如果非`username/repo`形式的话，自动加上`PicGo/picgo-template-`的前缀。
 
 这个命令用于方便用户快速开发一个picgo插件。关于插件开发，可以查看[插件开发](/zh/dev-guide/cli.html)一章。
+
+## i18n
+
+> 用于切换 picgo 的语言。目前支持的语言有：
+
+- zh-CN (默认)
+- zh-TW
+- en
+
+示例：
+
+```bash
+picgo i18n en
+```
 
 ## -v, --version
 

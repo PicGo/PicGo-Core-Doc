@@ -1,7 +1,7 @@
 # 快速上手
 
 ::: warning 注意
-请确保你的 Node.js 版本 >= 8。
+请确保你的 Node.js 版本 >= 12。
 :::
 
 ::: tip 提示
@@ -42,7 +42,12 @@ yarn add picgo -D # 或者 npm install picgo -D
 ```
 创建一个js文件（例如picgo.js）：
 ```js
+// v1.4.x- 版本
 const PicGo = require('picgo')
+
+// v1.5.0+ 版本
+const { PicGo } = require('picgo')
+
 const picgo = new PicGo() // 将使用默认的配置文件：~/.picgo/config.json
 
 // 上传具体路径下的图片

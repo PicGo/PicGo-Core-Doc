@@ -322,7 +322,7 @@ helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有
 
 如果你只是要开发一个简单的插件，而不是发布一个 npm 包的话（发布 picgo 的 npm 插件包请查看 [插件开发指南](/zh/dev-guide/cli.html)），那么只需要调用`helper[module].register`方法即可。
 
-第一个参数代表插件的 id（相同的部件只能拥有唯一的 id，不过不同的部件可以拥有相同的 id），第二个参数应当是一个对象，至少包括一个`handle`方法供 picgo 调用。如果你还想要拥有 [配置项](/zh/dev-guide/cli.html#配置项的处理)功能，可以考虑再加入`config`方法供 picgo 调用。
+第一个参数代表插件的 id（相同的部件只能拥有唯一的 id，不过不同的部件可以拥有相同的 id），第二个参数应当是一个对象，至少包括一个`handle`方法供 picgo 调用。如果你还想要拥有 [配置项](/zh/dev-guide/cli.html#配置项的处理) 功能，可以考虑再加入`config`方法供 picgo 调用。
 
 示例：
 
@@ -353,15 +353,18 @@ picgo.helper.transformer.register('test', {
 
 同上，不过不拥有配置项功能。
 
-## Request.request
+## Request.request <Badge type="warning" text="deprecate" />
 
-**v1.5.0开始这个属性将被废弃，请直接使用 [`ctx.request`](#request)。**
+**v1.5.0开始这个属性被废弃，请直接使用 [`ctx.request`](#request)。**
+
+以下是 1.5.0 之前的文档，已经被废弃不再维护：
 
 Request.request 是 picgo 内部暴露的一个 [Request-Promise-Native](https://github.com/request/request-promise-native) 对象，拥有一个可以使用 [request](https://github.com/request/request) 库里的所有方法，并且返回的是原生的 Promise。
 
 ::: tip 小贴士
 值得注意的是，使用这个对象来发送请求的话，能自动读取用户配置给 picgo 的 `proxy` 值。比较适合用于书写 Uploder 的核心部分。
 :::
+
 
 示例：
 
@@ -373,18 +376,81 @@ picgo.Request.request({
 })
 ```
 
-## request <Badge text="1.4.16+" />
+## request <Badge text="1.4.16+" /> <Badge text="1.5.0+" />
 
-从 `v1.4.16` 开始，默认的请求方法从 `ctx.Request.request` 换成了 `ctx.request`。目前的底层实现是 [Request-Promise-Native](https://github.com/request/request-promise-native) ，从 `v1.5.0` 开始，将会换成 [got](https://github.com/sindresorhus/got)。
+::: tip 小贴士
+值得注意的是，使用这个对象来发送请求的话，能自动读取用户配置给 picgo 的 `proxy` 值。比较适合用于书写 Uploder 的核心部分。
+:::
+
+从 `v1.4.16` 开始，默认的请求方法从 `ctx.Request.request` 换成了 `ctx.request`。
+
+- `v1.5.0` 之前底层实现是 [Request-Promise-Native](https://github.com/request/request-promise-native)
+- `v1.5.0` 开始，底层实现是 [axios](https://github.com/axios/axios)
+
+这里将不再介绍旧的实现的使用方法，而是直接介绍新的实现的使用方法。
+
+总体而言，请求的配置可以参考 [axios 文档 request-config 部分](https://github.com/axios/axios#request-config)，不过 picgo 为了兼容旧的 `request` API，做了如下的处理，希望开发者注意：
+
+1. 请求体里如果不带有 `resolveWithFullResponse: true`, 那么返回的是 `response.data`，而不是 `response` （带有  `status` 等信息）。
+2. 如果希望返回值是 `Buffer`，请把 `responseType` 设置为 `arraybuffer`。
+
+picgo 提供了几个比较有用的类型方便开发者使用：
+
+1. `IReqOptions`：带有 `resolveWithFullResponse: true` 的请求配置类型。
+2. `IReqOptionsWithArrayBufferRes`：带有 `resolveWithFullResponse: true` 和 `responseType: 'arraybuffer'` 的请求配置类型。
+3. `IReqOptionsWithBodyResOnly`： `axios` 的原始请求配置类型，返回值只有 `response.data`。
+
+::: tip 注意
+request 接口的返回值依然是个 Promise，所以依然推荐使用 `async/await` 的方式来使用。
+:::
 
 示例：
 
-```js
-picgo.request({
+```ts
+import { IReqOptions } from 'picgo'
+
+const opt: IReqOptions = {
   method: 'post',
-  uri: 'xxxx',
-  body: fs.readFileSync('yyy')
-})
+  url: 'xxxx',
+  data: {},
+  resolveWithFullResponse: true // <-- 这里设置为 true，返回值会带上 status 等
+}
+
+interface IRes {
+  // ...
+}
+
+const res = await ctx.request(opt) // { status: number, data: IRes }
+
+// ------------------------------
+
+import { IReqOptionsWithArrayBufferRes } from 'picgo'
+
+const opt: IReqOptions = {
+  method: 'post',
+  url: 'xxxx',
+  data: {},
+  resolveWithFullResponse: true // <-- 这里设置为 true，返回值会带上 status 等
+  responseType: 'arraybuffer' // <-- 这里设置为 arraybuffer，返回值 data 会是 Buffer
+}
+
+const res = await ctx.request(opt) // { status: number, data: Buffer }
+
+// ------------------------------
+
+import { IReqOptionsWithBodyResOnly } from 'picgo'
+
+const opt: IReqOptions = {
+  method: 'post',
+  url: 'xxxx',
+  data: {},
+}
+
+interface IRes {
+  // ...
+}
+
+const res: IRes = await ctx.request(opt) // IRes
 ```
 
 ## cmd
@@ -407,7 +473,7 @@ picgo.cmd.program
 
 ### cmd.inquirer
 
-用于提供 CLI 命令行交互。实际上是一个 [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) 的实例，用法和`inquirer.js`一致。参考 [配置项的处理](/zh/dev-guide/cli.html#配置项的处理）一章。通常 PicGo 内部会将其和插件的 [config](/zh/dev-guide/cli.html#config 方法)方法一起使用。
+用于提供 CLI 命令行交互。实际上是一个 [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) 的实例，用法和`inquirer.js`一致。参考 [配置项的处理](/zh/dev-guide/cli.html#配置项的处理) 一章。通常 PicGo 内部会将其和插件的 [config](/zh/dev-guide/cli.html#config方法) 方法一起使用。
 
 示例：
 
@@ -422,7 +488,7 @@ const handleConfig = async ctx => {
 ```
 
 :::tip 提示
-你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的 [config](/zh/dev-guide/cli.html#config 方法)方法来实现命令行交互，并且 PicGo 会自动存储`config`相关配置项的结果。
+你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的 [config](/zh/dev-guide/cli.html#config方法) 方法来实现命令行交互，并且 PicGo 会自动存储`config`相关配置项的结果。
 :::
 
 ## log
@@ -431,7 +497,7 @@ const handleConfig = async ctx => {
 
 截图：
 
-![](https://raw.githubusercontent.com/Molunerfinn/test/master/picgo/20180912153940.png)
+![](https://pic.molunerfinn.com/picgo/docs/logs.png)
 
 ### log.info(message)
 
@@ -616,6 +682,125 @@ const plugin = picgo.pluginLoader.getPlugin('xxx')
 ```js
 const res = picgo.pluginLoader.hasPlugin('xxx') // true or false
 ```
+
+## use <Badge text="1.5.0+" />
+
+比 [PluginLoader](#pluginloader) 更加简单的插件加载方式。适合在 Node 项目中使用 picgo 时动态引入插件。
+
+- (plugin: IPicGoPlugin, name?: string): IPicGoPluginInterface
+
+1. 第一个参数是 picgo 插件导出对象，通常是以 npm 包的形式出现的。
+2. 如果第二个参数 `name` 为空，则只会实例化这个插件而不会把插件注册进 PicGo 的列表里。这通常在你需要动态加载插件的时候使用。以下是实际例子：
+
+```js
+const { PicGo } = require('picgo')
+const PluginMigrater = require('picgo-plugin-pic-migrater')
+const MinioUploader = require('picgo-plugin-minio')
+
+const picgo = new PicGo()
+
+const plugin = picgo.use(PluginMigrater) // will not register this plugin, just use it
+picgo.use(MinioUploader, 'minio') // will register this plugin
+
+picgo.setConfig({
+  'picgo-plugin-pic-migrater': {
+    newFileSuffix: '_new',
+    include: '',
+    exclude: ''
+  },
+  picBed: {
+    current: 'minio', // use minio config
+    uploader: 'minio',
+    minio: {
+      endpoint: 'http://localhost:9000',
+      accessKey: 'minioadmin',
+      secretKey: 'minioadmin',
+      bucket: 'picgo',
+      path: '/',
+      useSSL: false
+    }
+  }
+})
+
+// will use minio for migrating
+plugin.migrateFiles(['/xxx/yyy.md']) // { total: number, success: number }
+```
+
+## i18n <Badge text="1.5.0+" />
+
+提供国际化支持。目前支持的语言有：
+
+- `zh-CN` (默认)
+- `zh-TW`
+- `en`
+
+如果想为 picgo 添加默认的语言支持，请参考这个 [PR](https://github.com/PicGo/PicGo-Core/pull/135)。
+
+### i18n.addLocale(language: string, locales: ILocale)
+
+用于向已有的语言中添加语言包。
+
+- language: string
+- locales: `[key: string]: any`
+- return: 返回 boolean ，表示是否添加成功
+
+```js
+picgo.i18n.addLocale('zh-CN', {
+  'PICGO_CURRENT_PICBED': '当前图床'
+})
+
+const text = picgo.i18n.translate('PICGO_CURRENT_PICBED') // 当前图床
+```
+
+### i18n.translate(key: T, args?: {}) => string)
+
+翻译文本。
+
+- key: string | T (T 是一个枚举类型，包含了所有的文本 key)
+- args: object (可选)，如果文本带有参数可以通过这个来传入
+- return: string
+
+```js
+picgo.i18n.addLocale('zh-CN', {
+  'PICGO_CURRENT_PICBED': '当前图床是 ${current}'
+})
+
+const text = picgo.i18n.translate('PICGO_CURRENT_PICBED', {
+  current: 'sm.ms'
+}) // 当前图床是 sm.ms
+```
+
+### i18n.setLanguage(language: string)
+
+设置语言。
+
+```js
+picgo.i18n.setLanguage('zh-TW')
+```
+
+### i18n.addLanguage(language: string, locales: ILocale)
+
+- language: string
+- locales: `[key: string]: any`
+
+添加一种新的语言类型。注意如果添加一种新的语言，那么建议请先实现默认的语言包里的 [所有文本](https://github.com/PicGo/PicGo-Core/blob/dev/src/i18n/zh-CN.ts) ，否则可能会出现未知的问题。
+
+```js
+picgo.i18n.addLanguage('jp', {
+  // ...
+})
+```
+
+### i18n.getLanguageList()
+
+- return: string[]
+
+返回当前所有的语言列表。
+
+```js
+const list = picgo.i18n.getLanguageList() // ['zh-CN', 'zh-TW', 'en']
+```
+
 
 ## guiApi <Badge text="GUI VERSION 2.0.0+" />
 
@@ -838,3 +1023,12 @@ const guiMenu = ctx => {
 根据id删除某张图片的信息。无返回值。
 
 **注意，删除图片是敏感操作，GUI版本会提示用户是否允许删除。**
+
+#### galleryDB.overwrite(value)
+
+- value: [IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
+- return: Promise<[IResult[]](https://github.com/PicGo/store/blob/dev/src/types/index.ts)>
+
+覆盖相册中的数据。 **覆盖前会清空原有数据。**
+
+**注意，覆盖图片列表是敏感操作，GUI版本会提示用户是否允许覆盖。**

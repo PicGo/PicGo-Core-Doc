@@ -12,18 +12,51 @@ sidebarDepth: 3
 
 ## 初始化
 
-初始化需要用到配置文件，请查看[配置文件](/zh/guide/config.html)一章。
+初始化如果需要使用自定义的配置文件，请查看[配置文件](/zh/guide/config.html)一章。注意初始化方式分不同的版本。
 
 ### 使用默认配置文件
 
+#### 从 v1.5.0+ 开始
 ```js
+// since v1.5.0
+
+// commonjs
+const { PicGo } = require('picgo')
+// 或者 es6
+import { PicGo } from 'picgo'
+
+const picgo = new PicGo() // <- 将使用默认的配置文件
+```
+
+#### v1.5.0 之前
+
+```js
+// before v1.5.0
+
 const PicGo = require('picgo')
 const picgo = new PicGo() // <- 将使用默认的配置文件
 ```
 
 ### 使用自定义配置文件
 
+#### 从 v1.5.0+ 开始
 ```js
+// since v1.5.0
+
+// commonjs
+const { PicGo } = require('picgo')
+// or es6
+import { PicGo } from 'picgo'
+
+const picgo = new PicGo('/xxx/xxx.json') // <- 在实例化的时候传入配置文件的路径
+```
+
+
+#### v1.5.0 之前
+
+```js
+// before v1.5.0
+
 const PicGo = require('picgo')
 const picgo = new PicGo('/xxx/xxx.json') // <- 在实例化的时候传入配置文件的路径
 ```
@@ -199,15 +232,60 @@ https://xxxx.png
 
 ## 加载第三方插件 <Badge text="1.4.19+" />
 
-picgo从1.4.19开始，对外暴露 pluginHandler 和 pluginLoader 用于加载第三方插件。
+- 从 1.4.19 开始，对外暴露 `pluginHandler` 和 `pluginLoader` 用于加载第三方插件。
+- 从 1.5.0 开始，对外暴露 `use` 方法，用于更方便地手动加载第三方插件。
 
-- pluginHandler：用于调用 npm 安装、更新、卸载插件。
-- pluginLoader：用于动态加载、获取、卸载插件。
+其中：
+
+- `pluginHandler`：用于调用 npm 安装、更新、卸载插件。
+- `pluginLoader`：用于动态加载、获取、卸载插件。
 
 二者都能引入插件。不同点在于：
 
 1. pluginHandler调用npm安装或者卸载插件，是一个持久化操作，下次启动picgo之后，picgo将会自动加载已经安装的插件。
 2. pluginLoader用于动态加载插件，适用于需要在运行时动态加载不同插件的情况。
+
+
+### use <Badge text="1.5.0+" />
+
+- (plugin: IPicGoPlugin, name?: string): IPicGoPluginInterface
+
+手动加载第三方插件。如果第二个参数 `name` 为空，则只会实例化这个插件而不会把插件注册进 PicGo 的列表里。这通常在你需要动态加载插件的时候使用。以下是实际例子：
+
+```js
+const { PicGo } = require('picgo')
+const PluginMigrater = require('picgo-plugin-pic-migrater')
+const MinioUploader = require('picgo-plugin-minio')
+
+const picgo = new PicGo()
+
+const plugin = picgo.use(PluginMigrater) // will not register this plugin, just use it
+picgo.use(MinioUploader, 'minio') // will register this plugin
+
+picgo.setConfig({
+  'picgo-plugin-pic-migrater': {
+    newFileSuffix: '_new',
+    include: '',
+    exclude: ''
+  },
+  picBed: {
+    current: 'minio',
+    uploader: 'minio',
+    minio: {
+      endpoint: 'http://localhost:9000',
+      accessKey: 'minioadmin',
+      secretKey: 'minioadmin',
+      bucket: 'picgo',
+      path: '/',
+      useSSL: false
+    }
+  }
+})
+
+// will use minio for migrating
+plugin.migrateFiles(['/xxx/yyy.md']) // { total: number, success: number }
+```
+
 
 ### pluginHandler
 

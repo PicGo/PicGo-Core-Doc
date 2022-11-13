@@ -329,6 +329,18 @@ const guiMenu = ctx => {
 
 2.3.0版本开始，提供了专门的相册数据操作api。包括了获取、更新、删除、插入等操作。详细说明可以参考 [api-guiApi-galleryDB](../api/README.md#guiapi-gallerydb)。
 
+## i18n 国际化 <Badge text="2.3.1+" />
+
+目前 PicGo 支持了如下几种语言：
+
+- zh-CN (默认)
+- zh-TW
+- en
+
+如果你的插件希望添加多语言支持，可以参考 [cli-i18n](zh/dev-guide/cli/#i18n-国际化) 一节。
+
+如果你希望给 PicGo-GUI 添加一种默认的新语言支持，参考[文档](https://github.com/Molunerfinn/PicGo/blob/dev/CONTRIBUTING.md#i18n)。
+
 
 ## 快捷键系统 <Badge text="2.2.0+" />
 
