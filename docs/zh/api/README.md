@@ -426,7 +426,7 @@ const res = await ctx.request(opt) // { status: number, data: IRes }
 
 import { IReqOptionsWithArrayBufferRes } from 'picgo'
 
-const opt: IReqOptions = {
+const opt: IReqOptionsWithArrayBufferRes = {
   method: 'post',
   url: 'xxxx',
   data: {},
@@ -440,7 +440,7 @@ const res = await ctx.request(opt) // { status: number, data: Buffer }
 
 import { IReqOptionsWithBodyResOnly } from 'picgo'
 
-const opt: IReqOptions = {
+const opt: IReqOptionsWithBodyResOnly = {
   method: 'post',
   url: 'xxxx',
   data: {},

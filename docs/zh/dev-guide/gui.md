@@ -337,7 +337,7 @@ const guiMenu = ctx => {
 - zh-TW
 - en
 
-如果你的插件希望添加多语言支持，可以参考 [cli-i18n](zh/dev-guide/cli/#i18n-国际化) 一节。
+如果你的插件希望添加多语言支持，可以参考 [cli-i18n](/zh/dev-guide/cli/#i18n-国际化) 一节。
 
 如果你希望给 PicGo-GUI 添加一种默认的新语言支持，参考[文档](https://github.com/Molunerfinn/PicGo/blob/dev/CONTRIBUTING.md#i18n)。
 
