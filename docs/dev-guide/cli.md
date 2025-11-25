@@ -1,6 +1,3 @@
----
-sidebarDepth: 2
----
 
 # 插件开发
 
@@ -37,7 +34,7 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 
 如果你要实现一个通过图片url地址，就能上传到现有的图床的功能的话，可以考虑开发一个`Transformer`或者一个`beforeTransformPlugins`。
 
-当然在这过程中你可以获取picgo提供的其他丰富的[API](/zh/api/)。
+当然在这过程中你可以获取picgo提供的其他丰富的[API](/api/)。
 
 ## 概述
 
@@ -147,10 +144,10 @@ Uploader里可以实现自己的上传逻辑。你可以通过`Transformer`传�
 
 ::: warning 注意
 上传成功后你必须往`ctx.output`里的每一项加入一个`imgUrl`的属性，里面写入图片上传成功后的URL，以便PicGo（electron版本）获取图片地址并显示在相册中。如果你上传的是一个非图片文件，请提供一个`url`属性以及一个`imgUrl`属性，其中`imgUrl`可以是文件类型的缩略图的URL。而`url`将会决定用户拿到剪贴板的地址是什么。如果没有`url`将会取`imgUrl`的值。
-**另外注册的Uploader的id不能和现有的Uploader重复**，现有的Uploader可以在[配置列表](/zh/guide/config.html)看到。
+**另外注册的Uploader的id不能和现有的Uploader重复**，现有的Uploader可以在[配置列表](/guide/config)看到。
 :::
 
-推荐可以使用[ctx.request](/zh/api/#request)来发送请求，它能自动读取PicGo配置里的`proxy`值。
+推荐可以使用[ctx.request](/api/#request)来发送请求，它能自动读取PicGo配置里的`proxy`值。
 
 例如：
 
@@ -338,7 +335,7 @@ module.exports = ctx => {
 
 ::: warning 注意
 这里有个约定俗成的规定，你的`Uploader`的配置项会存放在picgo配置项的`picBed`下。比如你的Uploader的name为`gitlab`，那么保存的时候会保存到`picBed.gitlab`下。你的`plugin`本身如果有配置项，那么你的plugin配置项会直接存放在picgo配置项下，并且以你的`plugin`命名。`Transformer`的配置项会放在picgo配置项的`transformer`下。
-关于配置相关的部分你应该查看[配置文件](/zh/guide/config.html)一章。
+关于配置相关的部分你应该查看[配置文件](/guide/config)一章。
 :::
 
 所以一个实现了`Uploader`叫`gitlab`，`Transformer`叫`gitlab`，`plugin`叫`picgo-plugin-gitlab`的插件，它写入picgo的配置文件后，picgo的配置文件应该长这样：
@@ -394,7 +391,7 @@ const handle = ctx => {
 
 ### 注册CLI命令
 
-picgo自带的CLI命令可以通过这个[章节](/zh/guide/commands.html)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
+picgo自带的CLI命令可以通过这个[章节](/guide/commands)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
 
 ::: warning 注意
 你需要将注册的命令通过`ctx.cmd.register`来注册。用法与`Uploader`等的`register`方法一致。这个目的主要是保证命令只在合适的时候被调用，否则容易出现内存泄露。
@@ -428,7 +425,7 @@ module.exports = ctx => {
 
 ### 日志系统 <Badge text="1.3.7+"/>
 
-如果你想记录下你的插件的行为，方便日后追查错误，可以查看[日志系统](/zh/guide/use-in-node.html#日志系统/)一章。
+如果你想记录下你的插件的行为，方便日后追查错误，可以查看[日志系统](/guide/use-in-node#日志系统/)一章。
 
 ### i18n 国际化 <Badge text="1.5.0+"/>
 
@@ -440,7 +437,7 @@ picgo 默认提供三种内置语言：
 - `zh-TW`
 - `en`
 
-如果你的插件需要支持这几种语言的文案，可以使用 `ctx.i18n` 提供的[方法](/zh/api/#i18n)：
+如果你的插件需要支持这几种语言的文案，可以使用 `ctx.i18n` 提供的[方法](/api/#i18n)：
 
 - 向已有的语言中添加语言包：`addLocale`: (language: string, locales: ILocale) => boolean
 - 翻译文本：`translate`: (key: T, args?: {}) => string
@@ -477,7 +474,7 @@ module.exports = (ctx) => {
 }
 ```
 
-如果还想添加新的语言、设置当前语言，可以参考 [picgo-i18n](/zh/api/#i18n) 的文档。
+如果还想添加新的语言、设置当前语言，可以参考 [picgo-i18n](/api/#i18n) 的文档。
 
 ### 使用插件模板
 
@@ -522,4 +519,4 @@ picgo init user/repo <your-project-name>
 
 所谓的GUI插件就是指运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。
 
-理论上来说CLI部分的插件除了`注册CLI命令`的部分在GUI里用不到之外，其他的部分 **都可以正常在GUI里使用**。不过electron版本的PicGo为`PicGo-Core`的插件提供了额外的`guiApi`和一系列GUI事件，可以让你的插件在electron版本的PicGo里更加强大。详细可以查看[GUI插件开发一章](/zh/dev-guide/gui.html)。
+理论上来说CLI部分的插件除了`注册CLI命令`的部分在GUI里用不到之外，其他的部分 **都可以正常在GUI里使用**。不过electron版本的PicGo为`PicGo-Core`的插件提供了额外的`guiApi`和一系列GUI事件，可以让你的插件在electron版本的PicGo里更加强大。详细可以查看[GUI插件开发一章](/dev-guide/gui)。

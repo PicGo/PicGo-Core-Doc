@@ -13,7 +13,11 @@ picgo 传入插件的`ctx`其实就是 picgo 本身。`ctx`拥有 picgo 暴露�
 首先我们来初始化一个 picgo 实例。
 
 ```js
-const PicGo = require('picgo')
+// Common JS
+const { PicGo } = require('picgo')
+// ES Module
+import { PicGo } from 'picgo'
+
 const picgo = new PicGo()
 ```
 
@@ -48,7 +52,7 @@ picgo.upload([])
 
 - 非空数组
 
-当为非空数组的时候，对应于 picgo 默认的两种 transformer，支持 path 数组以及 base64 图片信息数组。参考 [Transformer](/zh/dev-guide/cli.html#transformer) 章节。
+当为非空数组的时候，对应于 picgo 默认的两种 transformer，支持 path 数组以及 base64 图片信息数组。参考 [Transformer](/dev-guide/cli#transformer) 章节。
 
 示例：
 
@@ -221,7 +225,7 @@ removesetConfig 后的 config file:
 通过`emit`可以派发事件，再通过`on`方法监听。
 
 ::: tip 提示
-一个特殊的事件名是`notification`，picgo 以及一些插件将会使用这个事件名，详情可以查看 [消息通知](/zh/dev-guide/cli.html#消息通知)章节。
+一个特殊的事件名是`notification`，picgo 以及一些插件将会使用这个事件名，详情可以查看 [消息通知](/dev-guide/cli#消息通知)章节。
 :::
 
 示例：
@@ -237,7 +241,7 @@ picgo.emit('xxx', { message: 'xxx' })
 - event: string
 - callback: function
 
-通过`on`可以监听`emit`派发的事件。picgo 自带的事件可以参考 [事件监听](/zh/guide/use-in-node.html#事件监听)一章。
+通过`on`可以监听`emit`派发的事件。picgo 自带的事件可以参考 [事件监听](/guide/use-in-node#事件监听)一章。
 
 ```js
 picgo.emit('xxx', message => {
@@ -311,7 +315,7 @@ console.log(picgo.GUI_VERSION) // x.x.x
 
 ## helper
 
-helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有相同的 api，不过所在生命周期不同，详情可见 [生命周期流程](/zh/dev-guide/cli.html)。因此只介绍`helper.transformer`即可。
+helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有相同的 api，不过所在生命周期不同，详情可见 [生命周期流程](/dev-guide/cli)。因此只介绍`helper.transformer`即可。
 
 ### helper.transformer
 
@@ -320,9 +324,9 @@ helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有
 - id: string
 - plugin: object
 
-如果你只是要开发一个简单的插件，而不是发布一个 npm 包的话（发布 picgo 的 npm 插件包请查看 [插件开发指南](/zh/dev-guide/cli.html)），那么只需要调用`helper[module].register`方法即可。
+如果你只是要开发一个简单的插件，而不是发布一个 npm 包的话（发布 picgo 的 npm 插件包请查看 [插件开发指南](/dev-guide/cli)），那么只需要调用`helper[module].register`方法即可。
 
-第一个参数代表插件的 id（相同的部件只能拥有唯一的 id，不过不同的部件可以拥有相同的 id），第二个参数应当是一个对象，至少包括一个`handle`方法供 picgo 调用。如果你还想要拥有 [配置项](/zh/dev-guide/cli.html#配置项的处理) 功能，可以考虑再加入`config`方法供 picgo 调用。
+第一个参数代表插件的 id（相同的部件只能拥有唯一的 id，不过不同的部件可以拥有相同的 id），第二个参数应当是一个对象，至少包括一个`handle`方法供 picgo 调用。如果你还想要拥有 [配置项](/dev-guide/cli#配置项的处理) 功能，可以考虑再加入`config`方法供 picgo 调用。
 
 示例：
 
@@ -459,7 +463,7 @@ const res: IRes = await ctx.request(opt) // IRes
 
 ### cmd.program
 
-用于注册 CLI 命令。实际上是一个 [commander.js](https://github.com/tj/commander.js/) 的实例，用法和`commander.js`几乎一致。 **不过请不要手动调用 picgo.cmd.program.parse(process.argv) 否则会导致出错** 。参考 [注册命令](/zh/dev-guide/cli.html#注册 cli 命令)一章。
+用于注册 CLI 命令。实际上是一个 [commander.js](https://github.com/tj/commander.js/) 的实例，用法和`commander.js`几乎一致。 **不过请不要手动调用 picgo.cmd.program.parse(process.argv) 否则会导致出错** 。参考 [注册命令](/dev-guide/cli#注册 cli 命令)一章。
 
 示例：
 
@@ -473,7 +477,7 @@ picgo.cmd.program
 
 ### cmd.inquirer
 
-用于提供 CLI 命令行交互。实际上是一个 [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) 的实例，用法和`inquirer.js`一致。参考 [配置项的处理](/zh/dev-guide/cli.html#配置项的处理) 一章。通常 PicGo 内部会将其和插件的 [config](/zh/dev-guide/cli.html#config方法) 方法一起使用。
+用于提供 CLI 命令行交互。实际上是一个 [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) 的实例，用法和`inquirer.js`一致。参考 [配置项的处理](/dev-guide/cli#配置项的处理) 一章。通常 PicGo 内部会将其和插件的 [config](/dev-guide/cli#config方法) 方法一起使用。
 
 示例：
 
@@ -488,7 +492,7 @@ const handleConfig = async ctx => {
 ```
 
 :::tip 提示
-你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的 [config](/zh/dev-guide/cli.html#config方法) 方法来实现命令行交互，并且 PicGo 会自动存储`config`相关配置项的结果。
+你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的 [config](/dev-guide/cli#config方法) 方法来实现命令行交互，并且 PicGo 会自动存储`config`相关配置项的结果。
 :::
 
 ## log
@@ -804,7 +808,7 @@ const list = picgo.i18n.getLanguageList() // ['zh-CN', 'zh-TW', 'en']
 
 ## guiApi <Badge text="GUI VERSION 2.0.0+" />
 
-**guiApi 仅在 electron 版本的 PicGo 里提供，详细信息可以参考 [GUI 插件开发一章](/zh/dev-guide/gui.html)。**
+**guiApi 仅在 electron 版本的 PicGo 里提供，详细信息可以参考 [GUI 插件开发一章](/dev-guide/gui)。**
 
 ### guiApi.showInputBox([option])
 

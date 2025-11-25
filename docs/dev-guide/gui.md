@@ -1,11 +1,8 @@
----
-sidebarDepth: 3
----
 # GUI插件开发
 
 ## 概述
 
-GUI插件指的是运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。它支持绝大多数在普通插件里能实现的[功能](/zh/dev-guide/cli.html)，还增加了额外的`guiApi`和其他的GUI特有的事件，让你的插件在PicGo里更加强大。
+GUI插件指的是运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。它支持绝大多数在普通插件里能实现的[功能](/dev-guide/cli)，还增加了额外的`guiApi`和其他的GUI特有的事件，让你的插件在PicGo里更加强大。
 
 ![](https://pic.molunerfinn.com/picgo/docs/50515434-bc9e8180-0adf-11e9-8c71-0e39973c06b1.png)
 
@@ -20,7 +17,7 @@ PicGo在2.0版本之后支持的插件系统其实就是以PicGo-Core为底层�
 等等。这些操作或多或少需要额外的信息输入与交互，而不仅仅是依赖PicGo本身的上传区域来进行上传。所以针对GUI插件，PicGo提供了一些特殊的API来支持这些独立于常规上传流程之外的功能。
 
 ::: warning 警告
-确保你已经阅读过非GUI版本的[插件开发](/zh/dev-guide/cli.html)，之前提到的概念在GUI版本的插件概述里将不会重复。
+确保你已经阅读过非GUI版本的[插件开发](/dev-guide/cli)，之前提到的概念在GUI版本的插件概述里将不会重复。
 :::
 
 ## guiMenu
@@ -122,7 +119,7 @@ module.exports = ctx => {
 
 ## 默认菜单项
 
-根据[插件开发-配置项处理](/zh/dev-guide/cli.html#配置项的处理)一章的描述，如果你的插件提供了 `Plugin` 或 `Uploader` 或 `Transformer` 维度的配置，会在插件的右键菜单生成对应默认的配置菜单：
+根据[插件开发-配置项处理](/dev-guide/cli#配置项的处理)一章的描述，如果你的插件提供了 `Plugin` 或 `Uploader` 或 `Transformer` 维度的配置，会在插件的右键菜单生成对应默认的配置菜单：
 
 ![defautl-config](https://pic.molunerfinn.com/picgo/docs/default-config.png)
 
@@ -327,7 +324,7 @@ const guiMenu = ctx => {
 
 ### galleryDB <Badge text="2.3.0+" />
 
-2.3.0版本开始，提供了专门的相册数据操作api。包括了获取、更新、删除、插入等操作。详细说明可以参考 [api-guiApi-galleryDB](../api/README.md#guiapi-gallerydb)。
+2.3.0版本开始，提供了专门的相册数据操作api。包括了获取、更新、删除、插入等操作。详细说明可以参考 [api-guiApi-galleryDB](/api/#guiapi-gallerydb)。
 
 ## i18n 国际化 <Badge text="2.3.1+" />
 
@@ -337,7 +334,7 @@ const guiMenu = ctx => {
 - zh-TW
 - en
 
-如果你的插件希望添加多语言支持，可以参考 [cli-i18n](/zh/dev-guide/cli/#i18n-国际化) 一节。
+如果你的插件希望添加多语言支持，可以参考 [cli-i18n](/dev-guide/cli#i18n-国际化) 一节。
 
 如果你希望给 PicGo-GUI 添加一种默认的新语言支持，参考[文档](https://github.com/Molunerfinn/PicGo/blob/dev/CONTRIBUTING.md#i18n)。
 

@@ -1,6 +1,3 @@
----
-sidebarDepth: 3
----
 # 配置文件
 
 picgo 需要配置文件来启动。当你未指定配置文件的时候，picgo 将会使用默认配置文件来启动。
@@ -15,7 +12,7 @@ windows 则为`C:\Users\你的用户名\.picgo\config.json`。
 
 ### 自动生成
 
-**通常来说你只需要配置 `Uploader` 即可，所以你可以通过 `picgo set uploader` 来进入交互式命令行，配置成功后会自动生成配置文件，无需复制粘贴！其他更多的命令可以参考 [CLI 命令](/zh/guide/commands.html) 一章。**
+**通常来说你只需要配置 `Uploader` 即可，所以你可以通过 `picgo set uploader` 来进入交互式命令行，配置成功后会自动生成配置文件，无需复制粘贴！其他更多的命令可以参考 [CLI 命令](/guide/commands) 一章。**
 
 ::: warning 注意
 同时，填好图床配置之后，请务必通过 `picgo use uploader` 选择当前要使用的 `Uploader`。
@@ -71,7 +68,7 @@ $ picgo set uploader
 
 ### picBed.smms <Badge text="1.4.7+" />
 
-SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken) 获取 `token`。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#smms) 进行配置。
+SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken) 获取 `token`。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#smms) 进行配置。
 
 默认值如下：
 
@@ -83,7 +80,7 @@ SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken)
 
 ### picBed.qiniu
 
-七牛图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#七牛图床)进行配置。
+七牛图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#七牛图床)进行配置。
 
 默认值如下：
 
@@ -101,7 +98,7 @@ SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken)
 
 ### picBed.upyun
 
-又拍云的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#又拍云)进行配置。
+又拍云的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#又拍云)进行配置。
 
 默认值如下：
 
@@ -118,7 +115,7 @@ SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken)
 
 ### picBed.tcyun
 
-腾讯云 COS 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#腾讯云 cos) 进行配置。
+腾讯云 COS 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#腾讯云 cos) 进行配置。
 
 默认值如下：
 
@@ -137,7 +134,7 @@ SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken)
 
 ### picBed.github
 
-GitHub 图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#github 图床)进行配置。
+GitHub 图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#github 图床)进行配置。
 
 默认值如下：
 
@@ -153,7 +150,7 @@ GitHub 图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.githu
 
 ### picBed.aliyun
 
-阿里云 OSS 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#阿里云 oss) 进行配置。
+阿里云 OSS 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#阿里云 oss) 进行配置。
 
 默认值如下：
 
@@ -171,7 +168,7 @@ GitHub 图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.githu
 
 ### picBed.imgur
 
-Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config.html#imgur 图床)进行配置。
+Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#imgur 图床)进行配置。
 
 默认值如下：
 

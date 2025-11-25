@@ -1,6 +1,3 @@
----
-sidebarDepth: 3
----
 
 # 在Node里使用picgo
 
@@ -12,7 +9,7 @@ sidebarDepth: 3
 
 ## 初始化
 
-初始化如果需要使用自定义的配置文件，请查看[配置文件](/zh/guide/config.html)一章。注意初始化方式分不同的版本。
+初始化如果需要使用自定义的配置文件，请查看[配置文件](/guide/config)一章。注意初始化方式分不同的版本。
 
 ### 使用默认配置文件
 
@@ -78,7 +75,7 @@ const main = async () => {
 
 picgo在上传的生命周期里将会暴露一些事件，这些事件将会传入一些参数方便开发者使用。
 
-如果忘记生命周期图可以参考[介绍](/zh/guide/)。
+如果忘记生命周期图可以参考[介绍](/guide/)。
 
 ### uploadProgress
 
@@ -211,7 +208,7 @@ picgo.helper.afterUploadPlugins.register('name', {
 picgo.upload(['/xxx/xxx.jpg'])
 ```
 
-当然如果你想实现更加复杂的操作，比如增加自有插件配置、设置插件名字或者想把你的插件开放给更多人使用，欢迎查阅[插件开发](/zh/dev-guide/cli.html)相关章节。
+当然如果你想实现更加复杂的操作，比如增加自有插件配置、设置插件名字或者想把你的插件开放给更多人使用，欢迎查阅[插件开发](/dev-guide/cli)相关章节。
 
 ## 日志系统 <Badge text="1.3.7+" />
 
@@ -316,7 +313,7 @@ const main = async () => {
 }
 ```
 
-详细参考 [api-pluginHandler](../api/README.md#pluginhandler)。
+详细参考 [api-pluginHandler](/api/#pluginhandler)。
 
 ### pluginLoader
 
@@ -337,7 +334,7 @@ picgo.pluginLoader.registerPlugin('xxx', pluginXXX)
 console.log(picgo.pluginLoader.hasPlugin('xxx')) // true
 ```
 
-详细参考 [api-pluginLoader](../api/README.md#pluginloader)。
+详细参考 [api-pluginLoader](/api/#pluginloader)。
 
 ## Webpack打包注意事项
 

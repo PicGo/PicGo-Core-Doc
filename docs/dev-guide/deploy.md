@@ -1,6 +1,3 @@
----
-sidebarDepth: 2
----
 
 # 插件测试与发布
 
@@ -20,7 +17,7 @@ npm install picgo -g
 
 **然后运行一下`picgo -h`看看是否安装成功。（这步是必须的，因为第一次安装需要先运行一下，然后picgo会创建默认的配置文件和生成package.json等初始化操作）**
 
-然后将你所写的插件的文件夹放到picgo[默认的配置文件](/zh/guide/config.html#%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)所在的目录里。**注意插件文件夹名字必须以`picgo-plugin-`作为前缀，否则安装的时候picgo将不会读取。**
+然后将你所写的插件的文件夹放到picgo[默认的配置文件](/guide/config#%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)所在的目录里。**注意插件文件夹名字必须以`picgo-plugin-`作为前缀，否则安装的时候picgo将不会读取。**
 
 然后在picgo默认配置文件所在的目录下，输入：
 
