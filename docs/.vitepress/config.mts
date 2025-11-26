@@ -89,6 +89,7 @@ export default defineConfig({
   description: 'PicGo 的核心组件',
   base: '/PicGo-Core-Doc/',
   head: [
+    ['meta', { name: 'google-site-verification', content: 'I9agtjzUmnyUxzdpci2kQuXzlOgw7qBLqR5w6PgUnjQ' }],
     [
       'link',
       {
@@ -97,6 +98,9 @@ export default defineConfig({
       }
     ]
   ],
+  sitemap: {
+    hostname: 'https://picgo.github.io/PicGo-Core-Doc/'
+  },
   themeConfig: {
     logo: 'https://pic.molunerfinn.com/picgo/docs/picgo-logo.png',
     socialLinks: [
