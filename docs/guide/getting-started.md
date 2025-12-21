@@ -1,62 +1,62 @@
-# 快速上手
+# Getting Started
 
-::: warning 注意
-请确保你的 Node.js 版本 >= 16。
+::: warning Note
+Make sure your Node.js version is >= 16.
 :::
 
-::: tip 提示
-默认上传图床为[SM.MS](https://sm.ms/)。
+::: tip Tip
+The default image host is [SM.MS](https://sm.ms/).
 :::
 
-## 临时尝鲜
+## Try it out (no install)
 
-> 如果你的npm>=5.2，可以使用npx尝试一下picgo，这条命令会临时安装picgo，并在使用结束后删除它。
+> If your npm is >= 5.2, you can try PicGo with `npx`. This command installs PicGo temporarily and removes it after you’re done.
 
 ```bash
 npx picgo upload ./xxxx.jpg
 ```
 
-## 全局安装
+## Install globally
 
-> 使用CLI部分
+> Using the CLI
 
 ```bash
-# 安装
-yarn global add picgo # 或者 npm install picgo -g
+# Install
+yarn global add picgo # or npm install picgo -g
 
-# 上传具体路径图片
+# Upload an image from a path
 picgo upload /xxx/xxx.jpg
 
-# 上传剪贴板里的第一张图片（上传时会将格式转成png）
+# Upload the first image in the clipboard (will be converted to PNG)
 picgo upload
 ```
 
-> 上传剪贴板里的图片的实现来自于[vs-picgo](https://github.com/Spades-S/vs-picgo)，感谢[Spades-S](https://github.com/Spades-S)！
+> Clipboard image uploading is implemented by [vs-picgo](https://github.com/Spades-S/vs-picgo). Thanks to [Spades-S](https://github.com/Spades-S)!
 
-## 现有项目
+## Use in an existing project
 
-> 使用API部分
+> Using the API
 
 ```bash
-yarn add picgo -D # 或者 npm install picgo -D
+yarn add picgo -D # or npm install picgo -D
 ```
-创建一个js文件（例如picgo.js）：
+Create a JS file (for example, `picgo.js`):
 ```js
-// v1.4.x- 版本
+// v1.4.x and earlier
 const PicGo = require('picgo')
 
-// v1.5.0+ 版本
+// v1.5.0+
 const { PicGo } = require('picgo')
 
-const picgo = new PicGo() // 将使用默认的配置文件：~/.picgo/config.json
+const picgo = new PicGo() // Uses the default config file: ~/.picgo/config.json
 
-// 上传具体路径下的图片
+// Upload an image from a path
 picgo.upload(['/xxx/xxx.jpg'])
 
-// 上传剪贴板里的第一张图片（上传时会将格式转为png）
+// Upload the first image in the clipboard (will be converted to PNG)
 picgo.upload()
 ```
-运行js：
+Run it:
 
 ```sh
 node picgo.js

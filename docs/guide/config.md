@@ -1,21 +1,20 @@
-# 配置文件
+# Configuration
 
-picgo 需要配置文件来启动。当你未指定配置文件的时候，picgo 将会使用默认配置文件来启动。
+PicGo requires a configuration file to run. If you don’t specify one, PicGo will start with the default config file.
 
-## 默认配置文件
+## Default config file
 
-picgo 的默认配置文件为`~/.picgo/config.json`。其中`~`为用户目录。不同系统的用户目录不太一样。
+The default config file is `~/.picgo/config.json`, where `~` is your home directory.
 
-linux 和 macOS 均为`~/.picgo/config.json`。
+- Linux and macOS: `~/.picgo/config.json`
+- Windows: `C:\Users\<your-username>\.picgo\config.json`
 
-windows 则为`C:\Users\你的用户名\.picgo\config.json`。
+### Generate automatically
 
-### 自动生成
+**In most cases you only need to configure an `Uploader`, so you can run `picgo set uploader` to enter the interactive prompt. After configuration succeeds, PicGo will generate the config file automatically—no copying/pasting required. For more commands, see [CLI Commands](/guide/commands).**
 
-**通常来说你只需要配置 `Uploader` 即可，所以你可以通过 `picgo set uploader` 来进入交互式命令行，配置成功后会自动生成配置文件，无需复制粘贴！其他更多的命令可以参考 [CLI 命令](/guide/commands) 一章。**
-
-::: warning 注意
-同时，填好图床配置之后，请务必通过 `picgo use uploader` 选择当前要使用的 `Uploader`。
+::: warning Note
+After configuring your image host, don’t forget to select the uploader you want to use via `picgo use uploader`.
 :::
 
 ```bash
@@ -31,28 +30,28 @@ $ picgo set uploader
 (Move up and down to reveal more choices)
 ```
 
-### 手动生成
+### Create manually
 
-如果你要手动生成配置文件，需要自己创建对应的目录、JSON 文件以及至少有如下的配置项（因此还是推荐通过命令行自动生成配置文件）：
+If you want to create the config file manually, you need to create the directory and JSON file yourself, and at minimum include the following fields (this is why the CLI-generated config is recommended):
 
 ```json
 {
   "picBed": {
-    "uploader": "smms", // 代表当前的默认上传图床为 SM.MS,
+    "uploader": "smms", // the default image host is SM.MS
     "smms": {
-      "token": "" // 从 https://sm.ms/home/apitoken 获取的 token
+      "token": "" // token from https://sm.ms/home/apitoken
     }
   },
-  "picgoPlugins": {} // 为插件预留
+  "picgoPlugins": {} // reserved for plugins
 }
 ```
 
 ## picBed
 
-作为 picgo 最主要的配置项，picBed 里包括了当前上传图床，以及所有上传图床的配置。
+As PicGo’s most important configuration section, `picBed` contains the currently selected image host and the configuration for all image hosts.
 
-::: warning 插件开发者注意
-如果一个 Uploader 的名字为`xxx`，那么它的配置信息会放置在`picBed.xxx`里。这个将有助于 PicGo 的 electron 版本进行配置。
+::: warning Plugin authors
+If an Uploader is named `xxx`, its configuration should be placed under `picBed.xxx`. This is important for the PicGo Electron app to render configuration UI.
 :::
 
 ### picBed.uploader
@@ -60,130 +59,130 @@ $ picgo set uploader
 - type: string
 - default: `smms`
 
-表明当前的上传图床是哪个。默认值是`smms`。
+Indicates which image host is currently selected. The default is `smms`.
 
 ### picBed.current
 
-作用与`picBed.uploader`一致，主要是为了兼容 PicGo 的 electron 版本而留下的配置。未来有可能抛弃。
+Same purpose as `picBed.uploader`. This exists mainly for compatibility with the PicGo Electron app and may be removed in the future.
 
 ### picBed.smms <Badge text="1.4.7+" />
 
-SMMS 图床的相关配置。注册并登录 [smms](https://sm.ms/home/apitoken) 获取 `token`。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#smms) 进行配置。
+Configuration for the SM.MS image host. Register and log in to [SM.MS](https://sm.ms/home/apitoken) to get a `token`. You can also refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#smms).
 
-默认值如下：
+Defaults:
 
 ```json
 {
-  "token": "" // 注册后获取的 api token
+  "token": "" // API token obtained after registration
 }
 ```
 
 ### picBed.qiniu
 
-七牛图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#七牛图床)进行配置。
+Configuration for the Qiniu image host. Refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/guide/config#qiuniu-image-host).
 
-默认值如下：
+Defaults:
 
 ```json
 {
   "accessKey": "",
   "secretKey": "",
-  "bucket": "", // 存储空间名
-  "url": "", // 自定义域名
-  "area": "z0" | "z1" | "z2" | "na0" | "as0", // 存储区域编号
-  "options": "", // 网址后缀，比如？imgslim
-  "path": "" // 自定义存储路径，比如 img/
+  "bucket": "", // bucket name
+  "url": "", // custom domain
+  "area": "z0" | "z1" | "z2" | "na0" | "as0", // region code
+  "options": "", // URL suffix, e.g. ?imgslim
+  "path": "" // custom storage path, e.g. img/
 }
 ```
 
 ### picBed.upyun
 
-又拍云的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#又拍云)进行配置。
+Configuration for UpYun. Refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/guide/config#upyun-cloud).
 
-默认值如下：
+Defaults:
 
 ```json
 {
-  "bucket": "", // 存储空间名，及你的服务名
-  "operator": "", // 操作员
-  "password": "", // 密码
-  "options": "", // 针对图片的一些后缀处理参数
-  "path": "", // 自定义存储路径，比如 img/
-  "url": "" // 加速域名，注意要加 http://或者 https://
+  "bucket": "", // bucket name / service name
+  "operator": "", // operator
+  "password": "", // password
+  "options": "", // image processing options
+  "path": "", // custom storage path, e.g. img/
+  "url": "" // CDN domain, must include http:// or https://
 }
 ```
 
 ### picBed.tcyun
 
-腾讯云 COS 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#腾讯云 cos) 进行配置。
+Configuration for Tencent Cloud COS. Refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/guide/config#tencent-cloud-cos).
 
-默认值如下：
+Defaults:
 
 ```json
 {
   "secretId": "",
   "secretKey": "",
-  "bucket": "", // 存储桶名，v4 和 v5 版本不一样
+  "bucket": "", // bucket name (differs between v4 and v5)
   "appId": "",
-  "area": "", // 存储区域，例如 ap-beijing-1
-  "path": "", // 自定义存储路径，比如 img/
-  "customUrl": "", // 自定义域名，注意要加 http://或者 https://
-  "version": "v5" | "v4" // COS 版本，v4 或者 v5
+  "area": "", // region, e.g. ap-beijing-1
+  "path": "", // custom storage path, e.g. img/
+  "customUrl": "", // custom domain, must include http:// or https://
+  "version": "v5" | "v4" // COS version: v4 or v5
 }
 ```
 
 ### picBed.github
 
-GitHub 图床的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#github 图床)进行配置。
+Configuration for using GitHub as an image host. Refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/guide/config#github-image-host).
 
-默认值如下：
+Defaults:
 
 ```json
 {
-  "repo": "", // 仓库名，格式是 username/reponame
+  "repo": "", // repo in the form username/reponame
   "token": "", // github token
-  "path": "", // 自定义存储路径，比如 img/
-  "customUrl": "", // 自定义域名，注意要加 http://或者 https://
-  "branch": "" // 分支名，默认是 main
+  "path": "", // custom storage path, e.g. img/
+  "customUrl": "", // custom domain, must include http:// or https://
+  "branch": "" // branch name, default is main
 }
 ```
 
 ### picBed.aliyun
 
-阿里云 OSS 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#阿里云 oss) 进行配置。
+Configuration for Alibaba Cloud OSS. Refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/guide/config#aliyun-oss).
 
-默认值如下：
+Defaults:
 
 ```json
 {
   "accessKeyId": "",
   "accessKeySecret": "",
-  "bucket": "", // 存储空间名
-  "area": "", // 存储区域代号
-  "path": "", // 自定义存储路径
-  "customUrl": "", // 自定义域名，注意要加 http://或者 https://
-  "options": "" // 针对图片的一些后缀处理参数 PicGo 2.2.0+ PicGo-Core 1.4.0+
+  "bucket": "", // bucket name
+  "area": "", // region code
+  "path": "", // custom storage path
+  "customUrl": "", // custom domain, must include http:// or https://
+  "options": "" // image processing options (PicGo 2.2.0+ / PicGo-Core 1.4.0+)
 }
 ```
 
 ### picBed.imgur
 
-Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/PicGo-Doc/zh/guide/config#imgur 图床)进行配置。
+Configuration for Imgur. Refer to PicGo’s [wiki](https://picgo.github.io/PicGo-Doc/guide/config#imgur-image-host).
 
-默认值如下：
+Defaults:
 
 ```json
 {
-  "clientId": "", // imgur 的 clientId
-  "proxy": "" // 代理地址，仅支持 http 代理
+  "clientId": "", // Imgur clientId
+  "proxy": "" // proxy address (HTTP proxy only)
 }
 ```
 
 ### picBed.proxy
 
-自定义代理配置，picgo 内部使用 `request` 进行图片上传等网络请求，`picBed.proxy` 将会被用作 [request 的 proxy 配置](https://github.com/request/request#proxies)，目前只支持 HTTP 代理。 默认为空表示不设置代理。
+Custom proxy configuration. PicGo uses `request` for network requests (image uploading, etc.). `picBed.proxy` is used as [request’s proxy option](https://github.com/request/request#proxies). Only HTTP proxies are supported. An empty value means no proxy.
 
-示例：
+Example:
 
 ```json
 {
@@ -193,32 +192,32 @@ Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/Pi
 
 ## picgoPlugins
 
-这个配置项将会将所有插件名放置进去。主要用于判断插件是否被启用或者禁用。 **picgo 自动生成，不需要配置！**
+This section stores all plugin names and is mainly used to determine whether a plugin is enabled or disabled. **It is generated by PicGo automatically—you don’t need to edit it.**
 
-示例：
+Example:
 
 ```json
 {
-  "picgo-plugin-xxx": true, // 该插件被启用
-  "picgo-plugin-yyy": false // 该插件被禁用
+  "picgo-plugin-xxx": true, // enabled
+  "picgo-plugin-yyy": false // disabled
 }
 ```
 
 ## transformer
 
-这个配置项主要用于存放第三方插件里的 Transformer 的相关配置。
+This section stores configuration for Transformers provided by third-party plugins.
 
-::: warning 插件开发者注意
-如果一个 Transformer 的名字为`xxx`，那么它的配置信息会放置在`transformer.xxx`里。这将有助于 PicGo 的 electron 版本进行配置。
+::: warning Plugin authors
+If a Transformer is named `xxx`, its configuration should be placed under `transformer.xxx`. This helps the PicGo Electron app render its UI.
 :::
 
-默认值：`{}`
+Default: `{}`
 
 ## picgo-plugin-*
 
-如果你为 picgo 开发了一个插件，如果这个插件本身需要一些配置项，那么这个插件对应的配置应该直接放置在配置文件下的同名配置里：
+If you develop a PicGo plugin and it requires configuration, you should place the plugin configuration at the top level, under a key that matches the plugin package name:
 
-示例：
+Example:
 
 ```json
 "picgo-plugin-xxx": {

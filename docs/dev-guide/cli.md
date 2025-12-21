@@ -1,54 +1,54 @@
 
-# 插件开发
+# Plugin Development
 
-## 简介
+## Introduction
 
-picgo是个上传的流程系统。因此插件其实就是针对这个流程系统的某个部件或者某些部件的开发。
+PicGo is an upload workflow engine. A “plugin” is simply an implementation targeting one (or more) parts of that workflow.
 
-再附一下流程图:
+Lifecycle diagram:
 
 ![flow](https://pic.molunerfinn.com/picgo/docs/core-lifecycle.png)
 
-其中可以供开发的部件总共有5个：
+There are 5 extension points in total:
 
-两个模块：
+Two modules:
 
 1. Transformer
 2. Uploader
 
-::: tip 提示
-这两个部件在上传的生命周期里各只会调用一次。比如picgo默认带有8种Uploader，但是在一次上传过程中 **只会调用某一个** 选定的Uploader来上传。
+::: tip Tip
+Each of these two components is called only once per upload lifecycle. For example, PicGo ships with multiple uploaders, but during one upload it will call **only one** selected uploader.
 :::
 
-三个生命周期插件入口：
+Three lifecycle plugin entry points:
 
 1. beforeTransformPlugins
 2. beforeUploadPlugins
 3. afterUploadPlugins
 
-::: tip 提示
-这三个生命周期插件只要存在就会调用。比如你安装了两个插件，它们都书写了`beforeTransformPlugins`，那么这两个插件的`beforeTransformPlugins` **都会被调用** 。
+::: tip Tip
+These lifecycle plugin hooks are invoked whenever they exist. For example, if you install two plugins and both implement `beforeTransformPlugins`, then **both** `beforeTransformPlugins` will be executed.
 :::
 
-通常来说如果你只是要实现一个picgo默认不支持的图床的话，你只需要开发一个`Uploader`。
+If you just want to add an image host that PicGo doesn’t support out of the box, you usually only need to implement an `Uploader`.
 
-如果你要实现一个通过图片url地址，就能上传到现有的图床的功能的话，可以考虑开发一个`Transformer`或者一个`beforeTransformPlugins`。
+If you want to upload by providing an image URL (and then upload that image to an existing image host), consider implementing a `Transformer` or a `beforeTransformPlugins` hook.
 
-当然在这过程中你可以获取picgo提供的其他丰富的[API](/api/)。
+Along the way, you can also use other PicGo [APIs](/api/).
 
-## 概述
+## Overview
 
-上述5个部件都是[LifecyclePlugins](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/LifecyclePlugins.ts)类的实例化,因此都会提供一个`register`方法用于给部件注册。
+All 5 extension points are instances of [LifecyclePlugins](https://github.com/PicGo/PicGo-Core/blob/dev/src/lib/LifecyclePlugins.ts), so they all provide a `register()` method.
 
-::: warning 注意
-`register`的第一个参数为id，是某个部件里的唯一标识符；第二个参数才为插件的具体实现。
+::: warning Note
+The first argument of `register()` is an `id` (unique within that extension point). The second argument is the plugin implementation.
 :::
 
-不管是哪种部件，都应该暴露一个`handle`方法用于picgo来调用。而picgo会给每个`handle`方法传入picgo的`ctx`，方便你获取input、output、config等信息。
+Regardless of which part you implement, you should expose a `handle` method that PicGo can call. PicGo passes `ctx` into each `handle`, so you can access input/output/config and more.
 
-而一个 **插件本身** 通过实现一个`register`方法来供picgo的`pluginLoader`来加载。插件本身应该是一个npm包，这样才能被picgo正确安装及使用。 
+The **plugin package** itself should expose a `register` method so it can be loaded by `pluginLoader`. Plugins should be published as npm packages so PicGo can install and use them.
 
-插件的目录结构可以很简单：
+Your plugin package can have a minimal structure:
 
 ```bash
 .
@@ -57,9 +57,9 @@ picgo是个上传的流程系统。因此插件其实就是针对这个流程系
 └── package.json
 ```
 
-一个`index.js`，以及`package.json`里指定`main`字段为`index.js`即可。
+Just provide an `index.js` and set `main` to `index.js` in `package.json`.
 
-也即格式如下：
+Example:
 
 ```js
 const handle = ctx => {
@@ -67,8 +67,8 @@ const handle = ctx => {
 }
 
 module.exports = ctx => {
-  const register = () => { // 插件的register
-    ctx.helper.transformer.register('test', { handle }) // 这里的transformer可以替换成uploader等你想开发的部部件的名字。
+  const register = () => { // plugin register
+    ctx.helper.transformer.register('test', { handle }) // replace transformer with uploader (etc.) depending on what you build
   }
   return {
     register,
@@ -77,33 +77,33 @@ module.exports = ctx => {
 }
 ```
 
-**也可以使用picgo提供的官方的[插件模板](#使用插件模板)，下文会介绍。**
+**You can also use PicGo’s official [plugin template](#using-the-plugin-template) (introduced later).**
 
 ### Transformer
 
-[Transformer](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/transformer/index.ts)的作用是把input输入的内容（比如path）转化成Uploader可以`上传的内容`。
+The [Transformer](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/transformer/index.ts) converts the input (for example, file paths) into content that an Uploader can upload.
 
-默认的Transformer有两个，一个是[path](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/transformer/path.ts)一个是[base64](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/transformer/base64.ts)。
+PicGo provides two built-in transformers: [path](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/transformer/path.ts) and [base64](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/transformer/base64.ts).
 
-其中`path`接收的是一个路径数组：`[path1, path2, ...]`，并将其转换为output数组。
+`path` accepts an array of paths (`[path1, path2, ...]`) and converts them into the output array.
 
-`base64`将直接接收一个Uploader可支持的output数组。
+`base64` accepts an output array in the format expected by uploaders.
 
-默认的Uploader可支持的output格式如下：
+The default uploader output format looks like this:
 
-::: tip 提示
-其中buffer和base64值二选一即可，如果传入的是path数组，PicGo **默认输出是buffer值** 。
+::: tip Tip
+Provide either `buffer` or `base64Image`. If you pass a path array, PicGo **outputs buffers by default**.
 :::
 
 ```js
 [
   {
-    buffer: 'xxx', // 图片的buffer值，buffer和base64值二选一即可
-    base64Image: 'xxxx', // 图片的base64值，buffer和base64值二选一即可
-    fileName: 'xxxx', // 图片的文件名
-    width: 'xxxx', // 图片宽度
-    height: 'xxxx', // 图片高度
-    extname: '.xxx' // 图片格式的扩展名 比如.jpg | .png
+    buffer: 'xxx', // image buffer (choose buffer or base64Image)
+    base64Image: 'xxxx', // image base64 (choose buffer or base64Image)
+    fileName: 'xxxx', // filename
+    width: 'xxxx', // width
+    height: 'xxxx', // height
+    extname: '.xxx' // file extension, e.g. .jpg | .png
   },
   {
     ...
@@ -112,9 +112,9 @@ module.exports = ctx => {
 ]
 ```
 
-所以如果你只是开发一个Transformer的话，那么接收input而来的信息之后你只需要在`ctx.output`里输出成如上格式即可。
+So if you’re only building a Transformer, you just need to set `ctx.output` in the format above.
 
-例如：
+Example:
 
 ```js
 const handle = ctx => {
@@ -131,25 +131,28 @@ module.exports = ctx => {
   }
   return {
     register,
-    transformer: 'test' // 请将transformer的id注册在这里
+    transformer: 'test' // expose the transformer id here
   }
 }
 ```
 
 ### Uploader
 
-[Uploader](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/index.ts)的作用是把`ctx.output`内容上传到指定地方，并输出新的`ctx.output`（包含了图片上传的URL等）。
+The [Uploader](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/index.ts) uploads `ctx.output` to a target destination and outputs a new `ctx.output` containing upload results (URLs, etc.).
 
-Uploader里可以实现自己的上传逻辑。你可以通过`Transformer`传来的`ctx.output`获取你想要的图片的基本信息。然后实现一些比较有趣的功能，比如你想上传到自己的FTP服务器都可以实现。
+An uploader implements your upload logic. You can read image metadata from `ctx.output` produced by the Transformer, then implement anything you like—for example uploading to your own FTP server.
 
-::: warning 注意
-上传成功后你必须往`ctx.output`里的每一项加入一个`imgUrl`的属性，里面写入图片上传成功后的URL，以便PicGo（electron版本）获取图片地址并显示在相册中。如果你上传的是一个非图片文件，请提供一个`url`属性以及一个`imgUrl`属性，其中`imgUrl`可以是文件类型的缩略图的URL。而`url`将会决定用户拿到剪贴板的地址是什么。如果没有`url`将会取`imgUrl`的值。
-**另外注册的Uploader的id不能和现有的Uploader重复**，现有的Uploader可以在[配置列表](/guide/config)看到。
+::: warning Note
+After a successful upload, you must add an `imgUrl` field to each item in `ctx.output`. PicGo (Electron) uses this URL to show the image in the gallery.
+
+If you upload a non-image file, provide both `url` and `imgUrl`. In that case, `imgUrl` can be a thumbnail URL, while `url` determines what gets copied to the clipboard. If `url` is missing, PicGo falls back to `imgUrl`.
+
+**Also, your uploader id must not conflict with existing uploaders.** See the list in [Configuration](/guide/config).
 :::
 
-推荐可以使用[ctx.request](/api/#request)来发送请求，它能自动读取PicGo配置里的`proxy`值。
+It’s recommended to use [ctx.request](/api/#request) for HTTP requests—it will automatically read `proxy` from the PicGo config.
 
-例如：
+Example:
 
 ```js
 const handle = ctx => {
@@ -168,22 +171,22 @@ module.exports = ctx => {
   }
   return {
     register,
-    uploader: 'test'  // 请将uploader的id注册在这里
+    uploader: 'test'  // expose the uploader id here
   }
 }
 ```
 
-通过Uploader上传结束后，输出的结果为：
+After the uploader runs, the output looks like this:
 
 ```js
 [
   {
-    fileName: 'xxxx', // 图片的文件名
-    width: 'xxxx', // 图片宽度
-    height: 'xxxx', // 图片高度
-    extname: '.xxx' // 图片格式的扩展名 比如.jpg | .png
-    url: 'https://xxxxxx.jpg', // 文件的地址，如果文件是图片，那么跟imgUrl一致
-    imgUrl: 'https://xxxxx.jpg', // 图片的地址，如果文件不是图片，那么这个地址可以是文件类型的缩略图地址
+    fileName: 'xxxx', // filename
+    width: 'xxxx', // width
+    height: 'xxxx', // height
+    extname: '.xxx' // extension, e.g. .jpg | .png
+    url: 'https://xxxxxx.jpg', // file URL (for images, equals imgUrl)
+    imgUrl: 'https://xxxxx.jpg', // image URL (for non-images, can be a thumbnail URL)
   },
   {
     ...
@@ -194,13 +197,13 @@ module.exports = ctx => {
 
 ### beforeTransformPlugins
 
-这个部分的插件在input输入后，Transformer转换前调用。例如你要做一个通过图片URL获取图片并将其转换为output数组的插件，就可以通过这个部分的插件实现。
+Plugins in this stage run after input is set and before the Transformer runs. For example, if you want to fetch an image via URL and convert it into the output array, you can implement it here.
 
-::: tip 提示
-这三个生命周期插件的注册方法跟上面两个部分是一样的。这里只举例`beforeTransformPlugins`的注册。
+::: tip Tip
+Lifecycle plugin registration works the same as the Transformer/Uploader examples above. Here we only show `beforeTransformPlugins`.
 :::
 
-例如：
+Example:
 
 ```js
 const handle = ctx => {
@@ -221,23 +224,25 @@ module.exports = ctx => {
 
 ### beforeUploadPlugins
 
-这个部分的插件在Transformer输出之后，在Uploader上传之前调用。主要处理Transformer输出的output。
+Plugins in this stage run after the Transformer output is generated and before the Uploader starts uploading. They are mainly used to process the Transformer's output.
 
 ### afterUploadPlugins
 
-这个部分的插件在Transformer输出之后，在Uploader上传之前调用。主要处理Uploader上传成功后的output。
+Plugins in this stage run after uploading finishes successfully. They are mainly used to process the Uploader's output.
 
-## 高级技巧
+## Advanced Tips
 
-### 部件组合
+### Combining Modules
 
-你要实现的功能可能`Transformer`还不够，还需要`Uploader`来实现。或者你需要做的是接管整个上传流程，开发完整的5个部件。没有关系，你可以在自己的插件里注册多个部件的组合。
+What you want to build may not be achievable with only a `Transformer`—you might also need an `Uploader`. Or you may want to take over the entire upload workflow and implement all five modules. That's totally fine: a single plugin can register multiple modules.
 
-::: warning 注意
-同一个插件有且只能拥有一个相同的部分。比如你不能一个插件里书写两个Uploader。如果你的插件包括了`Uploader`或`Transformer`，请在最后将他们的`id`声明出来，如下例。
+::: warning Note
+Within one plugin, you can only have one module of the same type. For example, you cannot define two Uploaders in a single plugin.
+
+If your plugin includes an `Uploader` or a `Transformer`, declare their registered `id` at the end, as shown below.
 :::
 
-例如：
+Example:
 
 ```js
 const uploader = {
@@ -265,29 +270,31 @@ module.exports = ctx => {
   }
   return {
     register,
-    uploader: 'test', // 声明注册的uploader的id
-    transformer: 'test' // 声明注册的transformer的id
+    uploader: 'test', // declare the registered uploader id
+    transformer: 'test' // declare the registered transformer id
   }
 }
 ```
 
-### 配置项的处理
+### Handling Config
 
-::: tip 提示
-配置项处理目前只支持`Uploader`、`Transformer`和`Plugin`三个维度。
+::: tip Tip
+Config currently supports three dimensions: `Uploader`, `Transformer`, and `Plugin`.
 :::
 
-上面说了，每个部件都应该暴露一个`handle`方法，以及每个插件都应该暴露一个`register`方法用于picgo调用。如果你的插件想要拥有配置项（通常Uploader都会有配置项），那么你可以再实现一个方法——`config`。
+As mentioned above, each module should expose a `handle` method, and each plugin should expose a `register` method for PicGo to call.
 
-当你实现了配置项方法了之后，可以通过CLI的`set|config`方法来进行设置，比如：
+If your plugin needs configuration (Uploaders usually do), you can implement one more method: `config`.
+
+After you implement `config`, users can set it via the CLI `set|config` command, for example:
 
 ![](https://pic.molunerfinn.com/picgo/docs/picgo-settings-cli.gif)
 
-#### config方法
+#### The `config` method
 
-config方法应该返回一个合法的[问题](https://github.com/SBoudrias/Inquirer.js#question)数组，用于[inquirer](https://github.com/SBoudrias/Inquirer.js)来调用。你可以参考picgo里的[weibo](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/weibo.ts) Uploader的实现。
+The `config` method should return a valid array of [questions](https://github.com/SBoudrias/Inquirer.js#question) for [inquirer](https://github.com/SBoudrias/Inquirer.js) to prompt. You can refer to PicGo's [weibo](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/weibo.ts) Uploader implementation.
 
-并且注意，config方法也会接收来自picgo传入的ctx方便你使用（比如获取之前用户的设置）。config方法的实现例子如下：
+Also note: `config` receives the `ctx` passed in by PicGo so you can reuse existing settings (for example, reading the user's previous configuration). A minimal example:
 
 ```js
 const config = ctx => {
@@ -296,11 +303,11 @@ const config = ctx => {
 }
 ```
 
-::: tip 提示
-单独抽离config方法出来，是为了让PicGo（electron）版本能够用UI界面显示配置信息。
+::: tip Tip
+Separating `config` is for the PicGo (Electron) version to render configuration in a UI.
 :::
 
-示例：
+Example:
 
 ```js
 const handle = ctx => {
@@ -311,7 +318,7 @@ const transformerConfig = ctx => {
   return [...]
 }
 
-const pluinConfig = ctx => {
+const pluginConfig = ctx => {
   return [...]
 }
 
@@ -333,45 +340,50 @@ module.exports = ctx => {
 
 ```
 
-::: warning 注意
-这里有个约定俗成的规定，你的`Uploader`的配置项会存放在picgo配置项的`picBed`下。比如你的Uploader的name为`gitlab`，那么保存的时候会保存到`picBed.gitlab`下。你的`plugin`本身如果有配置项，那么你的plugin配置项会直接存放在picgo配置项下，并且以你的`plugin`命名。`Transformer`的配置项会放在picgo配置项的`transformer`下。
-关于配置相关的部分你应该查看[配置文件](/guide/config)一章。
+::: warning Note
+By convention, an `Uploader`'s configuration is stored under `picBed` in PicGo's config. For example, if your Uploader name is `gitlab`, its config will be stored at `picBed.gitlab`.
+
+If your `plugin` itself has configuration, it will be stored at the top level of the PicGo config, keyed by your plugin name.
+
+`Transformer` configuration is stored under `transformer`.
+
+For more details, see the [Config File](/guide/config) chapter.
 :::
 
-所以一个实现了`Uploader`叫`gitlab`，`Transformer`叫`gitlab`，`plugin`叫`picgo-plugin-gitlab`的插件，它写入picgo的配置文件后，picgo的配置文件应该长这样：
+So if you implement a plugin with `Uploader` id `gitlab`, `Transformer` id `gitlab`, and the plugin name `picgo-plugin-gitlab`, the PicGo config should look like this after it is written:
 
 ```json
 {
   "picBed": {
     "current": "gitlab",
     "gitlab": {
-      // ... Uploader配置项
+      // ... Uploader config
     },
     // ...
   },
-  "picgoPlugins": {...}, // 此项为picgo自动生成，不需配置
+  "picgoPlugins": {...}, // auto-generated by PicGo; no manual config needed
   "picgo-plugin-gitlab": {
-    // ... plugin配置项
+    // ... plugin config
   },
   // ...
   "transformer": {
     "gitlab": {
-      // ... Transformer配置项
+      // ... Transformer config
     },
     // ...
   }
 }
 ```
 
-::: tip 提示
-你最好只在你需要配置的部分（比如Uploader是几乎必须的）加入`config`而不是滥用这个方式，否则它将会提高用户使用的门槛和步骤。
+::: tip Tip
+Only add `config` where you actually need it (Uploaders almost always do). Overusing it increases the number of steps for users.
 :::
 
-### 消息通知
+### Notifications
 
-在上传过程中，有可能会遇到上传失败。这个时候如果你是一个Uploader的开发者，你应该将这个错误通知出去。可以参考picgo的[qiniu](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/qiniu.ts#L55-L58) Uploader的实现。
+During uploading, failures can happen. If you're developing an Uploader, you should notify users about the error. You can refer to PicGo's [qiniu](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/qiniu.ts#L55-L58) Uploader implementation.
 
-这里主要通过调用picgo给予的`ctx.emit`方法，可以emit一个叫做`notification`的事件来实现。具体格式如下：
+This is done via PicGo's `ctx.emit` method by emitting a `notification` event. Format:
 
 ```js
 const handle = ctx => {
@@ -379,7 +391,7 @@ const handle = ctx => {
     // ... do something
   } catch (err) {
     ctx.emit('notification', {
-      title: 'XXXX错误',
+      title: 'XXXX Error',
       body: 'XXXXXXXXXX',
       text: ''
     })
@@ -387,26 +399,28 @@ const handle = ctx => {
 }
 ```
 
-一个notification **必须要有`title`和`body`字段** 。至于`text`字段，如果存在，它将会被复制到用户的剪贴板里。这个特性在某些时候很有用。例如你需要用户在收到通知后，打开某个网站查看错误信息的话，text字段可以放入这个网址，那么用户收到通知后直接粘贴到网址栏即可访问。
+A notification **must include `title` and `body`**.
 
-### 注册CLI命令
+If `text` is present, it will be copied to the user's clipboard. This can be handy—for example, if you want the user to open a URL to view more details, you can put that URL into `text` so the user can paste it directly.
 
-picgo自带的CLI命令可以通过这个[章节](/guide/commands)找到。如果你的插件也想增加CLI命令的话，可以通过picgo提供的`ctx.cmd.program`实例来实现。这个实例其实就是个[commander](https://github.com/tj/commander.js/)实例。
+### Registering CLI Commands
 
-::: warning 注意
-你需要将注册的命令通过`ctx.cmd.register`来注册。用法与`Uploader`等的`register`方法一致。这个目的主要是保证命令只在合适的时候被调用，否则容易出现内存泄露。
+PicGo's built-in CLI commands are listed in [CLI Commands](/guide/commands). If your plugin also wants to add CLI commands, you can use the `ctx.cmd.program` instance provided by PicGo. This instance is a [commander](https://github.com/tj/commander.js/) instance.
+
+::: warning Note
+You must register commands via `ctx.cmd.register` (same pattern as `Uploader.register`, etc.). This ensures commands are only wired up at the right time; otherwise, it's easy to cause memory leaks.
 :::
 
-例如：
+Example:
 
 ```js
 module.exports = ctx => {
   const register = () => {
-    // 通过register注册
+    // register via ctx.cmd.register
     ctx.cmd.register('test-cmd', {
       handle (ctx) {
        ctx.cmd.program
-         .commands('test', 'This is a test commands')
+         .commands('test', 'This is a test command')
          .action(() => {
            console.log(123)
          })
@@ -419,35 +433,36 @@ module.exports = ctx => {
 }
 ```
 
-::: warning 注意
-你不需要调用`ctx.cmd.program.parse(process.argv)`！否则将会引发错误。picgo会自己调用这个命令。
+::: warning Note
+Do not call `ctx.cmd.program.parse(process.argv)`! PicGo will call it for you; calling it yourself will cause errors.
 :::
 
-### 日志系统 <Badge text="1.3.7+"/>
+### Logging System <Badge text="1.3.7+"/>
 
-如果你想记录下你的插件的行为，方便日后追查错误，可以查看[日志系统](/guide/use-in-node#日志系统/)一章。
+If you want to log plugin behavior for debugging later, see [Logging](/guide/use-in-node#logging).
 
-### i18n 国际化 <Badge text="1.5.0+"/>
 
-从 `v1.5.0` 开始，picgo 支持国际化。如果你的插件配置需要配置国际化文案，可以参考本节。
+### i18n (Internationalization) <Badge text="1.5.0+"/>
 
-picgo 默认提供三种内置语言：
+Starting from `v1.5.0`, PicGo supports internationalization. If your plugin needs localized copy (for config prompts, UI strings, etc.), this section is for you.
 
-- `zh-CN` (默认)
+PicGo provides three built-in languages by default:
+
+- `zh-CN` (default)
 - `zh-TW`
 - `en`
 
-如果你的插件需要支持这几种语言的文案，可以使用 `ctx.i18n` 提供的[方法](/api/#i18n)：
+If your plugin wants to provide copy for these languages, you can use the methods provided by `ctx.i18n` (see [i18n](/api/#i18n)):
 
-- 向已有的语言中添加语言包：`addLocale`: (language: string, locales: ILocale) => boolean
-- 翻译文本：`translate`: (key: T, args?: {}) => string
+- Add locale entries to an existing language: `addLocale`: (language: string, locales: ILocale) => boolean
+- Translate text: `translate`: (key: T, args?: {}) => string
 
-实际使用可以参考 [picgo-plugin-pic-migrater](https://github.com/PicGo/picgo-plugin-pic-migrater/blob/dev/src/i18n/index.ts)，以下是一个简单的例子：
+For a real-world example, see [picgo-plugin-pic-migrater](https://github.com/PicGo/picgo-plugin-pic-migrater/blob/dev/src/i18n/index.ts). A minimal example:
 
 ```js
 const localesZH = {
-  PIC_MIGRATER_CHOOSE_FILE: '选择文件',
-  PIC_MIGRATER_CHOOSE_FOLDER: '选择文件夹',
+  PIC_MIGRATER_CHOOSE_FILE: '[ZH] Choose File',
+  PIC_MIGRATER_CHOOSE_FOLDER: '[ZH] Choose Folder',
 }
 
 const localesEN = {
@@ -457,14 +472,14 @@ const localesEN = {
 
 module.exports = (ctx) => {
   const register = () => {
-    // 向 zh-CN 和 en 中添加语言包
+    // add locales to zh-CN and en
     ctx.i18n.addLocale('zh-CN', localesZH)
     ctx.i18n.addLocale('en', localesEN)
   }
 
   const config = (ctx) => {
     const text = ctx.i18n.translate('PIC_MIGRATER_CHOOSE_FILE')
-    console.log(text) // 选择文件
+    console.log(text)
   }
 
   return {
@@ -474,49 +489,55 @@ module.exports = (ctx) => {
 }
 ```
 
-如果还想添加新的语言、设置当前语言，可以参考 [picgo-i18n](/api/#i18n) 的文档。
+If you want to add more languages or set the current language, refer to the [picgo-i18n](/api/#i18n) docs.
 
-### 使用插件模板
+### Using the Plugin Template
 
-为了方便开发者快速开发picgo的插件，PicGo官方提供了插件模板：[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，它的使用和[vue-cli](https://cli.vuejs.org/)的`init`很类似。要使用官方的plugin模板你只需要：
+To help developers bootstrap PicGo plugins quickly, the PicGo team provides a plugin template: [picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin). Its usage is similar to `init` in [vue-cli](https://cli.vuejs.org/).
+
+To use the official plugin template:
 
 ```bash
 picgo init plugin <your-project-name>
 ```
 
-如果你已经创建过一次模板，下次可以使用离线模式：
+If you've created a template once, you can use offline mode next time:
 
 ```bash
 picgo init plugin <your-project-name> --offline
 ```
 
-如果你想要使用自己的模板，可以使用`user/repo`来下载指定的GitHub仓库的模板：
+If you want to use your own template, use `user/repo` to download a specific GitHub repo as the template:
 
 ```bash
 picgo init user/repo <your-project-name>
 ```
 
-然后根据提示创建项目即可。官方插件模板里提供了`TypeScript`和`JavaScript`两种模板，开发者可以二选一。推荐使用`TypeScript`模板来得到更好的语法提示。
+Then follow the prompts to create the project.
 
-### 开发插件模板
+The official template provides both `TypeScript` and `JavaScript` options. `TypeScript` is recommended for better type hints and tooling.
 
-如果你觉得官方的插件模板不够好用，你也可以开发自己的插件模板。不过注意点如下：
+### Developing a Plugin Template
 
-1. 你的仓库里必须要有一个`index.js`用于插件模板的配置。
-2. 你的仓库里必须要有一个`template`文件夹用于存放模板文件。
-3. picgo的template渲染引擎是[ejs](https://ejs.co/)，简单高效。
+If the official template doesn't fit your needs, you can develop your own. Notes:
 
-`index.js`文件里支持的导出内容有：
+1. Your repo must have an `index.js` for template configuration.
+2. Your repo must have a `template` folder to store template files.
+3. PicGo's template renderer is [ejs](https://ejs.co/), which is simple and efficient.
 
-1. prompts，用于插件初始化的时候提供命令行选项供用户选择。必须提供一个合法的[inquirer.js](https://github.com/SBoudrias/Inquirer.js/)的问题 **数组**。【几乎是必选】
-2. filters，用于根据用户回答prompts提供的答案来筛选文件。是一个 **对象**。【可选】
-3. complete，用于在模板渲染完执行的操作，是一个 **函数**。picgo会传入{ answers， options, files, ctx }。其中answers为用户回答的prompts的结果，options有当前执行的插件名、目的路径、是否离线等等（可以参考这个声明文件：[options](https://github.com/PicGo/PicGo-Core/blob/dev/src/utils/interfaces.ts#L52-L61))，files为生成的模板文件名的数组，ctx为picgo本身。【可选】
-4. completeMessage，用于在渲染结束后输出自定义文本。【可选】
+`index.js` can export:
 
-以上皆可参考vue-cli2的模板语法，以及[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)本身。有疑问可以在官方模板仓库里的[issues](https://github.com/PicGo/picgo-template-plugin/issues)里指出。
+1. `prompts`: provides CLI options when initializing a plugin. Must be a valid **array** of [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) questions. (Usually required.)
+2. `filters`: filters files based on the user's answers. An **object**. (Optional.)
+3. `complete`: runs after the template is rendered. A **function**. PicGo passes `{ answers, options, files, ctx }`. `answers` are results from `prompts`; `options` includes the plugin name, destination path, offline mode, etc (see: [options](https://github.com/PicGo/PicGo-Core/blob/dev/src/utils/interfaces.ts#L52-L61)); `files` is an array of generated file names; `ctx` is the PicGo context. (Optional.)
+4. `completeMessage`: prints custom text after rendering. (Optional.)
 
-### 开发GUI插件
+You can refer to vue-cli2 template syntax and [picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin) itself. If you have questions, feel free to open an issue in the official template repo: [issues](https://github.com/PicGo/picgo-template-plugin/issues).
 
-所谓的GUI插件就是指运行在electron版本的[PicGo](https://github.com/Molunerfinn/PicGo)里的插件。
+### Developing GUI Plugins
 
-理论上来说CLI部分的插件除了`注册CLI命令`的部分在GUI里用不到之外，其他的部分 **都可以正常在GUI里使用**。不过electron版本的PicGo为`PicGo-Core`的插件提供了额外的`guiApi`和一系列GUI事件，可以让你的插件在electron版本的PicGo里更加强大。详细可以查看[GUI插件开发一章](/dev-guide/gui)。
+GUI plugins run in the Electron version of [PicGo](https://github.com/Molunerfinn/PicGo).
+
+In general, everything described for CLI plugins can also be used in the GUI version, except the “Registering CLI Commands” part.
+
+In addition, the Electron version of PicGo provides extra capabilities for PicGo-Core plugins, including `guiApi` and a set of GUI events, which can make your plugin much more powerful in the GUI context. See [GUI Development](/dev-guide/gui) for details.

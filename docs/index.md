@@ -2,25 +2,39 @@
 layout: home
 hero:
   name: PicGo-Core
-  text: PicGo 的核心组件
-  tagline: 面向 CLI 与 API 的可扩展上传工作流
+  text: The ultimate image uploading engine
+  tagline: Integrate image uploading into your build scripts, editors, or any Node.js workflow via CLI or API.
   image:
     src: https://pic.molunerfinn.com/picgo/docs/picgo-logo.png
     alt: PicGo-Core Logo
     width: 256
   actions:
     - theme: brand
-      text: 指南
+      text: Guide
       link: /guide/
     - theme: alt
       text: GitHub
       link: https://github.com/PicGo/PicGo-Core
 features:
-  - title: 支持 CLI 调用
-    details: 在命令行里完成初始化、配置与上传，轻松构建高效的工作流。
-  - title: 支持 API 调用
-    details: 丰富的 API 便于你的 Node.js 程序无缝接入 PicGo 的上传流程。
-  - title: 支持插件系统
-    details: 生命周期完全可扩展，自由度极高，能实现更多意想不到的能力。
+  - title: CLI automation
+    details: Upload images and get links with a single command. Fits perfectly into shell scripts and CI/CD pipelines.
+  - title: Fast SDK integration
+    details: Don’t want to deal with authentication and upload logic? Bring in PicGo-Core and add image-host capability to your Node.js app in minutes.
+  - title: Extensible ecosystem
+    details: Powered by a strong plugin system—add compression, watermarking, and other processing, or connect to any private image host.
 footer: MIT Licensed | Copyright © 2018 - Now Molunerfinn
 ---
+
+```bash
+# Upload an image via CLI
+npx picgo upload /path/to/image.png
+```
+
+```js
+// Seamlessly integrate into your Node.js workflow
+const { PicGo } = require('picgo')
+const picgo = new PicGo()
+
+// Upload an image with a single line
+picgo.upload(['/path/to/image.png'])
+```

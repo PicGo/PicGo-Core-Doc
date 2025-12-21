@@ -2,15 +2,15 @@
 sidebar: auto
 ---
 
-# API 列表
+# API Reference
 
-picgo 本身是一个流程系统应用。除了最关键的上传之外，picgo 还支持配置、log 输出、插件、命令行交互等等功能。
+PicGo is a workflow-based application. Besides uploading (the core feature), PicGo also supports configuration management, logging, plugins, CLI interactions, and more.
 
 ## ctx
 
-picgo 传入插件的`ctx`其实就是 picgo 本身。`ctx`拥有 picgo 暴露的所有对象和方法。所以 picgo 本身拥有的方法，你在插件里使用的`ctx`也具备同样的方法。
+The `ctx` passed into plugins is essentially the PicGo instance itself. `ctx` contains all objects and methods exposed by PicGo, so anything PicGo can do, your plugin can do via `ctx` as well.
 
-首先我们来初始化一个 picgo 实例。
+First, let's initialize a PicGo instance.
 
 ```js
 // Common JS
@@ -21,26 +21,26 @@ import { PicGo } from 'picgo'
 const picgo = new PicGo()
 ```
 
-接下去介绍 picgo 的详细 API。
+Next, we'll go through the PicGo APIs.
 
 ## upload([input])
 
-picgo 的上传函数。
+PicGo's upload function.
 
 - input: Array\<any\> || `undefined`
 - return: Promise<[IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178) | Error> <Badge text="1.4.21+" />
 
-upload 接收两种情况：
+`upload` supports two cases:
 
-- 空数组或者`undefined`
+- An empty array or `undefined`
 
-当为空数组或者`undefined`的时候，picgo 将会上传剪贴板里的第一张图片（由于跨平台限制只能为 **`png`** 格式）。若剪贴板里不存在图片将会报错。
+When it is an empty array or `undefined`, PicGo uploads the first image in the clipboard (due to cross-platform limitations, only **`png`** is supported). If there is no image in the clipboard, it throws an error.
 
-::: tip 提示
-Linux 平台需要安装`xclip`
+::: tip Tip
+On Linux, you need to install `xclip`.
 :::
 
-示例：
+Example:
 
 ```js
 picgo.upload()
@@ -50,17 +50,17 @@ picgo.upload()
 picgo.upload([])
 ```
 
-- 非空数组
+- A non-empty array
 
-当为非空数组的时候，对应于 picgo 默认的两种 transformer，支持 path 数组以及 base64 图片信息数组。参考 [Transformer](/dev-guide/cli#transformer) 章节。
+When it is a non-empty array, it works with PicGo's two built-in transformers and supports an array of paths or an array of base64 image strings. See the [Transformer](/dev-guide/cli#transformer) section.
 
-示例：
+Example:
 
 ```js
 picgo.upload(['/xxx/xxx.jpg', '/yyy/yyy.png'])
 ```
 
-从 `v1.4.21+` 开始，支持调用后获取结果：
+From `v1.4.21+`, you can get the upload result from the return value:
 
 ```js
 const main = async () => {
@@ -71,11 +71,11 @@ const main = async () => {
 
 ## getConfig([name])
 
-获取 picgo 的 config 信息。
+Get PicGo configuration.
 
 - name: string
 
-默认的配置长这样：
+The default config looks like this:
 
 ```json
 {
@@ -85,13 +85,13 @@ const main = async () => {
 }
 ```
 
-你可以通过`getConfig()`获取完整信息：
+You can call `getConfig()` to get the full config:
 
 ```js
 picgo.getConfig()
 ```
 
-输出：
+Output:
 
 ```json
 {
@@ -102,27 +102,27 @@ picgo.getConfig()
 }
 ```
 
-或者你可以选择你要查看的具体配置项：
+Or you can read a specific config value:
 
 ```js
-picgo.getConfig('picBed.current') // 支持多级查找
+picgo.getConfig('picBed.current') // supports nested lookup
 ```
 
-输出：`smms`。
+Output: `smms`.
 
 ## setConfig(config)
 
-配置 picgo 的 config 但不写入配置文件，用于上下文使用。
+Set PicGo config in memory without writing to the config file (context-only).
 
 - config: object
 
-需要传入一个合法的对象去配置 picgo 的 config 信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身，却可以在流程过程中实现后续部件读取的配置。
+Pass a valid object to update PicGo config. **This method does not write to the config file**. It will not change the config file after the workflow finishes, but it allows subsequent modules in the current workflow to read the updated values.
 
-::: warning 注意
-如果是 GUI 插件，setConfig 虽然不会写入配置文件，但是会一直保存在 config 上下文中，如果插件有重置的需求，请在合适的地方调用 `unsetConfig`（见下文） 来重置 config。
+::: warning Note
+For GUI plugins, even though `setConfig` does not write to the config file, it stays in the config context. If your plugin needs to reset it, call `unsetConfig` (see below) at an appropriate time.
 :::
 
-示例：
+Example:
 
 ```js
 picgo.setConfig({
@@ -132,13 +132,13 @@ picgo.setConfig({
 
 ## saveConfig(config)
 
-配置 picgo 的 config 并写入配置文件，用于持久化保存配置。
+Set PicGo config and write it to the config file (persistent).
 
 - config: object
 
-需要传入一个合法的对象去配置 picgo 的 config 信息。**这个方法会写入配置文件**，并影响之后每次 picgo 读取的配置文件。
+Pass a valid object to update PicGo config. **This method writes to the config file** and affects what PicGo reads in subsequent runs.
 
-示例：
+Example:
 
 ```js
 picgo.saveConfig({
@@ -151,16 +151,16 @@ picgo.saveConfig({
 
 ## unsetConfig(key, propName) <Badge text="1.4.0+" />
 
-删除 picgo 的 config 中的某个配置但不写入配置文件，用于上下文使用。
+Remove a config entry from PicGo in memory without writing to the config file (context-only).
 
 - key: string
 - propName: string
 
-传入需要删除的字段来删除 picgo 的 config 信息。 **这个方法不会写入配置文件** ，一次流程执行结束后不会改变配置文件本身。
+Pass the field you want to remove. **This method does not write to the config file** and will not change the config file after the workflow finishes.
 
-示例：
+Example:
 
-原始的 config：
+Original config:
 
 ```json
 {
@@ -174,7 +174,7 @@ picgo.saveConfig({
 picgo.unsetConfig('picgoPlugin', 'picgo-plugin-xxx')
 ```
 
-unsetConfig 后的 config:
+Config after `unsetConfig`:
 
 ```json
 {
@@ -184,16 +184,16 @@ unsetConfig 后的 config:
 
 ## removeConfig(key, propName) <Badge text="1.4.0+" />
 
-删除 picgo 的 config 中的某个配置并写入配置文件，用于持久化保存配置。
+Remove a config entry and write the change to the config file (persistent).
 
 - key: string
 - propName: string
 
-传入需要删除的字段来删除 picgo 的 config 信息。 **这个方法会写入配置文件** ，并影响之后每次 picgo 读取的配置文件。
+Pass the field you want to remove. **This method writes to the config file** and affects what PicGo reads in subsequent runs.
 
-示例：
+Example:
 
-原始的 config file：
+Original config file:
 
 ```json
 {
@@ -204,10 +204,10 @@ unsetConfig 后的 config:
 ```
 
 ```js
-picgo.removesetConfig('picgoPlugin', 'picgo-plugin-xxx')
+picgo.removeConfig('picgoPlugin', 'picgo-plugin-xxx')
 ```
 
-removesetConfig 后的 config file:
+Config file after `removeConfig`:
 
 ```json
 {
@@ -217,18 +217,18 @@ removesetConfig 后的 config file:
 
 ## emit(event, [message])
 
-事件派发。继承于 EventEmmitter。
+Dispatch an event. Inherited from `EventEmitter`.
 
 - event: string
 - message: any
 
-通过`emit`可以派发事件，再通过`on`方法监听。
+Use `emit` to dispatch events, and use `on` to listen.
 
-::: tip 提示
-一个特殊的事件名是`notification`，picgo 以及一些插件将会使用这个事件名，详情可以查看 [消息通知](/dev-guide/cli#消息通知)章节。
+::: tip Tip
+A special event name is `notification`. PicGo and some plugins use it. See [Notifications](/dev-guide/cli#notifications).
 :::
 
-示例：
+Example:
 
 ```js
 picgo.emit('xxx', { message: 'xxx' })
@@ -236,15 +236,15 @@ picgo.emit('xxx', { message: 'xxx' })
 
 ## on(event, [callback])
 
-事件监听。继承于 EventEmmitter。
+Listen to an event. Inherited from `EventEmitter`.
 
 - event: string
 - callback: function
 
-通过`on`可以监听`emit`派发的事件。picgo 自带的事件可以参考 [事件监听](/guide/use-in-node#事件监听)一章。
+Use `on` to listen to events dispatched via `emit`. For built-in events, see [Event listeners](/guide/use-in-node#event-listeners).
 
 ```js
-picgo.emit('xxx', message => {
+picgo.on('xxx', message => {
   console.log(message) // { message: 'xxx' }
 })
 ```
@@ -253,7 +253,7 @@ picgo.emit('xxx', message => {
 
 - type: Array\<any\>
 
-picgo 的输入。是一个数组。
+PicGo input. This is an array.
 
 ```js
 console.log(picgo.input)
@@ -263,10 +263,10 @@ console.log(picgo.input)
 
 - type: Array\<any\>
 
-picgo 的输出。是一个数组。通常上传成功之后要给这个数组里每一项加入`imgUrl`以及`url`项。可以参考 picgo 默认的 [smms](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/smms.ts#L25-L37) Uploader。
+PicGo output. This is an array. Typically, after an upload succeeds, you add `imgUrl` and `url` to each item in this array. See the built-in [smms](https://github.com/PicGo/PicGo-Core/blob/dev/src/plugins/uploader/smms.ts#L25-L37) Uploader.
 
-::: warning 注意
-input 通过 Transformer 之后就会进入 output 数组中，而不是经过 Uploader 才会变成 output。
+::: warning Note
+After input goes through the Transformer, it enters the `output` array. It does not wait until the Uploader step to become `output`.
 :::
 
 ```js
@@ -277,7 +277,7 @@ console.log(picgo.output)
 
 - type: string
 
-picgo 的 config 所在路径。
+Path to the PicGo config file.
 
 ```js
 console.log(picgo.configPath)
@@ -287,7 +287,7 @@ console.log(picgo.configPath)
 
 - type: string
 
-picgo 的 config 文件所在的文件夹路径。
+Directory that contains the PicGo config file.
 
 ```js
 console.log(picgo.baseDir)
@@ -297,7 +297,7 @@ console.log(picgo.baseDir)
 
 - type: string
 
-获取当前 picgo 的版本。
+Get the current PicGo version.
 
 ```js
 console.log(picgo.VERSION) // x.x.x
@@ -307,7 +307,7 @@ console.log(picgo.VERSION) // x.x.x
 
 - type: string || undefined
 
-如果当前环境为 PicGo GUI，可以获取当前 PicGo GUI 的版本，否则是undefined。
+If running inside PicGo GUI, this returns the PicGo GUI version. Otherwise it is `undefined`.
 
 ```js
 console.log(picgo.GUI_VERSION) // x.x.x
@@ -315,7 +315,7 @@ console.log(picgo.GUI_VERSION) // x.x.x
 
 ## helper
 
-helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有相同的 api，不过所在生命周期不同，详情可见 [生命周期流程](/dev-guide/cli)。因此只介绍`helper.transformer`即可。
+`helper` is PicGo's plugin container manager. It contains 5 module containers with the same API, but they run at different lifecycle stages (see [Plugin Development](/dev-guide/cli)). So we only detail `helper.transformer` below.
 
 ### helper.transformer
 
@@ -324,11 +324,13 @@ helper 是 picgo 的主要插件的集中管理者，包含 5 个部件，拥有
 - id: string
 - plugin: object
 
-如果你只是要开发一个简单的插件，而不是发布一个 npm 包的话（发布 picgo 的 npm 插件包请查看 [插件开发指南](/dev-guide/cli)），那么只需要调用`helper[module].register`方法即可。
+If you just want to develop a simple plugin (instead of publishing it as an npm package—see [Plugin Development](/dev-guide/cli)), you only need to call `helper[module].register`.
 
-第一个参数代表插件的 id（相同的部件只能拥有唯一的 id，不过不同的部件可以拥有相同的 id），第二个参数应当是一个对象，至少包括一个`handle`方法供 picgo 调用。如果你还想要拥有 [配置项](/dev-guide/cli#配置项的处理) 功能，可以考虑再加入`config`方法供 picgo 调用。
+The first argument is the plugin id (within the same module container, ids must be unique; different module containers can reuse the same id). The second argument should be an object that includes at least a `handle` method for PicGo to call.
 
-示例：
+If you also want [Handling Config](/dev-guide/cli#handling-config), you can add a `config` method for PicGo to call.
+
+Example:
 
 ```js
 picgo.helper.transformer.register('test', {
@@ -343,34 +345,34 @@ picgo.helper.transformer.register('test', {
 
 ### helper.uploader
 
-同上。
+Same as above.
 
 ### helper.beforeTransformPlugins
 
-同上，不过不拥有配置项功能。
+Same as above, but does not support `config`.
 
 ### helper.beforeUploadPlugins
 
-同上，不过不拥有配置项功能。
+Same as above, but does not support `config`.
 
 ### helper.afterUploadPlugins
 
-同上，不过不拥有配置项功能。
+Same as above, but does not support `config`.
 
 ## Request.request <Badge type="warning" text="deprecate" />
 
-**v1.5.0开始这个属性被废弃，请直接使用 [`ctx.request`](#request)。**
+**Since v1.5.0 this property is deprecated. Use [`ctx.request`](#request) instead.**
 
-以下是 1.5.0 之前的文档，已经被废弃不再维护：
+The following is the pre-1.5.0 documentation, which is deprecated and no longer maintained:
 
-Request.request 是 picgo 内部暴露的一个 [Request-Promise-Native](https://github.com/request/request-promise-native) 对象，拥有一个可以使用 [request](https://github.com/request/request) 库里的所有方法，并且返回的是原生的 Promise。
+`Request.request` is a [Request-Promise-Native](https://github.com/request/request-promise-native) instance exposed by PicGo internally. It supports the same API as [request](https://github.com/request/request) and returns native Promises.
 
-::: tip 小贴士
-值得注意的是，使用这个对象来发送请求的话，能自动读取用户配置给 picgo 的 `proxy` 值。比较适合用于书写 Uploder 的核心部分。
+::: tip Tip
+When you use this object to send requests, it automatically reads the user's `proxy` value from PicGo config. This is useful for the core logic of an Uploader.
 :::
 
 
-示例：
+Example:
 
 ```js
 picgo.Request.request({
@@ -382,33 +384,33 @@ picgo.Request.request({
 
 ## request <Badge text="1.4.16+" /> <Badge text="1.5.0+" />
 
-::: tip 小贴士
-值得注意的是，使用这个对象来发送请求的话，能自动读取用户配置给 picgo 的 `proxy` 值。比较适合用于书写 Uploder 的核心部分。
+::: tip Tip
+When you use this object to send requests, it automatically reads the user's `proxy` value from PicGo config. This is useful for the core logic of an Uploader.
 :::
 
-从 `v1.4.16` 开始，默认的请求方法从 `ctx.Request.request` 换成了 `ctx.request`。
+Starting from `v1.4.16`, the default request API changed from `ctx.Request.request` to `ctx.request`.
 
-- `v1.5.0` 之前底层实现是 [Request-Promise-Native](https://github.com/request/request-promise-native)
-- `v1.5.0` 开始，底层实现是 [axios](https://github.com/axios/axios)
+- Before `v1.5.0`, the underlying implementation is [Request-Promise-Native](https://github.com/request/request-promise-native)
+- Since `v1.5.0`, the underlying implementation is [axios](https://github.com/axios/axios)
 
-这里将不再介绍旧的实现的使用方法，而是直接介绍新的实现的使用方法。
+We will not cover the legacy implementation here; instead we focus on the new one.
 
-总体而言，请求的配置可以参考 [axios 文档 request-config 部分](https://github.com/axios/axios#request-config)，不过 picgo 为了兼容旧的 `request` API，做了如下的处理，希望开发者注意：
+In general, request options follow the [axios request config docs](https://github.com/axios/axios#request-config). However, for compatibility with the old `request` API, PicGo behaves slightly differently:
 
-1. 请求体里如果不带有 `resolveWithFullResponse: true`, 那么返回的是 `response.data`，而不是 `response` （带有  `status` 等信息）。
-2. 如果希望返回值是 `Buffer`，请把 `responseType` 设置为 `arraybuffer`。
+1. If the request config does not include `resolveWithFullResponse: true`, the returned value is `response.data` instead of the full `response` (which includes `status`, etc).
+2. If you want the return value to be a `Buffer`, set `responseType` to `arraybuffer`.
 
-picgo 提供了几个比较有用的类型方便开发者使用：
+PicGo provides some helpful types:
 
-1. `IReqOptions`：带有 `resolveWithFullResponse: true` 的请求配置类型。
-2. `IReqOptionsWithArrayBufferRes`：带有 `resolveWithFullResponse: true` 和 `responseType: 'arraybuffer'` 的请求配置类型。
-3. `IReqOptionsWithBodyResOnly`： `axios` 的原始请求配置类型，返回值只有 `response.data`。
+1. `IReqOptions`: request config type with `resolveWithFullResponse: true`.
+2. `IReqOptionsWithArrayBufferRes`: request config type with `resolveWithFullResponse: true` and `responseType: 'arraybuffer'`.
+3. `IReqOptionsWithBodyResOnly`: the raw axios request config type; return value is only `response.data`.
 
-::: tip 注意
-request 接口的返回值依然是个 Promise，所以依然推荐使用 `async/await` 的方式来使用。
+::: tip Note
+`request` still returns a Promise, so `async/await` is recommended.
 :::
 
-示例：
+Example:
 
 ```ts
 import { IReqOptions } from 'picgo'
@@ -417,7 +419,7 @@ const opt: IReqOptions = {
   method: 'post',
   url: 'xxxx',
   data: {},
-  resolveWithFullResponse: true // <-- 这里设置为 true，返回值会带上 status 等
+  resolveWithFullResponse: true // <-- set to true to return status, etc
 }
 
 interface IRes {
@@ -434,8 +436,8 @@ const opt: IReqOptionsWithArrayBufferRes = {
   method: 'post',
   url: 'xxxx',
   data: {},
-  resolveWithFullResponse: true // <-- 这里设置为 true，返回值会带上 status 等
-  responseType: 'arraybuffer' // <-- 这里设置为 arraybuffer，返回值 data 会是 Buffer
+  resolveWithFullResponse: true, // <-- set to true to return status, etc
+  responseType: 'arraybuffer' // <-- set to arraybuffer so data is a Buffer
 }
 
 const res = await ctx.request(opt) // { status: number, data: Buffer }
@@ -459,13 +461,17 @@ const res: IRes = await ctx.request(opt) // IRes
 
 ## cmd
 
-用于提供 picgo 的命令行程序。
+Provides PicGo's CLI utilities.
 
 ### cmd.program
 
-用于注册 CLI 命令。实际上是一个 [commander.js](https://github.com/tj/commander.js/) 的实例，用法和`commander.js`几乎一致。 **不过请不要手动调用 picgo.cmd.program.parse(process.argv) 否则会导致出错** 。参考 [注册命令](/dev-guide/cli#注册 cli 命令)一章。
+Used to register CLI commands. This is a [commander.js](https://github.com/tj/commander.js/) instance and its usage is almost the same as commander.
 
-示例：
+**Do not call `picgo.cmd.program.parse(process.argv)` manually, otherwise it will error.**
+
+See [Registering CLI Commands](/dev-guide/cli#registering-cli-commands).
+
+Example:
 
 ```js
 picgo.cmd.program
@@ -477,29 +483,31 @@ picgo.cmd.program
 
 ### cmd.inquirer
 
-用于提供 CLI 命令行交互。实际上是一个 [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) 的实例，用法和`inquirer.js`一致。参考 [配置项的处理](/dev-guide/cli#配置项的处理) 一章。通常 PicGo 内部会将其和插件的 [config](/dev-guide/cli#config方法) 方法一起使用。
+Used to provide interactive CLI prompts. This is an [inquirer.js](https://github.com/SBoudrias/Inquirer.js/) instance and its usage is the same as inquirer.
 
-示例：
+See [Handling Config](/dev-guide/cli#handling-config). PicGo typically uses this together with a plugin's `config` method.
+
+Example:
 
 ```js
 const handleConfig = async ctx => {
   const prompts = config(ctx)
   const answer = await ctx.cmd.inquirer.prompt(prompts)
-  ctx.saveConfig({ // 调用 saveConfig 保存配置
+  ctx.saveConfig({ // call saveConfig to persist config
     'picBed.xxx': answer
   })
 }
 ```
 
-:::tip 提示
-你可以通过这个工具来制作你自己的命令行交互。不过需要注意的是，通常你应该直接使用插件的 [config](/dev-guide/cli#config方法) 方法来实现命令行交互，并且 PicGo 会自动存储`config`相关配置项的结果。
+::: tip Tip
+You can build your own CLI interactions with this tool. However, in most cases you should implement interactivity via the plugin `config` method, and PicGo will automatically persist the `config` results for you.
 :::
 
 ## log
 
-用于在命令行输出漂亮的信息，给予用户提示。
+Used to print user-friendly messages in the CLI.
 
-截图：
+Screenshot:
 
 ![](https://pic.molunerfinn.com/picgo/docs/logs.png)
 
@@ -507,7 +515,7 @@ const handleConfig = async ctx => {
 
 - message: string
 
-示例：
+Example:
 
 ```js
 picgo.log.info('Hello world')
@@ -517,7 +525,7 @@ picgo.log.info('Hello world')
 
 - message: string
 
-示例：
+Example:
 
 ```js
 picgo.log.warn('Hello world')
@@ -527,7 +535,7 @@ picgo.log.warn('Hello world')
 
 - message: string
 
-示例：
+Example:
 
 ```js
 picgo.log.success('Hello world')
@@ -537,7 +545,7 @@ picgo.log.success('Hello world')
 
 - message: string | error
 
-示例：
+Example:
 
 ```js
 picgo.log.error('Hello world')
@@ -545,18 +553,20 @@ picgo.log.error('Hello world')
 
 ## PluginHandler <Badge text="1.4.0+" />
 
-提供了安装、更新、卸载 picgo 插件的底层接口。同时还暴露了对应的成功、失败事件用于开发者处理。 **它依赖于系统 npm 命令。**
+Provides low-level APIs to install, update, and uninstall PicGo plugins. It also emits success/failure events for handling results.
+
+**It depends on the system `npm` command.**
 
 ### pluginHandler.install([...pluginName])
 
 - return: Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)> <Badge text="1.4.19+" />
 
-用于安装插件，接收一个数组作为参数。其中 `pluginName`：
+Installs plugins. Accepts an array argument. `pluginName` can be:
 
-1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
-2. 也可以是简化名 `xxx`。
-3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
-4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
+1. A full PicGo plugin name, e.g. `picgo-plugin-xxx`.
+2. A shorthand name, e.g. `xxx`.
+3. A scoped plugin, e.g. `@xxx/picgo-plugin-yyy`.
+4. A local path, e.g. `./xxx/yyy/picgo-plugin-zzz`.
 
 ```js
 const res = picgo.pluginHandler.install(['xxx'])
@@ -565,7 +575,7 @@ picgo.on('installSuccess', (res) => {
 })
 picgo.on('installFailed', err => {})
 
-// v1.4.19 开始会直接返回调用结果。示例：
+// Since v1.4.19 it returns the result directly. Example:
 res.then((result) => {
   if (result.success) {
     console.log(result.body) // ['picgo-plugin-xxx']
@@ -580,12 +590,12 @@ res.then((result) => {
 
 - return: Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)> <Badge text="1.4.19+" />
 
-用于卸载插件，接收一个数组作为参数。其中 `pluginName`：
+Uninstalls plugins. Accepts an array argument. `pluginName` can be:
 
-1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
-2. 也可以是简化名 `xxx`。
-3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
-4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
+1. A full PicGo plugin name, e.g. `picgo-plugin-xxx`.
+2. A shorthand name, e.g. `xxx`.
+3. A scoped plugin, e.g. `@xxx/picgo-plugin-yyy`.
+4. A local path, e.g. `./xxx/yyy/picgo-plugin-zzz`.
 
 ```js
 const res = picgo.pluginHandler.uninstall(['xxx'])
@@ -594,7 +604,7 @@ picgo.on('uninstallSuccess', (res) => {
 })
 picgo.on('uninstallFailed', err => {})
 
-// v1.4.19 开始会直接返回调用结果。示例：
+// Since v1.4.19 it returns the result directly. Example:
 res.then((result) => {
   if (result.success) {
     console.log(result.body) // ['picgo-plugin-xxx']
@@ -608,12 +618,12 @@ res.then((result) => {
 
 - return: Promise<[IPluginHandlerResult](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L339)> <Badge text="1.4.19+" />
 
-用于更新插件，接收一个数组作为参数。其中 `pluginName`：
+Updates plugins. Accepts an array argument. `pluginName` can be:
 
-1. 可以为完整的 picgo 插件名字，比如 `picgo-plugin-xxx`。
-2. 也可以是简化名 `xxx`。
-3. 支持scope类型插件，比如 `@xxx/picgo-plugin-yyy`。
-4. 还支持本地路径。例如 `./xxx/yyy/picgo-plugin-zzz`。
+1. A full PicGo plugin name, e.g. `picgo-plugin-xxx`.
+2. A shorthand name, e.g. `xxx`.
+3. A scoped plugin, e.g. `@xxx/picgo-plugin-yyy`.
+4. A local path, e.g. `./xxx/yyy/picgo-plugin-zzz`.
 
 ```js
 const res = picgo.pluginHandler.update(['xxx'])
@@ -622,7 +632,7 @@ picgo.on('updateSuccess', (res) => {
 })
 picgo.on('updateFailed', err => {})
 
-// v1.4.19 开始会直接返回调用结果。示例：
+// Since v1.4.19 it returns the result directly. Example:
 res.then((result) => {
   if (result.success) {
     console.log(result.body) // ['picgo-plugin-xxx']
@@ -634,32 +644,32 @@ res.then((result) => {
 
 ## PluginLoader <Badge text="1.4.17+" />
 
-提供了动态加载、卸载 picgo 插件的方法。比较适合用于在 Node 项目中使用 picgo 时动态引入插件。
+Provides methods to dynamically load/unload PicGo plugins. This is useful when using PicGo inside a Node.js project and you want to load plugins on demand.
 
 ### pluginLoader.registerPlugin(pluginName, plugin)
 
 - pluginName: string
 - plugin: [IPicGoPlugin](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L352)
 
-用于注册并加载插件。
+Registers and loads a plugin.
 
-示例：
+Example:
 
 ```js
 const pluginXXX = require('picgo-plugin-xxx')
 
-// 注意pluginName要唯一
+// pluginName must be unique
 picgo.pluginLoader.registerPlugin('xxx', pluginXXX)
 ```
 
 ### pluginLoader.unregisterPlugin(pluginName)
 
-用于卸载插件。
+Unloads a plugin.
 
-示例：
+Example:
 
 ```js
-// 注意pluginName要唯一
+// pluginName must be unique
 picgo.pluginLoader.unregisterPlugin('xxx')
 ```
 
@@ -667,9 +677,9 @@ picgo.pluginLoader.unregisterPlugin('xxx')
 
 - return: plugin -> [IPicGoPlugin](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L352)
 
-用于获取某个插件。
+Gets a plugin.
 
-示例：
+Example:
 
 ```js
 const plugin = picgo.pluginLoader.getPlugin('xxx')
@@ -677,11 +687,11 @@ const plugin = picgo.pluginLoader.getPlugin('xxx')
 
 ### pluginLoader.hasPlugin(pluginName)
 
-用于确认是否存在某个插件。
+Checks whether a plugin exists.
 
 - return: boolean
 
-示例：
+Example:
 
 ```js
 const res = picgo.pluginLoader.hasPlugin('xxx') // true or false
@@ -689,12 +699,12 @@ const res = picgo.pluginLoader.hasPlugin('xxx') // true or false
 
 ## use <Badge text="1.5.0+" />
 
-比 [PluginLoader](#pluginloader) 更加简单的插件加载方式。适合在 Node 项目中使用 picgo 时动态引入插件。
+A simpler plugin loading approach than [PluginLoader](#pluginloader). Suitable for dynamically loading plugins when using PicGo in a Node.js project.
 
 - (plugin: IPicGoPlugin, name?: string): IPicGoPluginInterface
 
-1. 第一个参数是 picgo 插件导出对象，通常是以 npm 包的形式出现的。
-2. 如果第二个参数 `name` 为空，则只会实例化这个插件而不会把插件注册进 PicGo 的列表里。这通常在你需要动态加载插件的时候使用。以下是实际例子：
+1. The first argument is the exported PicGo plugin object, typically provided as an npm package.
+2. If the second argument `name` is omitted, PicGo will only instantiate the plugin but will not register it into PicGo's plugin list. This is useful when you need to dynamically load a plugin. Example:
 
 ```js
 const { PicGo } = require('picgo')
@@ -732,51 +742,51 @@ plugin.migrateFiles(['/xxx/yyy.md']) // { total: number, success: number }
 
 ## i18n <Badge text="1.5.0+" />
 
-提供国际化支持。目前支持的语言有：
+Provides internationalization support. Currently supported languages:
 
-- `zh-CN` (默认)
+- `zh-CN` (default)
 - `zh-TW`
 - `en`
 
-如果想为 picgo 添加默认的语言支持，请参考这个 [PR](https://github.com/PicGo/PicGo-Core/pull/135)。
+If you want to contribute a default language pack to PicGo, refer to this [PR](https://github.com/PicGo/PicGo-Core/pull/135).
 
 ### i18n.addLocale(language: string, locales: ILocale)
 
-用于向已有的语言中添加语言包。
+Adds locale entries to an existing language.
 
 - language: string
 - locales: `[key: string]: any`
-- return: 返回 boolean ，表示是否添加成功
+- return: boolean, whether the locale was added successfully
 
 ```js
 picgo.i18n.addLocale('zh-CN', {
-  'PICGO_CURRENT_PICBED': '当前图床'
+  'PICGO_CURRENT_PICBED': 'Current image host'
 })
 
-const text = picgo.i18n.translate('PICGO_CURRENT_PICBED') // 当前图床
+const text = picgo.i18n.translate('PICGO_CURRENT_PICBED') // Current image host
 ```
 
-### i18n.translate(key: T, args?: {}) => string)
+### i18n.translate(key: T, args?: {}) => string
 
-翻译文本。
+Translates text.
 
-- key: string | T (T 是一个枚举类型，包含了所有的文本 key)
-- args: object (可选)，如果文本带有参数可以通过这个来传入
+- key: string | T (T is an enum type that contains all text keys)
+- args: object (optional). If the text has params, pass them here.
 - return: string
 
 ```js
 picgo.i18n.addLocale('zh-CN', {
-  'PICGO_CURRENT_PICBED': '当前图床是 ${current}'
+  'PICGO_CURRENT_PICBED': 'Current image host is ${current}'
 })
 
 const text = picgo.i18n.translate('PICGO_CURRENT_PICBED', {
   current: 'sm.ms'
-}) // 当前图床是 sm.ms
+}) // Current image host is sm.ms
 ```
 
 ### i18n.setLanguage(language: string)
 
-设置语言。
+Sets the current language.
 
 ```js
 picgo.i18n.setLanguage('zh-TW')
@@ -787,7 +797,7 @@ picgo.i18n.setLanguage('zh-TW')
 - language: string
 - locales: `[key: string]: any`
 
-添加一种新的语言类型。注意如果添加一种新的语言，那么建议请先实现默认的语言包里的 [所有文本](https://github.com/PicGo/PicGo-Core/blob/dev/src/i18n/zh-CN.ts) ，否则可能会出现未知的问题。
+Adds a new language. If you add a new language, it is recommended to implement [all default keys](https://github.com/PicGo/PicGo-Core/blob/dev/src/i18n/zh-CN.ts), otherwise you may run into unexpected issues.
 
 ```js
 picgo.i18n.addLanguage('jp', {
@@ -799,7 +809,7 @@ picgo.i18n.addLanguage('jp', {
 
 - return: string[]
 
-返回当前所有的语言列表。
+Returns the list of supported languages.
 
 ```js
 const list = picgo.i18n.getLanguageList() // ['zh-CN', 'zh-TW', 'en']
@@ -808,26 +818,26 @@ const list = picgo.i18n.getLanguageList() // ['zh-CN', 'zh-TW', 'en']
 
 ## guiApi <Badge text="GUI VERSION 2.0.0+" />
 
-**guiApi 仅在 electron 版本的 PicGo 里提供，详细信息可以参考 [GUI 插件开发一章](/dev-guide/gui)。**
+**`guiApi` is only available in the Electron version of PicGo. For details, see [GUI Development](/dev-guide/gui).**
 
 ### guiApi.showInputBox([option])
 
-调用之后打开一个输入弹窗，可以用于接受用户输入。
+Opens an input dialog so you can get user input.
 
 - option: Object || `undefined`
-- return: 返回一个 Promise 对象，resolve 的值是用户输入的结果。
+- return: Promise that resolves to the user's input.
 
-其中 option 是可选值，可以传入一个`{title, placeholder}`的对象，用于弹窗的标题和输入框的`placeholder`显示。
+`option` is optional. You can pass `{ title, placeholder }` for the dialog title and input placeholder.
 
 ```js
 const guiMenu = ctx => {
   return [
     {
-      label: '打开 InputBox',
+      label: 'Open InputBox',
       async handle (ctx, guiApi) {
         const value = await guiApi.showInputBox({
-          title: '打开对话框',
-          placeholder: '请输入文件地址'
+          title: 'Open dialog',
+          placeholder: 'Please enter a file path'
         })
         console.log(value)
       }
@@ -838,18 +848,18 @@ const guiMenu = ctx => {
 
 ### guiApi.showFileExplorer([option])
 
-调用之后打开一个文件浏览器，可以得到用户选择的文件（夹）路径。
+Opens a file explorer so you can get file/folder paths selected by the user.
 
 - option: Object || `undefined`
-- return: 返回一个 Promise 对象，resolve 的值是用户选择的文件路径数组。
+- return: Promise that resolves to an array of selected paths.
 
-其中 option 是可选值，可以传入一个合法的 electron 的 dialog 的 [options 对象](https://electronjs.org/docs/api/dialog#dialogshowopendialogbrowserwindow-options-callback)，用于指定是否可多选，用于选择文件还是文件夹等等。
+`option` is optional. You can pass a valid Electron dialog [options object](https://electronjs.org/docs/api/dialog#dialogshowopendialogbrowserwindow-options-callback) to control multi-select, file vs folder selection, etc.
 
 ```js
 const guiMenu = ctx => {
   return [
     {
-      label: '打开文件浏览器',
+      label: 'Open file explorer',
       async handle (ctx, guiApi) {
         const files = await guiApi.showFileExplorer({
           properties: ['openFile', 'multiSelections']
@@ -863,26 +873,27 @@ const guiMenu = ctx => {
 
 ### guiApi.upload([file])
 
-调用之后使用 PicGo 底层来上传，可以实现自动更新相册图片、上传成功后自动将 URL 写入剪贴板。
+Uses PicGo core to upload. It can automatically update the gallery and write the URL to the clipboard after upload succeeds.
 
 - file: Array || `undefined`
-- return: 返回一个 Promise 对象，resolve 的值是 PicGo 上传成功后的 output 值，是一个数组。所以推荐用`async await`获取。
+- return: Promise that resolves to PicGo's output array after a successful upload. `async/await` is recommended.
 
-::: tip 提示
-实际上如果通过上面的`showInputBox`获得输入项，或者`showFileExplorer`选中文件，再通过`upload`上传的话，也可以很好的达到上传的目的。
-推荐还是书写 Uploader 或者 Transformer 等插件，来实现接管 PicGo 的上传流程。
+::: tip Tip
+In practice, you can combine `showInputBox`/`showFileExplorer` with `upload` to implement a simple upload flow.
+
+However, for more robust integrations, it is still recommended to implement an Uploader or Transformer plugin to take control of PicGo's upload workflow.
 :::
 
-示例：
+Example:
 
 ```js
 const guiMenu = ctx => {
   return [
     {
-      label: '独立上传',
+      label: 'Standalone upload',
       async handle (ctx, guiApi) {
         const files = await guiApi.showFileExplorer({
-          properties: ['openFile', 'multiSelections'
+          properties: ['openFile', 'multiSelections']
         })
         guiApi.upload(files)
       }
@@ -893,26 +904,26 @@ const guiMenu = ctx => {
 
 ### guiApi.showNotification(option) <Badge text="2.0.1+" />
 
-调用之后弹出系统通知窗口。
+Shows a system notification.
 
 - option: Object || `undefined`
-- return: undefined（无返回值）
+- return: undefined
 
-其中 option 是必选值，需要提供`{title, body}`用于通知窗口的显示。
+`option` is required and should include `{ title, body }`.
 
 ![](https://pic.molunerfinn.com/picgo/docs/5c3db88042a0f.png)
 
-示例：
+Example:
 
 ```js
 const guiMenu = ctx => {
   return [
     {
-      label: '显示通知',
+      label: 'Show notification',
       async handle (ctx, guiApi) {
         guiApi.showNotification({
-          title: '提示',
-          body: '本提示来自插件'
+          title: 'Tip',
+          body: 'This notification is from a plugin'
         })
       }
     }
@@ -922,33 +933,35 @@ const guiMenu = ctx => {
 
 ### guiApi.showMessageBox([option]) <Badge text="2.1.0+" />
 
-调用之后弹出系统的对话框窗口。
+Shows a system message box dialog.
 
 - option: Object || `{title: '', message: '', type: 'info', buttons: ['Yes', 'No']}`
 - return: Object -> `{result, checkboxChecked}`
 
 ![](https://pic.molunerfinn.com/picgo/docs/20190611110904.png)
 
-其中，option 的完整参数可以参考 Electron 的 [dialog.showMessageBox](https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options-callback)。返回的值里，`result`为你指定的 buttons 的 index 值。比如上图如果我点了`是 (Y)`, 那么我会收到如下返回值：
+For the full `option` parameters, refer to Electron's [dialog.showMessageBox](https://electronjs.org/docs/api/dialog#dialogshowmessageboxbrowserwindow-options-callback).
+
+In the returned value, `result` is the index of the button you clicked. For example, if you clicked "Yes", you would get something like:
 
 ```js
 {
   result: 0,
-  checkboxChecked: false // 如果你在 options 里指定了 checkboxLabel 则会出现一个 checkbox，如果不提供，默认返回 false
+  checkboxChecked: false // if you set checkboxLabel in options, a checkbox will appear
 }
 ```
 
-示例：
+Example:
 
 ```js
 const guiMenu = ctx => {
   return [
     {
-      label: '显示 MessageBox',
+      label: 'Show MessageBox',
       async handle (ctx, guiApi) {
         const result = await guiApi.showMessageBox({
-          title: '这是 title',
-          message: '这是 message',
+          title: 'This is title',
+          message: 'This is message',
           type: 'info',
           buttons: ['Yes', 'No']
         })
@@ -961,27 +974,29 @@ const guiMenu = ctx => {
 
 ### guiApi.galleryDB <Badge text="GUI VERSION 2.3.0+" />
 
-从 PicGo GUI 2.3.0 开始，相册数据使用 `galleryDB` 操作，不再使用 config 里的 `uploaded` 字段。
+Starting from PicGo GUI 2.3.0, gallery data is managed via `galleryDB` instead of the `uploaded` field in config.
 
-galleryDB的使用可以参考 [PicGo/store](https://github.com/PicGo/store#get-getfilter-ifilter) 提供的api，以此为准。下文不一定更新及时。
+For `galleryDB`, refer to the API provided by [PicGo/store](https://github.com/PicGo/store#get-getfilter-ifilter) as the source of truth. The docs below may not always be up to date.
 
 #### galleryDB.get(filter?)
 
 - filter: undefined || Object -> [IFilter](https://github.com/PicGo/store/blob/dev/src/types/index.ts)
 - return: Promise<[IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)>
 
-获取相册列表。可以提供filter字段用于过滤，如果不提供则默认获取全部列表。示例：
+Gets the gallery list. You can provide `filter` to filter results; if omitted, it returns all items.
+
+Example:
 
 ```js
 const guiMenu = ctx => {
   return [
     {
-      label: '获取相册数据',
+      label: 'Get gallery data',
       async handle (ctx, guiApi) {
         const result = await guiApi.galleryDB.get({
-          orderBy: 'asc', // 升序
-          limit: 10, // 取10个
-          offset: 5 // 从index 5之后开始取（slice(5))
+          orderBy: 'asc', // ascending
+          limit: 10, // take 10 items
+          offset: 5 // start after index 5 (slice(5))
         })
         console.log(result) // [{...}, {...}, {...}, ...]
       }
@@ -995,44 +1010,48 @@ const guiMenu = ctx => {
 - value: Object -> [IImgInfo](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
 - return: Promise<[IResult](https://github.com/PicGo/store/blob/dev/src/types/index.ts)>
 
-往相册中插入数据。注意插入的数据一定要是符合要求的 output 中的格式（参考 [transformer 一章](../dev-guide/cli.md#transformer)，否则无法展示在相册中。
+Inserts an item into the gallery.
+
+Note that the inserted data must match the required output format (see [Transformer](/dev-guide/cli#transformer)), otherwise it cannot be displayed in the gallery.
 
 #### galleryDB.insertMany([...value])
 
 - input: Array -> [IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
 - return: Promise<[IResult[]](https://github.com/PicGo/store/blob/dev/src/types/index.ts)>
 
-往相册中批量插入数据。注意插入的数据一定要是符合要求的 output 数组格式（参考 [transformer 一章](../dev-guide/cli.md#transformer)，否则无法展示在相册中。
+Batch inserts items into the gallery.
+
+Note that the inserted data must match the required output array format (see [Transformer](/dev-guide/cli#transformer)), otherwise it cannot be displayed in the gallery.
 
 #### galleryDB.updateById(id, value)
 
-- id: string 相册中某张图片的id
+- id: string (the id of an image in the gallery)
 - value: [IImgInfo](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
 - return: Promise\<boolean\>
 
-根据相册数据中的id更新某张图片的信息。返回boolean。如果更新成功返回true，反之返回false。
+Updates an item by id. Returns a boolean: `true` if updated successfully, otherwise `false`.
 
 #### galleryDB.getById(id)
 
-- id: string 相册中某张图片的id
+- id: string (the id of an image in the gallery)
 - return: Promise<[IImgInfo](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)>
 
-根据id获取某张图片的信息。
+Gets an item by id.
 
 #### galleryDB.removeById(id)
 
-- id: string 相册中某张图片的id
+- id: string (the id of an image in the gallery)
 - return: void
 
-根据id删除某张图片的信息。无返回值。
+Removes an item by id. No return value.
 
-**注意，删除图片是敏感操作，GUI版本会提示用户是否允许删除。**
+**Note: deleting images is a sensitive operation. The GUI version will prompt the user for confirmation.**
 
 #### galleryDB.overwrite(value)
 
 - value: [IImgInfo[]](https://github.com/PicGo/PicGo-Core/blob/f133d57562c413b0b6f9a9ca9a93bf19c1768f1f/src/types/index.d.ts#L169-L178)
 - return: Promise<[IResult[]](https://github.com/PicGo/store/blob/dev/src/types/index.ts)>
 
-覆盖相册中的数据。 **覆盖前会清空原有数据。**
+Overwrites gallery data. **This clears existing data before overwriting.**
 
-**注意，覆盖图片列表是敏感操作，GUI版本会提示用户是否允许覆盖。**
+**Note: overwriting the image list is a sensitive operation. The GUI version will prompt the user for confirmation.**
