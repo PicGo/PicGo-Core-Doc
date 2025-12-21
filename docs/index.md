@@ -15,6 +15,9 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/PicGo/PicGo-Core
+    - theme: alt
+      text: PicGo Homepage
+      link: https://picgo.app
 features:
   - title: CLI automation
     details: Upload images and get links with a single command. Fits perfectly into shell scripts and CI/CD pipelines.

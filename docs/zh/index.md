@@ -15,6 +15,9 @@ hero:
     - theme: alt
       text: GitHub
       link: https://github.com/PicGo/PicGo-Core
+    - theme: alt
+      text: PicGo Homepage
+      link: https://picgo.app
 features:
   - title: 命令行自动化
     details: 一行命令即可上传图片并获取链接。完美集成到你的 Shell 脚本或 CI/CD 流程中。
