@@ -23,10 +23,14 @@ $ picgo -h
     set|config <module> [name]           configure config of picgo modules
     upload|u [input...]                  upload, go go go
     use [module]                         use modules of picgo
-    init [options] <template> [project]  create picgo plugin's development templates
     i18n [lang]                          change picgo language
     help [command]                       display help for command
 ```
+
+  ::: warning
+  从 PicGo-Core v1.7.0 开始，PicGo 不再内置原来的 `picgo init` 命令。
+  请使用独立的 [`picgo-init`](https://github.com/PicGo/PicGo-Init) 命令（见下方 `picgo-init` 小节）。
+  :::
 
 ::: tip 提示
 其中，命令选项如果是用`<>`包围起来的为必须输入项，如果是用`[]`包围起来的则为可选输入项。
@@ -173,33 +177,6 @@ picgo uninstall [name]
 picgo update [name]
 ```
 
-## init
-
-> 该命令用于下载和生成picgo的插件开发模板
-
-```bash
-$ picgo init -h
-Usage: init [options] <template> [project]
-
-Options:
-
-  --clone     use git clone
-  --offline   use cached template
-  -h, --help  output usage information
-
-Examples:
-
-  # create a new project with an official template
-  $ picgo init plugin my-project
-
-  # create a new project straight from a github template
-  $ picgo init username/repo my-project
-```
-
-类似于`vue-cli`的`init`命令，picgo也提供了官方的插件模板叫做[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，不过你在`init`的时候，模板名只需要写`plugin`，内部会自动判断如果非`username/repo`形式的话，自动加上`PicGo/picgo-template-`的前缀。
-
-这个命令用于方便用户快速开发一个picgo插件。关于插件开发，可以查看[插件开发](/zh/dev-guide/cli)一章。
-
 ## i18n
 
 > 用于切换 picgo 的语言。目前支持的语言有：
@@ -233,3 +210,35 @@ picgo将会读取配置文件所在目录下`node_modules`的插件。
 ## -s, --silent
 
 在输入任何有效命令的情况下加入`-s`或者`--silent`将会进入静默模式，除了报错信息之外，picgo在命令行里将不会输出任何信息。
+
+## picgo-init
+
+> 该命令用于下载和生成 picgo 的插件开发模板
+
+从 PicGo-Core v1.7.0 开始，该能力由独立的 `picgo-init` 命令提供。
+你可以在 [`PicGo/PicGo-Init`](https://github.com/PicGo/PicGo-Init) 找到安装与使用说明。
+
+```bash
+$ picgo-init -h
+
+Usage: picgo-init <template> [project]
+
+create picgo plugin's development templates
+
+Options:
+  --offline   use cached template
+  --debug     debug mode
+  -h, --help  display help for command
+
+Examples:
+
+  # create a new project with an official template
+  $ picgo-init plugin my-project
+
+  # create a new project straight from a github template
+  $ picgo-init username/repo my-project
+```
+
+类似于`vue-cli`的`init`命令，picgo 也提供了官方模板。你在执行 `picgo-init` 时，模板名只需要写 `plugin`，内部会自动判断如果非 `username/repo` 形式的话，自动加上 `PicGo/picgo-template-` 的前缀。
+
+这个命令用于方便用户快速开发一个picgo插件。关于插件开发，可以查看[插件开发](/zh/dev-guide/cli)一章。

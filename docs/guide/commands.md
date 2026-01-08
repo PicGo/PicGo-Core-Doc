@@ -23,10 +23,14 @@ $ picgo -h
     set|config <module> [name]           configure config of picgo modules
     upload|u [input...]                  upload, go go go
     use [module]                         use modules of picgo
-    init [options] <template> [project]  create picgo plugin's development templates
     i18n [lang]                          change picgo language
     help [command]                       display help for command
 ```
+
+  ::: warning
+  Starting from PicGo-Core v1.7.0, PicGo no longer bundles the legacy `picgo init` command.
+  Use the standalone [`picgo-init`](https://github.com/PicGo/PicGo-Init) command instead (see `picgo-init` section below).
+  :::
 
 ::: tip Tip
 Options wrapped in `<>` are required, and options wrapped in `[]` are optional.
@@ -173,33 +177,6 @@ picgo uninstall [name]
 picgo update [name]
 ```
 
-## init
-
-> Download and generate a PicGo plugin development template.
-
-```bash
-$ picgo init -h
-Usage: init [options] <template> [project]
-
-Options:
-
-  --clone     use git clone
-  --offline   use cached template
-  -h, --help  output usage information
-
-Examples:
-
-  # create a new project with an official template
-  $ picgo init plugin my-project
-
-  # create a new project straight from a github template
-  $ picgo init username/repo my-project
-```
-
-Similar to `vue-cli`’s `init`, PicGo provides an official template: [picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin). When running `init`, you can use `plugin` as the template name. Internally, if the template is not in `username/repo` form, PicGo automatically prefixes it with `PicGo/picgo-template-`.
-
-This command helps you bootstrap a PicGo plugin quickly. For details, see [Plugin Development](/dev-guide/cli).
-
 ## i18n
 
 > Switch PicGo’s UI language. Supported languages:
@@ -233,3 +210,35 @@ PicGo loads plugins from the `node_modules` directory next to the config file.
 ## -s, --silent
 
 Add `-s` or `--silent` to any valid command to enter silent mode. PicGo will output nothing except error messages.
+
+## picgo-init
+
+> Download and generate a PicGo plugin development template.
+
+Starting from PicGo-Core v1.7.0, this is provided by the standalone `picgo-init` command.
+See [`PicGo/PicGo-Init`](https://github.com/PicGo/PicGo-Init) for installation and usage.
+
+```bash
+$ picgo-init -h
+
+Usage: picgo-init <template> [project]
+
+create picgo plugin's development templates
+
+Options:
+  --offline   use cached template
+  --debug     debug mode
+  -h, --help  display help for command
+
+Examples:
+
+  # create a new project with an official template
+  $ picgo-init plugin my-project
+
+  # create a new project straight from a github template
+  $ picgo-init username/repo my-project
+```
+
+Similar to `vue-cli`’s `init`, PicGo provides official templates. When running `picgo-init`, you can use `plugin` as the template name. Internally, if the template is not in `username/repo` form, PicGo automatically prefixes it with `PicGo/picgo-template-`.
+
+This command helps you bootstrap a PicGo plugin quickly. For details, see [Plugin Development](/dev-guide/cli).

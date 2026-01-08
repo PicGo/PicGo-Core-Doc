@@ -493,24 +493,28 @@ If you want to add more languages or set the current language, refer to the [pic
 
 ### Using the Plugin Template
 
-To help developers bootstrap PicGo plugins quickly, the PicGo team provides a plugin template: [picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin). Its usage is similar to `init` in [vue-cli](https://cli.vuejs.org/).
+To help developers bootstrap PicGo plugins quickly, PicGo provides a plugin template workflow. Its usage is similar to `init` in [vue-cli](https://cli.vuejs.org/).
+
+Starting from PicGo-Core v1.7.0, the legacy `picgo init` command is no longer bundled. Use the standalone [`picgo-init`](https://github.com/PicGo/PicGo-Init) command instead.
 
 To use the official plugin template:
 
 ```bash
-picgo init plugin <your-project-name>
+npx picgo-init plugin <your-project-name>
 ```
 
 If you've created a template once, you can use offline mode next time:
 
 ```bash
-picgo init plugin <your-project-name> --offline
+npx picgo-init plugin <your-project-name> --offline
 ```
 
-If you want to use your own template, use `user/repo` to download a specific GitHub repo as the template:
+Offline mode uses cached templates under `~/.picgo/templates`.
+
+If you want to use your own template, use `username/repo` to download a specific GitHub repo as the template:
 
 ```bash
-picgo init user/repo <your-project-name>
+npx picgo-init username/repo <your-project-name>
 ```
 
 Then follow the prompts to create the project.

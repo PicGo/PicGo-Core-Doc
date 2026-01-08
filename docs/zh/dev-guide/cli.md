@@ -478,22 +478,26 @@ module.exports = (ctx) => {
 
 ### 使用插件模板
 
-为了方便开发者快速开发picgo的插件，PicGo官方提供了插件模板：[picgo-template-plugin](https://github.com/PicGo/picgo-template-plugin)，它的使用和[vue-cli](https://cli.vuejs.org/)的`init`很类似。要使用官方的plugin模板你只需要：
+为了方便开发者快速开发 picgo 的插件，PicGo 提供了插件模板工作流，它的使用和[vue-cli](https://cli.vuejs.org/)的`init`很类似。
+
+从 PicGo-Core v1.7.0 开始，原来的 `picgo init` 命令不再内置，请使用独立的 [`picgo-init`](https://github.com/PicGo/PicGo-Init) 命令。
 
 ```bash
-picgo init plugin <your-project-name>
+npx picgo-init plugin <your-project-name>
 ```
 
 如果你已经创建过一次模板，下次可以使用离线模式：
 
 ```bash
-picgo init plugin <your-project-name> --offline
+npx picgo-init plugin <your-project-name> --offline
 ```
 
-如果你想要使用自己的模板，可以使用`user/repo`来下载指定的GitHub仓库的模板：
+离线模式会使用 `~/.picgo/templates` 下缓存的模板。
+
+如果你想要使用自己的模板，可以使用 `username/repo` 来下载指定的 GitHub 仓库模板：
 
 ```bash
-picgo init user/repo <your-project-name>
+npx picgo-init username/repo <your-project-name>
 ```
 
 然后根据提示创建项目即可。官方插件模板里提供了`TypeScript`和`JavaScript`两种模板，开发者可以二选一。推荐使用`TypeScript`模板来得到更好的语法提示。
