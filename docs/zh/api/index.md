@@ -357,6 +357,56 @@ picgo.helper.transformer.register('test', {
 
 同上，不过不拥有配置项功能。
 
+## uploaderConfig <Badge text="1.8.0+" />
+
+uploader 多配置管理器。
+
+它用于管理存放在 `uploader.<type>` 下的“命名配置”，并会将当前启用配置同步到 `picBed.<type>`（作为镜像用于兼容插件生态）。
+
+配置名匹配大小写不敏感（并会先去掉首尾空格）。
+
+### uploaderConfig.listUploaderTypes()
+
+列出已安装/可用的 uploader 类型。
+
+### uploaderConfig.getConfigList(type)
+
+获取某个 uploader 类型下的所有配置。
+
+### uploaderConfig.getActiveConfig(type)
+
+获取某个 uploader 类型当前启用的配置（如果该类型还没有任何配置，可能返回 `undefined`）。
+
+### uploaderConfig.use(type, configName?)
+
+按名称启用某个配置，并将该 uploader 设置为当前 uploader（`picBed.current` / `picBed.uploader`）。
+
+### uploaderConfig.createOrUpdate(type, configName?, configPatch?)
+
+创建或更新一份配置（按名称），并在保存时**自动启用该配置**。
+
+### uploaderConfig.copy(type, configName, newConfigName)
+
+复制一份配置到新的配置名（**不会**切换当前 uploader）。
+
+### uploaderConfig.rename(type, oldName, newName)
+
+重命名一份配置。
+
+### uploaderConfig.remove(type, configName)
+
+删除一份配置；如果删除的是最后一份配置，PicGo 会清理 `picBed.<type>` 以避免凭据残留。
+
+示例：
+
+```js
+// 切换到某个命名配置
+picgo.uploaderConfig.use('github', 'Work')
+
+// 创建/更新配置并启用
+picgo.uploaderConfig.createOrUpdate('github', 'Work', { repo: 'user/repo' })
+```
+
 ## Request.request <Badge type="warning" text="deprecate" />
 
 **v1.5.0开始这个属性被废弃，请直接使用 [`ctx.request`](#request)。**

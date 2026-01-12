@@ -20,9 +20,10 @@ $ picgo -h
     install|add [options] <plugins...>   install picgo plugin
     uninstall|rm <plugins...>            uninstall picgo plugin
     update [options] <plugins...>        update picgo plugin
-    set|config <module> [name]           configure config of picgo modules
+    set|config <module> [name] [configName]  configure config of picgo modules
     upload|u [input...]                  upload, go go go
-    use [module]                         use modules of picgo
+    use [module] [name] [configName]     use modules of picgo
+    uploader [command]                   manage uploader configurations
     i18n [lang]                          change picgo language
     help [command]                       display help for command
 ```
@@ -46,9 +47,9 @@ The CLI is built with [commander.js](https://github.com/tj/commander.js/) and [i
 ```bash
 $ picgo use -h
 
-  Usage: use [module]
+  Usage: use [module] [name] [configName]
 
-  use modules of picgo
+  use a module (uploader/transformer/plugin) of picgo
 ```
 
 PicGo ships with the following built-ins:
@@ -84,18 +85,48 @@ $ picgo use
 (Move up and down to reveal more choices)
 ```
 
+Starting from PicGo-Core `v1.8.0`, uploaders support multiple named configs. If an uploader has multiple configs, the interactive flow will ask you to choose one. You can also specify it directly:
+
+```bash
+picgo use uploader <type> <configName>
+```
+
+`configName` is matched case-insensitively.
+
 After you choose, PicGo will upload using the selected module. Some modules need configuration before you can use them (for example, tokens/keys for an image host). In that case, use `set|config` (described below) to configure the module.
 
-## config|set
+## uploader <Badge text="1.8.0+" />
+
+Manage uploader configurations (multi-config).
+
+- `picgo uploader` opens an interactive prompt (list/rename/copy/delete).
+- `picgo uploader list [type]` lists configs (marks current uploader and default config).
+- `picgo uploader rename <type> <oldName> <newName>`
+- `picgo uploader copy <type> <configName> <newConfigName>` (does not switch current uploader)
+- `picgo uploader rm <type> <configName>`
+
+Config names are matched case-insensitively.
+
+Examples:
+
+```bash
+picgo uploader list
+picgo uploader list github
+picgo uploader rename github Work Personal
+picgo uploader copy github Work Staging
+picgo uploader rm github Staging
+```
+
+## set
 
 > Configure module settings. There are three kinds of modules: 1) transformer 2) uploader 3) plugins
 
 ```bash
 $ picgo set -h
 
-  Usage: set|config [options] <module> [name]
+  Usage: set [options] <module> [name] [configName]
 
-  configure config of picgo modules
+  configure config of picgo modules (uploader/transformer/plugin)
 
   Options:
 
@@ -103,8 +134,10 @@ $ picgo set -h
 ```
 
 ::: tip Tip
-Most of the time you only need to configure an Uploader. You can run `picgo set uploader` (or `picgo set uploader weibo|tcyun|...`) to jump straight into the interactive prompt.
+Most of the time you only need to configure an uploader. You can run `picgo set uploader` (or `picgo set uploader <type> [configName]`) to jump straight into the interactive prompt.
 :::
+
+Starting from PicGo-Core `v1.8.0`, `set uploader` works with uploader multi-config: you can choose an existing config (by name) or create a new one, and the saved config becomes the active config for that uploader.
 
 For the detailed configuration fields of built-in uploaders (image hosts), refer to PicGo’s configuration [wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8)。
 

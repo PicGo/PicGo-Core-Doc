@@ -359,6 +359,56 @@ Same as above, but does not support `config`.
 
 Same as above, but does not support `config`.
 
+## uploaderConfig <Badge text="1.8.0+" />
+
+Uploader multi-config manager.
+
+It manages per-uploader named configs stored under `uploader.<type>` and keeps `picBed.<type>` synced as a mirror of the active config.
+
+Config names are matched case-insensitively (whitespace is trimmed).
+
+### uploaderConfig.listUploaderTypes()
+
+List installed/available uploader types.
+
+### uploaderConfig.getConfigList(type)
+
+Get all configs for an uploader type.
+
+### uploaderConfig.getActiveConfig(type)
+
+Get the active config for an uploader type (may be `undefined` if no configs exist).
+
+### uploaderConfig.use(type, configName?)
+
+Activate a config (by name) for an uploader type, and set it as the current uploader (`picBed.current` / `picBed.uploader`).
+
+### uploaderConfig.createOrUpdate(type, configName?, configPatch?)
+
+Create a config or update an existing config (by name), and **activate it on save**.
+
+### uploaderConfig.copy(type, configName, newConfigName)
+
+Copy a config into a new config name (**does not** switch current uploader).
+
+### uploaderConfig.rename(type, oldName, newName)
+
+Rename a config.
+
+### uploaderConfig.remove(type, configName)
+
+Remove a config. If you remove the last config, PicGo clears `picBed.<type>` to avoid credential residue.
+
+Example:
+
+```js
+// Switch to a named uploader config
+picgo.uploaderConfig.use('github', 'Work')
+
+// Create/update a config and activate it
+picgo.uploaderConfig.createOrUpdate('github', 'Work', { repo: 'user/repo' })
+```
+
 ## Request.request <Badge type="warning" text="deprecate" />
 
 **Since v1.5.0 this property is deprecated. Use [`ctx.request`](#request) instead.**

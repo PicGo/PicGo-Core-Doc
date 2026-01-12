@@ -191,6 +191,51 @@ Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/Pi
 }
 ```
 
+## uploader <Badge text="1.8.0+" />
+
+PicGo 支持为同一种 uploader 保存多份“命名配置”。
+
+数据的唯一来源（SSOT）存放在 `uploader.<type>`：
+
+- `uploader.<type>.configList`: 配置列表数组。
+- `uploader.<type>.defaultId`: 当前启用配置的 `_id`。
+
+`configList` 中每一项都会包含一些元信息字段：
+
+- `_id`（UUID v4）
+- `_configName`（同一 uploader 类型下唯一；比较时大小写不敏感）
+- `_createdAt` / `_updatedAt`（时间戳）
+
+为了兼容插件生态，`picBed.<type>` 会作为当前启用配置的**只读镜像**，切换配置时会被覆盖更新。
+
+::: tip 迁移说明
+如果你以前是通过 `picBed.<type>` 配置 uploader，PicGo 会在启动时自动迁移到新结构。
+:::
+
+示例：
+
+```json
+{
+  "uploader": {
+    "github": {
+      "defaultId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "configList": [
+        {
+          "_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "_configName": "Work",
+          "_createdAt": 1700000000000,
+          "_updatedAt": 1700000000000,
+          "repo": "user/repo",
+          "token": "******"
+        }
+      ]
+    }
+  }
+}
+```
+
+管理/切换配置请参考 [CLI 命令](/zh/guide/commands)（`picgo use uploader ...`、`picgo uploader ...`），或使用 Node.js API（`ctx.uploaderConfig`）。
+
 ## picgoPlugins
 
 这个配置项将会将所有插件名放置进去。主要用于判断插件是否被启用或者禁用。 **picgo 自动生成，不需要配置！**
@@ -201,6 +246,159 @@ Imgur 的相关配置。可以查看 PicGo 的 [wiki](https://picgo.github.io/Pi
 {
   "picgo-plugin-xxx": true, // 该插件被启用
   "picgo-plugin-yyy": false // 该插件被禁用
+}
+```
+
+## settings
+
+一些与具体 uploader/transformer/plugin 无关的通用设置。
+
+### settings.urlRewrite.rules <Badge text="1.8.1+" />
+
+可选的 URL 重写规则。配置后，PicGo 会在 **Uploader 执行结束之后**、**afterUploadPlugins 执行之前** 对上传结果中的 `imgUrl` 做 URL rewrite。
+
+- type: Array\<Rule\>
+- default: 未配置（不执行 rewrite；不会输出警告）
+
+每条规则支持：
+
+- `match` (string, required): JavaScript `RegExp` 的源字符串（不需要写两侧的 `/`）。
+- `replace` (string, required): 替换字符串（支持 `$1`、`$2`... 分组引用）。
+- `enable` (boolean, optional): 默认 `true`；只有显式设置为 `false` 才会禁用该规则。
+- `global` (boolean, optional): 对应正则的 `g` flag；默认 `false`。
+- `ignoreCase` (boolean, optional): 对应正则的 `i` flag；默认 `false`。
+
+行为说明：
+
+- 规则按数组顺序依次匹配；对每张图片只应用第一条命中的启用规则（First Match Wins）。
+- 如果 rewrite 导致 `imgUrl` 发生变化，会把原始 URL 保存到 `originImgUrl`（只会设置一次，不会被覆盖）。
+- `match` 无法编译成正则时会输出 error 并跳过该规则，上传流程不会失败。
+- rewrite 结果为空字符串时会输出 warning，但仍会继续。
+
+#### 对插件开发者 / Node.js 调用方的影响
+
+- `afterUploadPlugins` 拿到的 `ctx.output` 里 `imgUrl` 已经是 **重写后的** 值；如需上传器产出的原始 URL，请读取 `originImgUrl`。
+- Node.js API `picgo.upload()` 返回的 `IImgInfo[]` 里 `imgUrl` 也是 **重写后的** 值；如需重写前的值，请读取 `originImgUrl`。
+- 只有当 PicGo 实际发生 URL 重写时才会设置 `originImgUrl`；否则它会保持为 `undefined`。
+
+#### 示例
+
+示例（简单前缀替换 / 切换到 CDN）：
+
+把：
+
+- `https://example.com/images/2026/1.png`
+- 重写为 `https://cdn.example.com/blog-images/2026/1.png`
+
+```json
+{
+  "settings": {
+    "urlRewrite": {
+      "rules": [
+        {
+          "match": "https://example.com/images/",
+          "replace": "https://cdn.example.com/blog-images/"
+        }
+      ]
+    }
+  }
+}
+```
+
+示例（忽略大小写：统一扩展名）：
+
+把：
+
+- `https://cdn.example.com/blog-images/2026/1.PNG`
+- 重写为 `https://cdn.example.com/blog-images/2026/1.png`
+
+```json
+{
+  "settings": {
+    "urlRewrite": {
+      "rules": [
+        {
+          "match": "PNG",
+          "replace": "png",
+          "ignoreCase": true
+        }
+      ]
+    }
+  }
+}
+```
+
+示例（global：替换 URL 中所有下划线）：
+
+把：
+
+- `https://cdn.example.com/blog_images/2026/hello_world.png`
+- 重写为 `https://cdn.example.com/blog-images/2026/hello-world.png`
+
+```json
+{
+  "settings": {
+    "urlRewrite": {
+      "rules": [
+        {
+          "match": "_",
+          "replace": "-",
+          "global": true
+        }
+      ]
+    }
+  }
+}
+```
+
+::: tip 正则与转义
+`match` 是 JavaScript 正则表达式的源字符串。进阶用法中你可能需要在 JSON 字符串里转义反斜杠，例如要匹配 `.` 需要写成 `\\.`。
+:::
+
+进阶：分组引用（`$1`、`$2`...）
+
+把：
+
+- `https://example.com/images/2026/1.png`
+- 重写为 `https://cdn.example.com/blog-images/2026/1.png`
+
+如果 `match` 里用括号捕获了 URL 的某一段，就可以在 `replace` 里用 `$1`、`$2`... 引用（例如 `$1` 表示第 1 个分组，`$2` 表示第 2 个分组）。
+在下面这个例子里，`$1` 会捕获到 `images`，`$2` 会捕获剩余路径（`2026/1.png`）：
+
+```json
+{
+  "settings": {
+    "urlRewrite": {
+      "rules": [
+        {
+          "match": "^https://example\\.com/(images)/(.*)$",
+          "replace": "https://cdn.example.com/blog-$1/$2"
+        }
+      ]
+    }
+  }
+}
+```
+
+进阶示例（把 GitHub raw URL 重写为 jsDelivr）：
+
+把：
+
+- `https://raw.githubusercontent.com/user/repo/main/path/to/1.png`
+- 重写为 `https://cdn.jsdelivr.net/gh/user/repo@main/path/to/1.png`
+
+```json
+{
+  "settings": {
+    "urlRewrite": {
+      "rules": [
+        {
+          "match": "^https://raw\\.githubusercontent\\.com/([^/]+)/([^/]+)/([^/]+)/(.*)$",
+          "replace": "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4"
+        }
+      ]
+    }
+  }
 }
 ```
 

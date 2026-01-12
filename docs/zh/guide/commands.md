@@ -20,9 +20,10 @@ $ picgo -h
     install|add [options] <plugins...>   install picgo plugin
     uninstall|rm <plugins...>            uninstall picgo plugin
     update [options] <plugins...>        update picgo plugin
-    set|config <module> [name]           configure config of picgo modules
+    set|config <module> [name] [configName]  configure config of picgo modules
     upload|u [input...]                  upload, go go go
-    use [module]                         use modules of picgo
+    use [module] [name] [configName]     use modules of picgo
+    uploader [command]                   manage uploader configurations
     i18n [lang]                          change picgo language
     help [command]                       display help for command
 ```
@@ -46,9 +47,9 @@ picgo 命令行的实现来自于[commander.js](https://github.com/tj/commander.
 ```bash
 $ picgo use -h
 
-  Usage: use [module]
+  Usage: use [module] [name] [configName]
 
-  use modules of picgo
+  use a module (uploader/transformer/plugin) of picgo
 ```
 
 picgo内置了如下的内容：
@@ -84,7 +85,37 @@ $ picgo use
 (Move up and down to reveal more choices)
 ```
 
+从 PicGo-Core `v1.8.0` 开始，uploader 支持多份命名配置。如果某个 uploader 存在多份配置，交互流程会让你选择要启用的那一份；你也可以直接在命令里指定：
+
+```bash
+picgo use uploader <type> <configName>
+```
+
+其中 `configName` 的匹配大小写不敏感。
+
 选择完后，picgo将会使用你选择的模块进行上传。在上传前有些模块可能需要配置。比如一些图床的key、token等。这个时候你就需要下面会提到的命令`set|config`来配置你选择的模块内容。
+
+## uploader <Badge text="1.8.0+" />
+
+用于管理 uploader 的多份命名配置。
+
+- `picgo uploader`：进入交互式管理（list/rename/copy/delete）
+- `picgo uploader list [type]`：列出配置（会标记当前 uploader 与默认配置）
+- `picgo uploader rename <type> <oldName> <newName>`
+- `picgo uploader copy <type> <configName> <newConfigName>`：复制配置（不会切换当前 uploader）
+- `picgo uploader rm <type> <configName>`
+
+配置名匹配大小写不敏感。
+
+示例：
+
+```bash
+picgo uploader list
+picgo uploader list github
+picgo uploader rename github Work Personal
+picgo uploader copy github Work Staging
+picgo uploader rm github Staging
+```
 
 ## config|set
 
@@ -93,9 +124,9 @@ $ picgo use
 ```bash
 $ picgo set -h
 
-  Usage: set|config [options] <module> [name]
+  Usage: set|config [options] <module> [name] [configName]
 
-  configure config of picgo modules
+  configure config of picgo modules (uploader/transformer/plugin)
 
   Options:
 
@@ -103,8 +134,10 @@ $ picgo set -h
 ```
 
 ::: tip 提示
-通常来说，picgo默认只需要配置Uploader即可。所以你可以直接通过`picgo set uploader`或者`picgo set uploader weibo|tcyun|...`等命令直接进入交互式命令行。
+通常来说，picgo默认只需要配置Uploader即可。所以你可以直接通过`picgo set uploader`或者`picgo set uploader <type> [configName]`等命令直接进入交互式命令行。
 :::
+
+从 PicGo-Core `v1.8.0` 开始，`set uploader` 支持 uploader 多配置：你可以选择一个已有的配置（按名称），也可以新建一份配置；保存后会自动将该配置设置为该 uploader 的当前启用配置。
 
 picgo内置的图床的配置项细节可以参考PicGo的配置[wiki](https://github.com/Molunerfinn/PicGo/wiki/%E8%AF%A6%E7%BB%86%E7%AA%97%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8)。
 
