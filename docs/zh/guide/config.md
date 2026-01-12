@@ -371,7 +371,7 @@ PicGo 支持为同一种 uploader 保存多份“命名配置”。
     "urlRewrite": {
       "rules": [
         {
-          "match": "^https://example\\.com/(images)/(.*)$",
+          "match": "^https://example.com/(images)/(.*)$",
           "replace": "https://cdn.example.com/blog-$1/$2"
         }
       ]
@@ -393,7 +393,7 @@ PicGo 支持为同一种 uploader 保存多份“命名配置”。
     "urlRewrite": {
       "rules": [
         {
-          "match": "^https://raw\\.githubusercontent\\.com/([^/]+)/([^/]+)/([^/]+)/(.*)$",
+          "match": "^https://raw.githubusercontent.com/([^/]+)/([^/]+)/([^/]+)/(.*)$",
           "replace": "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4"
         }
       ]

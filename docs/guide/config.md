@@ -370,7 +370,7 @@ In this example, `$1` is the captured `images`, and `$2` is the rest of the path
     "urlRewrite": {
       "rules": [
         {
-          "match": "^https://example\\.com/(images)/(.*)$",
+          "match": "^https://example.com/(images)/(.*)$",
           "replace": "https://cdn.example.com/blog-$1/$2"
         }
       ]
@@ -392,7 +392,7 @@ Rewrite:
     "urlRewrite": {
       "rules": [
         {
-          "match": "^https://raw\\.githubusercontent\\.com/([^/]+)/([^/]+)/([^/]+)/(.*)$",
+          "match": "^https://raw.githubusercontent.com/([^/]+)/([^/]+)/([^/]+)/(.*)$",
           "replace": "https://cdn.jsdelivr.net/gh/$1/$2@$3/$4"
         }
       ]
