@@ -1,7 +1,37 @@
-import { defineConfig, DefaultTheme } from 'vitepress'
+import { defineConfig } from 'vitepress'
+import type { DefaultTheme } from 'vitepress'
 import { getNestedSidebarItems } from './utils/sidebar'
 
 const EDIT_LINK_PATTERN = 'https://github.com/PicGo/PicGo-Core-Doc/edit/master/docs/:path'
+const NEW_SITE_ORIGIN = 'https://docs.picgo.app'
+const NEW_SECTION_BASE = '/core/'
+const LEGACY_BASE = '/PicGo-Core-Doc/'
+
+const normalizeRelativePath = (relativePath: string): { localePrefix: string; path: string } => {
+  const withoutExt = relativePath.replace(/\.md$/, '')
+  const isZh = withoutExt.startsWith('zh/')
+  const localePrefix = isZh ? '/zh' : ''
+  const localizedPath = isZh ? withoutExt.slice(3) : withoutExt
+
+  if (!localizedPath || localizedPath === 'index') {
+    return { localePrefix, path: '' }
+  }
+
+  if (localizedPath.endsWith('/index')) {
+    return { localePrefix, path: `${localizedPath.slice(0, -'/index'.length)}/` }
+  }
+
+  return { localePrefix, path: localizedPath }
+}
+
+const buildCanonicalUrl = (relativePath: string): string => {
+  const { localePrefix, path } = normalizeRelativePath(relativePath)
+  const base = `${NEW_SITE_ORIGIN}${localePrefix}${NEW_SECTION_BASE}`
+  const normalizedPath = path.replace(/^\/+/, '')
+  return `${base}${normalizedPath}`
+}
+
+const buildRedirectScript = (): string => `\n(function() {\n  var newHost = '${NEW_SITE_ORIGIN}';\n  var sectionBase = '${NEW_SECTION_BASE}';\n  var oldBase = '${LEGACY_BASE}';\n  var path = window.location.pathname || '/';\n\n  if (path.startsWith(oldBase)) {\n    path = path.slice(oldBase.length);\n  } else {\n    path = path.replace(/^\\/+/, '');\n  }\n\n  var isZh = path.startsWith('zh/');\n  if (isZh) {\n    path = path.slice(3);\n  }\n\n  if (path === '' || path === 'index.html') {\n    path = '';\n  } else if (path.endsWith('/index.html')) {\n    path = path.slice(0, -'/index.html'.length) + '/';\n  } else if (path.endsWith('.html')) {\n    path = path.slice(0, -'.html'.length);\n  }\n\n  if (path.startsWith('/')) {\n    path = path.slice(1);\n  }\n\n  var newUrl = newHost + (isZh ? '/zh' : '') + sectionBase + path + window.location.search + window.location.hash;\n  if (newUrl !== window.location.href) {\n    window.location.replace(newUrl);\n  }\n})();\n`
 
 const communityNavItems = [
   {
@@ -158,6 +188,14 @@ export default defineConfig({
       }
     ]
   ],
+  transformHead: ({ pageData }) => {
+    const canonicalUrl = buildCanonicalUrl(pageData.relativePath)
+    return [
+      ['link', { rel: 'canonical', href: canonicalUrl }],
+      ['meta', { 'http-equiv': 'refresh', content: `0;url=${canonicalUrl}` }],
+      ['script', {}, buildRedirectScript()]
+    ]
+  },
   sitemap: {
     hostname: 'https://picgo.github.io/PicGo-Core-Doc/'
   },
